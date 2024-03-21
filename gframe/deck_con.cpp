@@ -1436,7 +1436,7 @@ void DeckBuilder::FilterCards() {
 					continue;
 			}
 			if(filter_lvtype) {
-				if((filter_lvtype == 1 && data.level != filter_lv) || (filter_lvtype == 2 && data.level < filter_lv)
+				if((filter_lvtype == 1 && data.level-1 != filter_lv) || (filter_lvtype == 2 && data.level < filter_lv)
 				        || (filter_lvtype == 3 && data.level <= filter_lv) || (filter_lvtype == 4 && data.level > filter_lv)
 				        || (filter_lvtype == 5 && data.level >= filter_lv) || filter_lvtype == 6)
 					continue;
@@ -1813,7 +1813,7 @@ void DeckBuilder::pop_side(int seq) {
 	// container.erase(container.begin() + seq);
 	// is_modified = true;
 	// GetHoveredCard();
-	return false;
+	
 }
 bool DeckBuilder::check_limit(code_pointer pointer) {
 	unsigned int limitcode = pointer->second.alias ? pointer->second.alias : pointer->first;
