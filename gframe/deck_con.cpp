@@ -42,7 +42,8 @@ static int parse_filter(const wchar_t* pstr, unsigned int* type) {
 
 
 static inline bool havePopupWindow() {
-	return mainGame->wQuery->isVisible() || mainGame->wCategories->isVisible() || mainGame->wLinkMarks->isVisible() || mainGame->wDeckManage->isVisible() || mainGame->wDMQuery->isVisible();
+	//|| mainGame->wLinkMarks->isVisible()
+	return mainGame->wQuery->isVisible() || mainGame->wCategories->isVisible() || mainGame->wDeckManage->isVisible() || mainGame->wDMQuery->isVisible();
 }
 
 void DeckBuilder::Initialize() {
@@ -119,7 +120,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 		s32 id = event.GUIEvent.Caller->getID();
 		if(((mainGame->wCategories->isVisible() && id != BUTTON_CATEGORY_OK) ||
 			(mainGame->wQuery->isVisible() && id != BUTTON_YES && id != BUTTON_NO) ||
-			(mainGame->wLinkMarks->isVisible() && id != BUTTON_MARKERS_OK) ||
+			//(mainGame->wLinkMarks->isVisible() && id != BUTTON_MARKERS_OK) ||
 			(mainGame->wDMQuery->isVisible() && id != BUTTON_DM_OK && id != BUTTON_DM_CANCEL) ||
 			(mainGame->wDeckManage->isVisible() && !(id >= WINDOW_DECK_MANAGE && id < COMBOBOX_LFLIST)))
 			&& event.GUIEvent.EventType != irr::gui::EGET_LISTBOX_CHANGED
@@ -729,7 +730,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 				break;
 			}
 			case BUTTON_MARKS_FILTER: {
-				mainGame->PopupElement(mainGame->wLinkMarks);
+				//mainGame->PopupElement(mainGame->wLinkMarks);
 				break;
 			}
 			case BUTTON_MARKERS_OK: {
@@ -750,8 +751,8 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					filter_marks |= 0002;
 				if (mainGame->btnMark[7]->isPressed())
 					filter_marks |= 0004;
-				mainGame->HideElement(mainGame->wLinkMarks);
-				mainGame->btnMarksFilter->setPressed(filter_marks > 0);
+				//mainGame->HideElement(mainGame->wLinkMarks);
+				//mainGame->btnMarksFilter->setPressed(filter_marks > 0);
 				InstantSearch();
 				break;
 			}
@@ -839,7 +840,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 				mainGame->ebAttack->setText(L"");
 				mainGame->ebDefense->setText(L"");
 				mainGame->ebStar->setText(L"");
-				mainGame->ebScale->setText(L"");
+				//mainGame->ebScale->setText(L"");
 				switch(mainGame->cbCardType->getSelected()) {
 				case 0: {
 					mainGame->cbCardType2->setEnabled(false);
@@ -849,7 +850,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					mainGame->ebAttack->setEnabled(false);
 					mainGame->ebDefense->setEnabled(false);
 					mainGame->ebStar->setEnabled(false);
-					mainGame->ebScale->setEnabled(false);
+					//mainGame->ebScale->setEnabled(false);
 					break;
 				}
 				case 1: {
@@ -862,7 +863,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					mainGame->ebAttack->setEnabled(true);
 					mainGame->ebDefense->setEnabled(true);
 					mainGame->ebStar->setEnabled(true);
-					mainGame->ebScale->setEnabled(true);
+					//mainGame->ebScale->setEnabled(true);
 					mainGame->cbCardType2->clear();
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1080), 0);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1054), TYPE_MONSTER + TYPE_NORMAL);
@@ -896,7 +897,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					mainGame->ebAttack->setEnabled(false);
 					mainGame->ebDefense->setEnabled(false);
 					mainGame->ebStar->setEnabled(false);
-					mainGame->ebScale->setEnabled(false);
+					//mainGame->ebScale->setEnabled(false);
 					mainGame->cbCardType2->clear();
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1080), 0);
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1054), TYPE_SPELL);
@@ -914,7 +915,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					mainGame->ebAttack->setEnabled(false);
 					mainGame->ebDefense->setEnabled(false);
 					mainGame->ebStar->setEnabled(false);
-					mainGame->ebScale->setEnabled(false);
+					//mainGame->ebScale->setEnabled(false);
 					mainGame->cbCardType2->clear();
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1080), 0);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1070), TYPE_TRAP);
@@ -1329,7 +1330,7 @@ void DeckBuilder::StartFilter() {
 		filter_atk = parse_filter(mainGame->ebAttack->getText(), &filter_atktype);
 		filter_def = parse_filter(mainGame->ebDefense->getText(), &filter_deftype);
 		filter_lv = parse_filter(mainGame->ebStar->getText(), &filter_lvtype);
-		filter_scl = parse_filter(mainGame->ebScale->getText(), &filter_scltype);
+		//filter_scl = parse_filter(mainGame->ebScale->getText(), &filter_scltype);
 	}
 	FilterCards();
 }
@@ -1437,7 +1438,7 @@ void DeckBuilder::FilterCards() {
 					continue;
 			}
 			if(filter_lvtype) {
-				if((filter_lvtype == 1 && data.level-1 != filter_lv) || (filter_lvtype == 2 && data.level < filter_lv)
+				if((filter_lvtype == 1 && data.level != filter_lv) || (filter_lvtype == 2 && data.level < filter_lv)
 				        || (filter_lvtype == 3 && data.level <= filter_lv) || (filter_lvtype == 4 && data.level > filter_lv)
 				        || (filter_lvtype == 5 && data.level >= filter_lv) || filter_lvtype == 6)
 					continue;
@@ -1538,7 +1539,7 @@ void DeckBuilder::ClearSearch() {
 	mainGame->ebAttack->setEnabled(false);
 	mainGame->ebDefense->setEnabled(false);
 	mainGame->ebStar->setEnabled(false);
-	mainGame->ebScale->setEnabled(false);
+	//mainGame->ebScale->setEnabled(false);
 	mainGame->ebCardName->setText(L"");
 	mainGame->scrFilter->setVisible(false);
 	mainGame->scrFilter->setPos(0);
@@ -1553,15 +1554,15 @@ void DeckBuilder::ClearFilter() {
 	mainGame->ebAttack->setText(L"");
 	mainGame->ebDefense->setText(L"");
 	mainGame->ebStar->setText(L"");
-	mainGame->ebScale->setText(L"");
+	//mainGame->ebScale->setText(L"");
 	filter_effect = 0;
 	for(int i = 0; i < 32; ++i)
 		mainGame->chkCategory[i]->setChecked(false);
 	filter_marks = 0;
-	for(int i = 0; i < 8; i++)
-		mainGame->btnMark[i]->setPressed(false);
+	//for(int i = 0; i < 8; i++)
+		//mainGame->btnMark[i]->setPressed(false);
 	mainGame->btnEffectFilter->setPressed(false);
-	mainGame->btnMarksFilter->setPressed(false);
+	//mainGame->btnMarksFilter->setPressed(false);
 }
 void DeckBuilder::SortList() {
 	auto left = results.begin();

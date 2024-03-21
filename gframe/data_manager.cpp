@@ -76,6 +76,7 @@ bool DataManager::LoadDB(const wchar_t* wfile) {
 				cd.link_marker = 0;
 			unsigned int level = sqlite3_column_int(pStmt, 7);
 			cd.level = level & 0xff;
+			cd.level--;
 			cd.lscale = (level >> 24) & 0xff;
 			cd.rscale = (level >> 16) & 0xff;
 			cd.race = sqlite3_column_int(pStmt, 8);
