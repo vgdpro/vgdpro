@@ -141,7 +141,7 @@ int DeckManager::CheckDeck(Deck& deck, int lfhash, int rule) {
 	}
 	return 0;
 }
-int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc, int sidec, bool is_packlist) {
+int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec, bool is_packlist) {
 	deck.clear();
 	int code;
 	int errorcode = 0;
@@ -158,16 +158,23 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc, int sidec, bool is_p
 			deck.main.push_back(dataManager.GetCodePointer(code));
 			continue;
 		}
-		else if(cd.type & (TYPE_FUSION | TYPE_SYNCHRO | TYPE_XYZ | TYPE_LINK)) {
-			if(deck.extra.size() >= 15)
-				continue;
-			deck.extra.push_back(dataManager.GetCodePointer(code));
-		} else if(deck.main.size() < 60) {
+		else if(deck.main.size() < 60) {
 			deck.main.push_back(dataManager.GetCodePointer(code));
 		}
 	}
-	for(int i = 0; i < sidec; ++i) {
+	for(int i = 0; i < extrac; ++i) {
 		code = dbuf[mainc + i];
+		if(!dataManager.GetData(code, &cd)) {
+			errorcode = code;
+			continue;
+		}
+		if(cd.type & TYPE_TOKEN)
+			continue;
+		if(deck.extra.size() < 15)
+			deck.extra.push_back(dataManager.GetCodePointer(code));
+	}
+	for(int i = 0; i < sidec; ++i) {
+		code = dbuf[mainc +extrac + i];
 		if(!dataManager.GetData(code, &cd)) {
 			errorcode = code;
 			continue;
@@ -189,7 +196,7 @@ bool DeckManager::LoadSide(Deck& deck, int* dbuf, int mainc, int sidec) {
 	for(size_t i = 0; i < deck.side.size(); ++i)
 		pcount[deck.side[i]->first]++;
 	Deck ndeck;
-	LoadDeck(ndeck, dbuf, mainc, sidec);
+	//LoadDeck(ndeck, dbuf, mainc, sidec);
 	if(ndeck.main.size() != deck.main.size() || ndeck.extra.size() != deck.extra.size())
 		return false;
 	for(size_t i = 0; i < ndeck.main.size(); ++i)
@@ -291,12 +298,18 @@ bool DeckManager::LoadDeck(const wchar_t* file, bool is_packlist) {
 	return LoadDeck(&deckStream, is_packlist);
 }
 bool DeckManager::LoadDeck(std::istringstream* deckStream, bool is_packlist) {
-	int sp = 0, ct = 0, mainc = 0, sidec = 0, code;
+	int sp = 0, ct = 0, mainc = 0, extrac = 0, sidec = 0, code;
 	int cardlist[300];
 	bool is_side = false;
+	bool is_extra = false;
 	std::string linebuf;
 	while(std::getline(*deckStream, linebuf) && ct < 300) {
+		if(linebuf.find("#extra") != std::string::npos){
+			is_extra = true;
+			continue;
+		}
 		if(linebuf[0] == '!') {
+			is_extra = false;
 			is_side = true;
 			continue;
 		}
@@ -307,10 +320,21 @@ bool DeckManager::LoadDeck(std::istringstream* deckStream, bool is_packlist) {
 		linebuf[sp] = 0;
 		code = std::stoi(linebuf);
 		cardlist[ct++] = code;
-		if(is_side) sidec++;
-		else mainc++;
+		if(is_extra){
+			extrac++;
+		}
+		else if(is_side){
+			sidec++;
+		}
+		else
+		{
+			mainc++;
+		}
+		
+		// if(is_side) sidec++;
+		// else mainc++;
 	}
-	LoadDeck(current_deck, cardlist, mainc, sidec, is_packlist);
+	LoadDeck(current_deck, cardlist, mainc, extrac, sidec, is_packlist);
 	return true; // the above LoadDeck has return value but we ignore it here for now
 }
 bool DeckManager::SaveDeck(Deck& deck, const wchar_t* file) {

@@ -269,7 +269,7 @@ void TagDuel::UpdateDeck(DuelPlayer* dp, void* pdata, unsigned int len) {
 		NetServer::SendPacketToPlayer(dp, STOC_ERROR_MSG, scem);
 		return;
 	}
-	deck_error[dp->type] = deckManager.LoadDeck(pdeck[dp->type], (int*)deckbuf, mainc, sidec);
+	deck_error[dp->type] = deckManager.LoadDeck(pdeck[dp->type], (int*)deckbuf, mainc,20, sidec);//要改的
 }
 void TagDuel::StartDuel(DuelPlayer* dp) {
 	if(dp != host_player)

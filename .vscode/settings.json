@@ -5,6 +5,7 @@
         "xhash": "cpp",
         "xmemory": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "xstring": "cpp"
     }
 }
