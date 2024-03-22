@@ -1586,7 +1586,13 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 									myswprintf(formatBuffer, L"\n(%ls)", dataManager.GetName(mcard->alias));
 									str.append(formatBuffer);
 								}
-								myswprintf(formatBuffer, L"\n%ls/%ls", mcard->atkstring, mcard->defstring);
+								if(mcard->location == LOCATION_MZONE){
+									myswprintf(formatBuffer, L"\n%ls", mcard->atkstring);
+								}
+								else{
+									myswprintf(formatBuffer, L"\n%ls/%ls", mcard->atkstring, mcard->defstring);
+								}
+								//myswprintf(formatBuffer, L"\n%ls/%ls", mcard->atkstring, mcard->defstring);
 								str.append(formatBuffer);
 								if(!(mcard->type & TYPE_LINK)) {
 									const wchar_t* form = L"\u2605";
