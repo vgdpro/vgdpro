@@ -1562,7 +1562,7 @@ void Game::ShowCardInfo(int code, bool resize) {
 		if(!(cd.type & TYPE_LINK)) {
 			const wchar_t* form = L"\u2605";
 			if(cd.type & TYPE_XYZ) form = L"\u2606";
-			myswprintf(formatBuffer, L"[%ls%d] ", form, cd.level);
+			myswprintf(formatBuffer, L"[%ls%d] ", form, cd.level-1);
 			wchar_t adBuffer[16];
 			if(cd.attack < 0 && cd.defense < 0)
 				myswprintf(adBuffer, L"?/?");
