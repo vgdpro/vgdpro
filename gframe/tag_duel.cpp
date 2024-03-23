@@ -259,17 +259,18 @@ void TagDuel::UpdateDeck(DuelPlayer* dp, void* pdata, unsigned int len) {
 		return;
 	unsigned char* deckbuf = (unsigned char*)pdata;
 	int mainc = BufferIO::ReadInt32(deckbuf);
+	int extrac = BufferIO::ReadInt32(deckbuf);
 	int sidec = BufferIO::ReadInt32(deckbuf);
 	// verify data
 	const unsigned int possibleMaxLength = (len - 8) / 4;
-	if((unsigned)mainc > possibleMaxLength || (unsigned)sidec > possibleMaxLength || (unsigned)mainc + (unsigned)sidec > possibleMaxLength) {
+	if((unsigned)mainc > possibleMaxLength || (unsigned)extrac > possibleMaxLength || (unsigned)sidec > possibleMaxLength || (unsigned)mainc + (unsigned)extrac+ (unsigned)sidec > possibleMaxLength) {
 		STOC_ErrorMsg scem;
 		scem.msg = ERRMSG_DECKERROR;
 		scem.code = 0;
 		NetServer::SendPacketToPlayer(dp, STOC_ERROR_MSG, scem);
 		return;
 	}
-	deck_error[dp->type] = deckManager.LoadDeck(pdeck[dp->type], (int*)deckbuf, mainc,0, sidec);//要改的
+	deck_error[dp->type] = deckManager.LoadDeck(pdeck[dp->type], (int*)deckbuf, mainc,extrac, sidec);//要改的
 }
 void TagDuel::StartDuel(DuelPlayer* dp) {
 	if(dp != host_player)
