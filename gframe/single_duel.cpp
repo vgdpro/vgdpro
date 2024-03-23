@@ -277,24 +277,24 @@ void SingleDuel::UpdateDeck(DuelPlayer* dp, void* pdata, unsigned int len) {
 		return;
 	unsigned char* deckbuf = (unsigned char*)pdata;
 	int mainc = BufferIO::ReadInt32(deckbuf);
-	
-	FILE* fp = fopen("error.log", "at");
-	if(!fp)
-		return;
-	time_t nowtime = time(NULL);
-	tm* localedtime = localtime(&nowtime);
-	char timebuf[40];
-	strftime(timebuf, 40, "%Y-%m-%d %H:%M:%S", localedtime);
-	// for(int i = 0; i < len; ++i) {
-    // 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
-	// }
-	fprintf(fp, "%d\n", pdeck[dp->type].extra.size());
-	fclose(fp);
-
+	int extrac = BufferIO::ReadInt32(deckbuf);
 	int sidec = BufferIO::ReadInt32(deckbuf);
-	// verify data
+
+	// FILE* fp = fopen("error.log", "at");
+	// if(!fp)
+	// 	return;
+	// time_t nowtime = time(NULL);
+	// tm* localedtime = localtime(&nowtime);
+	// char timebuf[40];
+	// strftime(timebuf, 40, "%Y-%m-%d %H:%M:%S", localedtime);
+	// // for(int i = 0; i < len; ++i) {
+    // // 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
+	// // }
+	// fprintf(fp, "%d\n",(int*)deckbuf);
+	// fclose(fp);
+	// // verify data
 	const unsigned int possibleMaxLength = (len - 8) / 4;
-	if((unsigned)mainc > possibleMaxLength || (unsigned)sidec > possibleMaxLength || (unsigned)mainc + (unsigned)sidec > possibleMaxLength) {
+	if((unsigned)mainc > possibleMaxLength || (unsigned)extrac > possibleMaxLength || (unsigned)sidec > possibleMaxLength || (unsigned)mainc + (unsigned)extrac+ (unsigned)sidec > possibleMaxLength) {
 		STOC_ErrorMsg scem;
 		scem.msg = ERRMSG_DECKERROR;
 		scem.code = 0;
@@ -302,7 +302,7 @@ void SingleDuel::UpdateDeck(DuelPlayer* dp, void* pdata, unsigned int len) {
 		return;
 	}
 	if(duel_count == 0) {
-		deck_error[dp->type] = deckManager.LoadDeck(pdeck[dp->type], (int*)deckbuf, mainc,5, sidec);
+		deck_error[dp->type] = deckManager.LoadDeck(pdeck[dp->type], (int*)deckbuf, mainc,extrac, sidec);
 	} else {
 		if(deckManager.LoadSide(pdeck[dp->type], (int*)deckbuf, mainc, sidec)) {
 			ready[dp->type] = true;
