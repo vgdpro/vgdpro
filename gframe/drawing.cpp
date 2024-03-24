@@ -1278,8 +1278,8 @@ void Game::DrawDeckBd() {
 			myswprintf(textBuffer, L"%ls", dataManager.GetName(ptr->first));
 			DrawShadowText(textFont, textBuffer, Resize(860, 165 + i * 66, 955, 185 + i * 66), Resize(1, 1, 0, 0));
 			if(!(ptr->second.type & TYPE_LINK)) {
-				const wchar_t* form = L"\u2605";
-				if(ptr->second.type & TYPE_XYZ) form = L"\u2606";
+				const wchar_t* form = L"\u2606值";
+				if(ptr->second.type & TYPE_XYZ) form = L"\u2606值";
 				myswprintf(textBuffer, L"%ls/%ls %ls%d", dataManager.FormatAttribute(ptr->second.attribute), dataManager.FormatRace(ptr->second.race), form, ptr->second.level-1);
 				DrawShadowText(textFont, textBuffer, Resize(860, 187 + i * 66, 955, 207 + i * 66), Resize(1, 1, 0, 0));
 				if(ptr->second.attack < 0 && ptr->second.defense < 0)
