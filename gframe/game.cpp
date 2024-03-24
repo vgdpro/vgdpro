@@ -346,7 +346,7 @@ bool Game::Initialize() {
 	btnEP->setVisible(false);
 	//tab
 	wInfos = env->addTabControl(rect<s32>(1, 275, 301, 639), 0, true);
-	wInfos->setTabExtraWidth(16);
+	wInfos->setTabExtraWidth(21);
 	wInfos->setVisible(false);
 	//info
 	irr::gui::IGUITab* tabInfo = wInfos->addTab(dataManager.GetSysString(1270));
@@ -1593,11 +1593,11 @@ void Game::ShowCardInfo(int code, bool resize) {
 		dtxt = mainGame->guiFont->getDimension(formatBuffer);
 		if(dtxt.Width > (300 * xScale - 13) - 15)
 			offset_arrows += 15;
-		stInfo->setRelativePosition(rect<s32>(15, 37, 300 * xScale - 13, (60 + offset_info)));
-		stDataInfo->setRelativePosition(rect<s32>(15, (60 + offset_info), 300 * xScale - 13, (83 + offset_arrows)));
-		stSetName->setRelativePosition(rect<s32>(15, (83 + offset_arrows), 296 * xScale, (83 + offset_arrows) + offset));
-		stText->setRelativePosition(rect<s32>(15, (83 + offset_arrows) + offset, 287 * xScale, 324 * yScale));
-		scrCardText->setRelativePosition(rect<s32>(287 * xScale - 20, (83 + offset_arrows) + offset, 287 * xScale, 324 * yScale));
+		stInfo->setRelativePosition(rect<s32>(15, 37, 250 * xScale - 13, (60 + offset_info)));
+		stDataInfo->setRelativePosition(rect<s32>(15, (60 + offset_info), 250 * xScale - 13, (83 + offset_arrows)));
+		stSetName->setRelativePosition(rect<s32>(15, (83 + offset_arrows), 246 * xScale, (83 + offset_arrows) + offset));
+		stText->setRelativePosition(rect<s32>(15, (83 + offset_arrows) + offset, 237 * xScale, 324 * yScale));
+		scrCardText->setRelativePosition(rect<s32>(287 * xScale - 20, (83 + offset_arrows) + offset, 237 * xScale, 324 * yScale));
 	}
 	else {
 		if (is_valid)
@@ -1606,9 +1606,9 @@ void Game::ShowCardInfo(int code, bool resize) {
 			myswprintf(formatBuffer, L"[%ls]", dataManager.FormatType(0));
 		stInfo->setText(formatBuffer);
 		stDataInfo->setText(L"");
-		stSetName->setRelativePosition(rect<s32>(15, 60, 296 * xScale, 60 + offset));
-		stText->setRelativePosition(rect<s32>(15, 60 + offset, 287 * xScale, 324 * yScale));
-		scrCardText->setRelativePosition(rect<s32>(287 * xScale - 20, 60 + offset, 287 * xScale, 324 * yScale));
+		stSetName->setRelativePosition(rect<s32>(15, 60, 246 * xScale, 60 + offset));
+		stText->setRelativePosition(rect<s32>(15, 60 + offset, 237 * xScale, 324 * yScale));
+		scrCardText->setRelativePosition(rect<s32>(287 * xScale - 20, 60 + offset, 237 * xScale, 324 * yScale));
 	}
 	showingcode = code;
 	showingtext = dataManager.GetText(code);
@@ -1893,8 +1893,8 @@ void Game::OnResize() {
 	stHintMsg->setRelativePosition(ResizeWin(660 - 160 * xScale, 60, 660 + 160 * xScale, 90));
 
 	//sound / music volume bar
-	scrSoundVolume->setRelativePosition(recti(scrSoundVolume->getRelativePosition().UpperLeftCorner.X, scrSoundVolume->getRelativePosition().UpperLeftCorner.Y, 20 + (300 * xScale) - 70, scrSoundVolume->getRelativePosition().LowerRightCorner.Y));
-	scrMusicVolume->setRelativePosition(recti(scrMusicVolume->getRelativePosition().UpperLeftCorner.X, scrMusicVolume->getRelativePosition().UpperLeftCorner.Y, 20 + (300 * xScale) - 70, scrMusicVolume->getRelativePosition().LowerRightCorner.Y));
+	scrSoundVolume->setRelativePosition(recti(scrSoundVolume->getRelativePosition().UpperLeftCorner.X, scrSoundVolume->getRelativePosition().UpperLeftCorner.Y, 20 + (250 * xScale) - 70, scrSoundVolume->getRelativePosition().LowerRightCorner.Y));
+	scrMusicVolume->setRelativePosition(recti(scrMusicVolume->getRelativePosition().UpperLeftCorner.X, scrMusicVolume->getRelativePosition().UpperLeftCorner.Y, 20 + (250 * xScale) - 70, scrMusicVolume->getRelativePosition().LowerRightCorner.Y));
 
 	recti tabHelperPos = recti(0, 0, 300 * xScale - 50, 365 * yScale - 65);
 	tabHelper->setRelativePosition(tabHelperPos);
@@ -1908,7 +1908,7 @@ void Game::OnResize() {
 	else
 		scrTabHelper->setVisible(false);
 
-	recti tabSystemPos = recti(0, 0, 300 * xScale - 50, 365 * yScale - 65);
+	recti tabSystemPos = recti(0, 0, 250 * xScale - 50, 365 * yScale - 65);
 	tabSystem->setRelativePosition(tabSystemPos);
 	scrTabSystem->setRelativePosition(recti(tabSystemPos.LowerRightCorner.X + 2, 0, tabSystemPos.LowerRightCorner.X + 22, tabSystemPos.LowerRightCorner.Y));
 	s32 tabSystemLastY = elmTabSystemLast->getRelativePosition().LowerRightCorner.Y;
@@ -1938,14 +1938,14 @@ void Game::OnResize() {
 
 	wCardImg->setRelativePosition(ResizeCardImgWin(1, 1, 20, 18));
 	imgCard->setRelativePosition(ResizeCardImgWin(10, 9, 0, 0));
-	wInfos->setRelativePosition(Resize(1, 275, 301, 639));
-	stName->setRelativePosition(recti(10, 10, 300 * xScale - 13, 10 + 22));
-	lstLog->setRelativePosition(Resize(10, 10, 290, 290));
+	wInfos->setRelativePosition(Resize(1, 275, 251, 639));
+	stName->setRelativePosition(recti(10, 10, 250 * xScale - 13, 10 + 22));
+	lstLog->setRelativePosition(Resize(10, 10, 240, 290));
 	if(showingcode)
 		ShowCardInfo(showingcode, true);
 	else
 		ClearCardInfo();
-	btnClearLog->setRelativePosition(Resize(160, 300, 260, 325));
+	btnClearLog->setRelativePosition(Resize(160, 300, 210, 325));
 
 	wPhase->setRelativePosition(Resize(480, 310, 855, 330));
 	btnPhaseStatus->setRelativePosition(Resize(0, 0, 50, 20));
