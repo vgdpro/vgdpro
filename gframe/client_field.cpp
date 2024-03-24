@@ -41,6 +41,10 @@ ClientField::~ClientField() {
 			delete card;
 		}
 		grave[i].clear();
+		for (auto& card : exile[i]) {
+			delete card;
+		}
+		exile[i].clear();
 		for (auto& card : remove[i]) {
 			delete card;
 		}
@@ -77,6 +81,9 @@ void ClientField::Clear() {
 		for(auto cit = grave[i].begin(); cit != grave[i].end(); ++cit)
 			delete *cit;
 		grave[i].clear();
+		for(auto cit = exile[i].begin(); cit != exile[i].end(); ++cit)
+			delete *cit;
+		exile[i].clear();
 		for(auto cit = remove[i].begin(); cit != remove[i].end(); ++cit)
 			delete *cit;
 		remove[i].clear();
@@ -110,6 +117,7 @@ void ClientField::Clear() {
 	hovered_sequence = 0;
 	deck_act = false;
 	grave_act = false;
+	exile_act = false;
 	remove_act = false;
 	extra_act = false;
 	pzone_act[0] = false;
@@ -160,6 +168,9 @@ ClientCard* ClientField::GetCard(int controler, int location, int sequence, int 
 		break;
 	case LOCATION_GRAVE:
 		lst = &grave[controler];
+		break;
+	case LOCATION_EXILE:
+		lst = &exile[controler];
 		break;
 	case LOCATION_REMOVED:
 		lst = &remove[controler];
@@ -221,6 +232,11 @@ void ClientField::AddCard(ClientCard* pcard, int controler, int location, int se
 	case LOCATION_GRAVE: {
 		grave[controler].push_back(pcard);
 		pcard->sequence = grave[controler].size() - 1;
+		break;
+	}
+	case LOCATION_EXILE: {
+		exile[controler].push_back(pcard);
+		pcard->sequence = exile[controler].size() - 1;
 		break;
 	}
 	case LOCATION_REMOVED: {
@@ -294,6 +310,17 @@ ClientCard* ClientField::RemoveCard(int controler, int location, int sequence) {
 		grave[controler].erase(grave[controler].end() - 1);
 		break;
 	}
+	case LOCATION_EXILE: {
+		pcard = exile[controler][sequence];
+		for (size_t i = sequence; i < exile[controler].size() - 1; ++i) {
+			exile[controler][i] = exile[controler][i + 1];
+			exile[controler][i]->sequence--;
+			exile[controler][i]->curPos -= irr::core::vector3df(0, 0, 0.01f);
+			exile[controler][i]->mTransform.setTranslation(exile[controler][i]->curPos);
+		}
+		exile[controler].erase(exile[controler].end() - 1);
+		break;
+	}
 	case LOCATION_REMOVED: {
 		pcard = remove[controler][sequence];
 		for (size_t i = sequence; i < remove[controler].size() - 1; ++i) {
@@ -346,6 +373,9 @@ void ClientField::UpdateFieldCard(int controler, int location, unsigned char* da
 	case LOCATION_GRAVE:
 		lst = &grave[controler];
 		break;
+	case LOCATION_EXILE:
+		lst = &exile[controler];
+		break;
 	case LOCATION_REMOVED:
 		lst = &remove[controler];
 		break;
@@ -382,6 +412,7 @@ void ClientField::ClearCommandFlag() {
 	deck_act = false;
 	extra_act = false;
 	grave_act = false;
+	exile_act = false;
 	remove_act = false;
 	pzone_act[0] = false;
 	pzone_act[1] = false;
@@ -415,6 +446,7 @@ void ClientField::ClearChainSelect() {
 	conti_cards.clear();
 	deck_act = false;
 	grave_act = false;
+	exile_act = false;
 	remove_act = false;
 	extra_act = false;
 	conti_act = false;
@@ -706,6 +738,7 @@ void ClientField::ReplaySwap() {
 	std::swap(mzone[0], mzone[1]);
 	std::swap(szone[0], szone[1]);
 	std::swap(grave[0], grave[1]);
+	std::swap(exile[0], exile[1]);
 	std::swap(remove[0], remove[1]);
 	std::swap(extra[0], extra[1]);
 	std::swap(extra_p_count[0], extra_p_count[1]);
@@ -735,6 +768,11 @@ void ClientField::ReplaySwap() {
 			}
 		}
 		for(auto cit = grave[p].begin(); cit != grave[p].end(); ++cit) {
+			(*cit)->controler = 1 - (*cit)->controler;
+			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
+			(*cit)->is_moving = false;
+		}
+		for(auto cit = exile[p].begin(); cit != exile[p].end(); ++cit) {
 			(*cit)->controler = 1 - (*cit)->controler;
 			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
 			(*cit)->is_moving = false;
@@ -793,6 +831,10 @@ void ClientField::RefreshAllCards() {
 			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
 			(*cit)->is_moving = false;
 		}
+		for(auto cit = exile[p].begin(); cit != exile[p].end(); ++cit) {
+			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
+			(*cit)->is_moving = false;
+		}
 		for(auto cit = remove[p].begin(); cit != remove[p].end(); ++cit) {
 			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
 			(*cit)->is_moving = false;
@@ -847,6 +889,12 @@ void ClientField::GetChainLocation(int controler, int location, int sequence, ir
 		t->X = (matManager.vFieldGrave[controler][rule][0].Pos.X + matManager.vFieldGrave[controler][rule][1].Pos.X) / 2;
 		t->Y = (matManager.vFieldGrave[controler][rule][0].Pos.Y + matManager.vFieldGrave[controler][rule][2].Pos.Y) / 2;
 		t->Z = grave[controler].size() * 0.01f + 0.03f;
+		break;
+	}
+	case LOCATION_EXILE: {
+		t->X = (matManager.vFieldExile[controler][rule][0].Pos.X + matManager.vFieldExile[controler][rule][1].Pos.X) / 2;
+		t->Y = (matManager.vFieldExile[controler][rule][0].Pos.Y + matManager.vFieldExile[controler][rule][2].Pos.Y) / 2;
+		t->Z = exile[controler].size() * 0.01f + 0.03f;
 		break;
 	}
 	case LOCATION_REMOVED: {
@@ -1004,6 +1052,21 @@ void ClientField::GetCardLocation(ClientCard* pcard, irr::core::vector3df* t, ir
 	case LOCATION_GRAVE: {
 		t->X = (matManager.vFieldGrave[controler][rule][0].Pos.X + matManager.vFieldGrave[controler][rule][1].Pos.X) / 2;
 		t->Y = (matManager.vFieldGrave[controler][rule][0].Pos.Y + matManager.vFieldGrave[controler][rule][2].Pos.Y) / 2;
+		t->Z = 0.01f + 0.01f * sequence;
+		if (controler == 0) {
+			r->X = 0.0f;
+			r->Y = 0.0f;
+			r->Z = 0.0f;
+		} else {
+			r->X = 0.0f;
+			r->Y = 0.0f;
+			r->Z = 3.1415926f;
+		}
+		break;
+	}
+		case LOCATION_EXILE: {
+		t->X = (matManager.vFieldExile[controler][rule][0].Pos.X + matManager.vFieldExile[controler][rule][1].Pos.X) / 2;
+		t->Y = (matManager.vFieldExile[controler][rule][0].Pos.Y + matManager.vFieldExile[controler][rule][2].Pos.Y) / 2;
 		t->Z = 0.01f + 0.01f * sequence;
 		if (controler == 0) {
 			r->X = 0.0f;

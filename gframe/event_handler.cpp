@@ -415,6 +415,12 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 								selectable_cards.push_back(grave[command_controler][i]);
 						break;
 					}
+					case LOCATION_EXILE: {
+						for(size_t i = 0; i < exile[command_controler].size(); ++i)
+							if(exile[command_controler][i]->cmdFlag & COMMAND_ACTIVATE)
+								selectable_cards.push_back(exile[command_controler][i]);
+						break;
+					}
 					case LOCATION_REMOVED: {
 						for(size_t i = 0; i < remove[command_controler].size(); ++i)
 							if(remove[command_controler][i]->cmdFlag & COMMAND_ACTIVATE)
@@ -488,6 +494,12 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 						for(size_t i = 0; i < grave[command_controler].size(); ++i)
 							if(grave[command_controler][i]->cmdFlag & COMMAND_SPSUMMON)
 								selectable_cards.push_back(grave[command_controler][i]);
+						break;
+					}
+					case LOCATION_EXILE: {
+						for(size_t i = 0; i < exile[command_controler].size(); ++i)
+							if(exile[command_controler][i]->cmdFlag & COMMAND_SPSUMMON)
+								selectable_cards.push_back(exile[command_controler][i]);
 						break;
 					}
 					case LOCATION_EXTRA: {
@@ -581,6 +593,13 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 					for(int32 i = (int32)grave[command_controler].size() - 1; i >= 0 ; --i)
 						selectable_cards.push_back(grave[command_controler][i]);
 					myswprintf(formatBuffer, L"%ls(%d)", dataManager.GetSysString(1004), grave[command_controler].size());
+					mainGame->wCardSelect->setText(formatBuffer);
+					break;
+				}
+				case LOCATION_EXILE: {
+					for(int32 i = (int32)exile[command_controler].size() - 1; i >= 0 ; --i)
+						selectable_cards.push_back(exile[command_controler][i]);
+					myswprintf(formatBuffer, L"%ls(%d)", dataManager.GetSysString(1004), exile[command_controler].size());
 					mainGame->wCardSelect->setText(formatBuffer);
 					break;
 				}
@@ -920,7 +939,7 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 							mainGame->stCardPos[i]->setBackgroundColor(0xffd0d0d0);
 						else
 							mainGame->stCardPos[i]->setBackgroundColor(0xffffffff);
-					} else if(selectable_cards[i + pos]->location == LOCATION_DECK || selectable_cards[i + pos]->location == LOCATION_EXTRA || selectable_cards[i + pos]->location == LOCATION_REMOVED) {
+					} else if(selectable_cards[i + pos]->location == LOCATION_DECK || selectable_cards[i + pos]->location == LOCATION_EXTRA || selectable_cards[i + pos]->location == LOCATION_REMOVED || selectable_cards[i + pos]->location == LOCATION_EXILE) {
 						if(selectable_cards[i + pos]->position & POS_FACEDOWN)
 							mainGame->stCardPos[i]->setOverrideColor(0xff0000ff);
 						if(selectable_cards[i + pos]->is_selected)
@@ -1118,6 +1137,15 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 					mainGame->wCardSelect->setText(formatBuffer);
 					break;
 				}
+				case LOCATION_EXILE: {
+					if(exile[hovered_controler].size() == 0)
+						break;
+					for(int32 i = (int32)exile[hovered_controler].size() - 1; i >= 0 ; --i)
+						selectable_cards.push_back(exile[hovered_controler][i]);
+					myswprintf(formatBuffer, L"%ls(%d)", dataManager.GetSysString(1004), exile[hovered_controler].size());
+					mainGame->wCardSelect->setText(formatBuffer);
+					break;
+				}
 				case LOCATION_REMOVED: {
 					if(remove[hovered_controler].size() == 0)
 						break;
@@ -1164,6 +1192,15 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 					mainGame->wCardSelect->setText(formatBuffer);
 					break;
 				}
+				case LOCATION_EXILE: {
+					if(exile[hovered_controler].size() == 0)
+						break;
+					for(int32 i = (int32)exile[hovered_controler].size() - 1; i >= 0 ; --i)
+						selectable_cards.push_back(exile[hovered_controler][i]);
+					myswprintf(formatBuffer, L"%ls(%d)", dataManager.GetSysString(1004), exile[hovered_controler].size());
+					mainGame->wCardSelect->setText(formatBuffer);
+					break;
+				}
 				case LOCATION_REMOVED: {
 					if (remove[hovered_controler].size() == 0)
 						break;
@@ -1204,6 +1241,12 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 					if(grave[hovered_controler].size() == 0)
 						break;
 					if(cant_check_grave)
+						break;
+					ShowMenu(COMMAND_LIST, x, y);
+					break;
+				}
+				case LOCATION_EXILE: {
+					if(exile[hovered_controler].size() == 0)
 						break;
 					ShowMenu(COMMAND_LIST, x, y);
 					break;
@@ -1259,6 +1302,17 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 						break;
 					for(size_t i = 0; i < grave[hovered_controler].size(); ++i)
 						command_flag |= grave[hovered_controler][i]->cmdFlag;
+					command_flag |= COMMAND_LIST;
+					list_command = 1;
+					ShowMenu(command_flag, x, y);
+					break;
+				}
+				case LOCATION_EXILE: {
+					int command_flag = 0;
+					if(exile[hovered_controler].size() == 0)
+						break;
+					for(size_t i = 0; i < exile[hovered_controler].size(); ++i)
+						command_flag |= exile[hovered_controler][i]->cmdFlag;
 					command_flag |= COMMAND_LIST;
 					list_command = 1;
 					ShowMenu(command_flag, x, y);
@@ -1522,6 +1576,9 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 				else if(hovered_location == LOCATION_GRAVE) {
 					if(grave[hovered_controler].size())
 						mcard = grave[hovered_controler].back();
+				} else if(hovered_location == LOCATION_EXILE) {
+					if(exile[hovered_controler].size())
+						mcard = exile[hovered_controler].back();
 				} else if(hovered_location == LOCATION_REMOVED) {
 					if(remove[hovered_controler].size()) {
 						mcard = remove[hovered_controler].back();
@@ -2182,17 +2239,10 @@ void ClientField::GetHoverField(int x, int y) {
 				&& boardy >= matManager.vFieldContiAct[0].Y && boardy <= matManager.vFieldContiAct[2].Y) {
 			hovered_controler = 0;
 			hovered_location = POSITION_HINT;
-		} else if(rule == 0 && boardx >= matManager.vFieldRemove[1][rule][1].Pos.X && boardx <= matManager.vFieldRemove[1][rule][0].Pos.X) {
-			if(boardy >= matManager.vFieldRemove[1][rule][2].Pos.Y && boardy <= matManager.vFieldRemove[1][rule][0].Pos.Y) {
+		} else if(boardx >= matManager.vFieldExile[1][rule][1].Pos.X && boardx <= matManager.vFieldExile[1][rule][0].Pos.X) {
+			if(boardy >= matManager.vFieldExile[1][rule][2].Pos.Y && boardy <= matManager.vFieldExile[1][rule][0].Pos.Y) {
 				hovered_controler = 1;
-				hovered_location = LOCATION_REMOVED;
-			}
-		} else if(rule == 1 && boardx >= matManager.vFieldSzone[1][7][rule][1].Pos.X && boardx <= matManager.vFieldSzone[1][7][rule][2].Pos.X) {
-			// deprecated szone[7]
-			if(boardy >= matManager.vFieldSzone[1][7][rule][2].Pos.Y && boardy <= matManager.vFieldSzone[1][7][rule][0].Pos.Y) {
-				hovered_controler = 1;
-				hovered_location = LOCATION_SZONE;
-				hovered_sequence = 7;
+				hovered_location = LOCATION_EXILE;
 			}
 		} else if(boardx >= matManager.vFieldDeck[0][0].Pos.X && boardx <= matManager.vFieldDeck[0][1].Pos.X) {
 			if(boardy >= matManager.vFieldDeck[0][0].Pos.Y && boardy <= matManager.vFieldDeck[0][2].Pos.Y) {
@@ -2210,17 +2260,10 @@ void ClientField::GetHoverField(int x, int y) {
 				hovered_controler = 1;
 				hovered_location = LOCATION_GRAVE;
 			}
-		} else if(rule == 1 && boardx >= matManager.vFieldSzone[0][7][rule][0].Pos.X && boardx <= matManager.vFieldSzone[0][7][rule][1].Pos.X) {
-			// deprecated szone[7]
-			if(boardy >= matManager.vFieldSzone[0][7][rule][0].Pos.Y && boardy <= matManager.vFieldSzone[0][7][rule][2].Pos.Y) {
+		} else if(boardx >= matManager.vFieldExile[0][rule][0].Pos.X && boardx <= matManager.vFieldExile[0][rule][1].Pos.X) {
+			if(boardy >= matManager.vFieldExile[0][rule][0].Pos.Y && boardy <= matManager.vFieldExile[0][rule][2].Pos.Y) {
 				hovered_controler = 0;
-				hovered_location = LOCATION_SZONE;
-				hovered_sequence = 7;
-			}
-		} else if(rule == 0 && boardx >= matManager.vFieldRemove[0][rule][0].Pos.X && boardx <= matManager.vFieldRemove[0][rule][1].Pos.X) {
-			if(boardy >= matManager.vFieldRemove[0][rule][0].Pos.Y && boardy <= matManager.vFieldRemove[0][rule][2].Pos.Y) {
-				hovered_controler = 0;
-				hovered_location = LOCATION_REMOVED;
+				hovered_location = LOCATION_EXILE;
 			}
 		} else if(boardx >= matManager.vFieldMzone[0][0][0].Pos.X && boardx <= matManager.vFieldMzone[0][4][1].Pos.X) {
 			int sequence = (boardx - matManager.vFieldMzone[0][0][0].Pos.X) / (matManager.vFieldMzone[0][0][1].Pos.X - matManager.vFieldMzone[0][0][0].Pos.X);

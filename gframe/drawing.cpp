@@ -198,6 +198,8 @@ void Game::DrawBackGround() {
 			vertex = matManager.vFieldSzone[dField.hovered_controler][dField.hovered_sequence][rule];
 		else if (dField.hovered_location == LOCATION_GRAVE)
 			vertex = matManager.vFieldGrave[dField.hovered_controler][rule];
+		else if (dField.hovered_location == LOCATION_EXILE)
+			vertex = matManager.vFieldExile[dField.hovered_controler][rule];
 		else if (dField.hovered_location == LOCATION_REMOVED)
 			vertex = matManager.vFieldRemove[dField.hovered_controler][rule];
 		else if (dField.hovered_location == LOCATION_EXTRA)
@@ -312,6 +314,8 @@ void Game::DrawCards() {
 		for(auto it = dField.hand[p].begin(); it != dField.hand[p].end(); ++it)
 			DrawCard(*it);
 		for(auto it = dField.grave[p].begin(); it != dField.grave[p].end(); ++it)
+			DrawCard(*it);
+		for(auto it = dField.exile[p].begin(); it != dField.exile[p].end(); ++it)
 			DrawCard(*it);
 		for(auto it = dField.remove[p].begin(); it != dField.remove[p].end(); ++it)
 			DrawCard(*it);
@@ -435,6 +439,12 @@ void Game::DrawMisc() {
 	if(dField.grave_act) {
 		im.setTranslation(vector3df((matManager.vFieldGrave[0][rule][0].Pos.X + matManager.vFieldGrave[0][rule][1].Pos.X) / 2,
 			(matManager.vFieldGrave[0][rule][0].Pos.Y + matManager.vFieldGrave[0][rule][2].Pos.Y) / 2, dField.grave[0].size() * 0.01f + 0.02f));
+		driver->setTransform(irr::video::ETS_WORLD, im);
+		driver->drawVertexPrimitiveList(matManager.vActivate, 4, matManager.iRectangle, 2);
+	}
+	if(dField.exile_act) {
+		im.setTranslation(vector3df((matManager.vFieldExile[0][rule][0].Pos.X + matManager.vFieldExile[0][rule][1].Pos.X) / 2,
+			(matManager.vFieldExile[0][rule][0].Pos.Y + matManager.vFieldExile[0][rule][2].Pos.Y) / 2, dField.exile[0].size() * 0.01f + 0.02f));
 		driver->setTransform(irr::video::ETS_WORLD, im);
 		driver->drawVertexPrimitiveList(matManager.vActivate, 4, matManager.iRectangle, 2);
 	}
@@ -680,6 +690,9 @@ void Game::DrawMisc() {
 		if (dField.grave[0].size()) {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.grave[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
+		if (dField.exile[0].size()) {
+			DrawShadowText(numFont, dataManager.GetNumString(dField.exile[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		}
 		if (dField.remove[0].size()) {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.remove[0].size()), Resize(837, 376, 986, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
@@ -702,6 +715,9 @@ void Game::DrawMisc() {
 	} else {
 		if (dField.grave[1].size()) {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.grave[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		}
+		if (dField.exile[1].size()) {
+			DrawShadowText(numFont, dataManager.GetNumString(dField.exile[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.remove[1].size()) {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.remove[1].size()), Resize(420, 311, 464, 282), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
