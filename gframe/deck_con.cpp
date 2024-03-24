@@ -1444,13 +1444,13 @@ void DeckBuilder::FilterCards() {
 				        || (filter_lvtype == 5 && data.level >= filter_lv) || filter_lvtype == 6)
 					continue;
 			}
-			if(filter_scltype) {
-				if((filter_scltype == 1 && data.lscale != filter_scl) || (filter_scltype == 2 && data.lscale < filter_scl)
-				        || (filter_scltype == 3 && data.lscale <= filter_scl) || (filter_scltype == 4 && (data.lscale > filter_scl))
-				        || (filter_scltype == 5 && (data.lscale >= filter_scl)) || filter_scltype == 6
-				        || !(data.type & TYPE_PENDULUM))
-					continue;
-			}
+			// if(filter_scltype) {
+			// 	if((filter_scltype == 1 && data.lscale != filter_scl) || (filter_scltype == 2 && data.lscale < filter_scl)
+			// 	        || (filter_scltype == 3 && data.lscale <= filter_scl) || (filter_scltype == 4 && (data.lscale > filter_scl))
+			// 	        || (filter_scltype == 5 && (data.lscale >= filter_scl)) || filter_scltype == 6
+			// 	        || !(data.type & TYPE_PENDULUM))
+			// 		continue;
+			// }
 			break;
 		}
 		case 2: {
