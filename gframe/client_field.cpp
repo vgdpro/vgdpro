@@ -12,7 +12,7 @@ namespace ygo {
 
 ClientField::ClientField() {
 	for(int p = 0; p < 2; ++p) {
-		mzone[p].resize(7, 0);
+		mzone[p].resize(6, 0);
 		szone[p].resize(8, 0);
 	}
 	rnd.reset((uint_fast32_t)std::random_device()());

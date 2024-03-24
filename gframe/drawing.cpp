@@ -153,7 +153,7 @@ void Game::DrawBackGround() {
 	{
 		/*float cv[4] = {0.0f, 0.0f, 1.0f, 1.0f};*/
 		unsigned int filter = 0x1;
-		for (int i = 0; i < 7; ++i, filter <<= 1) {
+		for (int i = 0; i < 6; ++i, filter <<= 1) {
 			if (dField.disabled_field & filter) {
 				driver->draw3DLine(matManager.vFieldMzone[0][i][0].Pos, matManager.vFieldMzone[0][i][3].Pos, 0xffffffff);
 				driver->draw3DLine(matManager.vFieldMzone[0][i][1].Pos, matManager.vFieldMzone[0][i][2].Pos, 0xffffffff);
@@ -167,7 +167,7 @@ void Game::DrawBackGround() {
 			}
 		}
 		filter = 0x10000;
-		for (int i = 0; i < 7; ++i, filter <<= 1) {
+		for (int i = 0; i < 6; ++i, filter <<= 1) {
 			if (dField.disabled_field & filter) {
 				driver->draw3DLine(matManager.vFieldMzone[1][i][0].Pos, matManager.vFieldMzone[1][i][3].Pos, 0xffffffff);
 				driver->draw3DLine(matManager.vFieldMzone[1][i][1].Pos, matManager.vFieldMzone[1][i][2].Pos, 0xffffffff);
@@ -598,28 +598,34 @@ void Game::DrawMisc() {
 	driver->draw2DRectangle(Resize(632, 30, 688, 50), 0xffffffff, 0xffffffff, 0x00000000, 0x00000000);
 	DrawShadowText(lpcFont, dataManager.GetNumString(dInfo.turn), Resize(635, 5, 687, 40), Resize(0, 0, 2, 0), 0x8000ffff, 0x80000000, true, false, 0);
 	ClientCard* pcard;
-	for(int i = 0; i < 5; ++i) {
+	pcard = dField.mzone[0][0];
+	if(pcard && pcard->code != 0)
+		DrawStatus(pcard, 493 + 1 * 85, 416, 473 + 1 * 80, 356);
+	for(int i = 1; i < 4; ++i) {
 		pcard = dField.mzone[0][i];
 		if(pcard && pcard->code != 0)
-			DrawStatus(pcard, 493 + i * 85, 416, 473 + i * 80, 356);
+			DrawStatus(pcard, 477 + i * 93, 496, 455 + i * 87, 426);
 	}
+	pcard = dField.mzone[0][4];
+	if(pcard && pcard->code != 0)
+		DrawStatus(pcard, 493 + 3 * 85, 416, 473 + 3 * 80, 356);
 	pcard = dField.mzone[0][5];
 	if(pcard && pcard->code != 0)
-		DrawStatus(pcard, 589, 338, 563, 291);
-	pcard = dField.mzone[0][6];
-	if(pcard && pcard->code != 0)
-		DrawStatus(pcard, 743, 338, 712, 291);
-	for(int i = 0; i < 5; ++i) {
+		DrawStatus(pcard, 493 + 2 * 85, 416, 473 + 2 * 80, 356);
+	pcard = dField.mzone[1][0];
+	if(pcard && (pcard->position & POS_FACEUP))
+		DrawStatus(pcard, 803 - 1 * 68, 235, 779 - 1 * 71, 272);
+	for(int i = 1; i < 4; ++i) {
 		pcard = dField.mzone[1][i];
 		if(pcard && (pcard->position & POS_FACEUP))
-			DrawStatus(pcard, 803 - i * 68, 235, 779 - i * 71, 272);
+			DrawStatus(pcard, 797 - i * 64, 191, 771 - i * 66, 224);
 	}
+	pcard = dField.mzone[1][4];
+	if(pcard && (pcard->position & POS_FACEUP))
+		DrawStatus(pcard, 803 - 3 * 68, 235, 779 - 3 * 71, 272);
 	pcard = dField.mzone[1][5];
 	if(pcard && (pcard->position & POS_FACEUP))
-		DrawStatus(pcard, 739, 291, 710, 338);
-	pcard = dField.mzone[1][6];
-	if(pcard && (pcard->position & POS_FACEUP))
-		DrawStatus(pcard, 593, 291, 555, 338);
+		DrawStatus(pcard, 803 - 2 * 68, 235, 779 - 2 * 71, 272);
 	if(dInfo.duel_rule < 4) {
 		pcard = dField.szone[0][6];
 		if(pcard) {
@@ -657,11 +663,11 @@ void Game::DrawMisc() {
 	}
 	if(dField.extra[0].size()) {
 		int offset = (dField.extra[0].size() >= 10) ? 0 : numFont->getDimension(dataManager.GetNumString(1)).Width;
-		DrawShadowText(numFont, dataManager.GetNumString(dField.extra[0].size()), Resize(320, 563, 373, 553, offset, 0, 0, 0), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
-		DrawShadowText(numFont, dataManager.GetNumString(dField.extra_p_count[0], true), Resize(340, 563, 393, 553), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		DrawShadowText(numFont, dataManager.GetNumString(dField.extra[0].size()), Resize(860, 457, 994, 462, offset, 0, 0, 0), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		DrawShadowText(numFont, dataManager.GetNumString(dField.extra_p_count[0], true), Resize(880, 457, 1014, 462), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 	}
 	if(dField.deck[0].size()) {
-		DrawShadowText(numFont, dataManager.GetNumString(dField.deck[0].size()), Resize(908, 563, 1023, 553), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		DrawShadowText(numFont, dataManager.GetNumString(dField.deck[0].size()), Resize(803, 457, 918, 462), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 	}
 	if (rule == 0) {
 		if (dField.grave[0].size()) {
