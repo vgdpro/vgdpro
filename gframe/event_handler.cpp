@@ -1654,7 +1654,7 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 								if(!(mcard->type & TYPE_LINK)) {
 									const wchar_t* form = L"\u2605";
 									if (mcard->rank) form = L"\u2606";
-									myswprintf(formatBuffer, L"\n%ls%d", form, (mcard->level ? mcard->level : mcard->rank));
+									myswprintf(formatBuffer, L"\n%ls%d", form, (mcard->level ? mcard->level-1 : mcard->rank));
 									str.append(formatBuffer);
 								} else {
 									myswprintf(formatBuffer, L"\nLINK-%d", mcard->link);
