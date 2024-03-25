@@ -1651,16 +1651,16 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 								}
 								//myswprintf(formatBuffer, L"\n%ls/%ls", mcard->atkstring, mcard->defstring);
 								str.append(formatBuffer);
+								myswprintf(formatBuffer, L"\n%ls/%ls", dataManager.FormatRace(mcard->race), dataManager.FormatAttribute(mcard->attribute));
+								str.append(formatBuffer);
 								if(!(mcard->type & TYPE_LINK)) {
-									const wchar_t* form = L"\u2606值";
-									if (mcard->rank) form = L"\u2606值";
-									myswprintf(formatBuffer, L"\n%ls%d", form, (mcard->level ? mcard->level-1 : mcard->rank));
+									myswprintf(formatBuffer, L"\n%ls%d", dataManager.GetSysString(1492), (mcard->level ? mcard->level-1 : mcard->rank));
 									str.append(formatBuffer);
 								} else {
 									myswprintf(formatBuffer, L"\nLINK-%d", mcard->link);
 									str.append(formatBuffer);
 								}
-								myswprintf(formatBuffer, L" %ls/%ls", dataManager.FormatRace(mcard->race), dataManager.FormatAttribute(mcard->attribute));
+								myswprintf(formatBuffer, L" %ls%d", dataManager.GetSysString(1493), mcard->lscale);
 								str.append(formatBuffer);
 								if(mcard->location == LOCATION_HAND && (mcard->type & TYPE_PENDULUM)) {
 									myswprintf(formatBuffer, L"\n%d/%d", mcard->lscale, mcard->rscale);

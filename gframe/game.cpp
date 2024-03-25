@@ -1560,9 +1560,7 @@ void Game::ShowCardInfo(int code, bool resize) {
 		if(dtxt.Width > (300 * xScale - 13) - 15)
 			offset_info = 15;
 		if(!(cd.type & TYPE_LINK)) {
-			const wchar_t* form = L"\u2606";
-			if(cd.type & TYPE_XYZ) form = L"\u2606值";
-			myswprintf(formatBuffer, L"[%ls%d] ", form, cd.level-1);
+			myswprintf(formatBuffer, L"[%ls%d] ", dataManager.GetSysString(1492), cd.level-1);
 			wchar_t adBuffer[16];
 			if(cd.attack < 0 && cd.defense < 0)
 				myswprintf(adBuffer, L"?/?");
@@ -1583,11 +1581,14 @@ void Game::ShowCardInfo(int code, bool resize) {
 			wcscat(formatBuffer, adBuffer);
 			wcscat(formatBuffer, dataManager.FormatLinkMarker(cd.link_marker));
 		}
-		if(cd.type & TYPE_PENDULUM) {
-			wchar_t scaleBuffer[16];
-			myswprintf(scaleBuffer, L"   %d/%d", cd.lscale, cd.rscale);
-			wcscat(formatBuffer, scaleBuffer);
-		}
+		wchar_t scaleBuffer[16];
+		myswprintf(scaleBuffer, L" [%ls%d]", dataManager.GetSysString(1493), cd.lscale);
+		wcscat(formatBuffer, scaleBuffer);
+		// if(cd.type & TYPE_PENDULUM) {
+		// 	wchar_t scaleBuffer[16];
+		// 	myswprintf(scaleBuffer, L"   %d/%d", cd.lscale, cd.rscale);
+		// 	wcscat(formatBuffer, scaleBuffer);
+		// }
 		stDataInfo->setText(formatBuffer);
 		int offset_arrows = offset_info;
 		dtxt = mainGame->guiFont->getDimension(formatBuffer);
