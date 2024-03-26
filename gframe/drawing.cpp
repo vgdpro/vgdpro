@@ -1302,7 +1302,7 @@ void Game::DrawDeckBd() {
 				wcscat(textBuffer, scaleBuffer);
 			}
 			if((ptr->second.ot & AVAIL_OCGTCG) == AVAIL_OCG)
-				wcscat(textBuffer, L" [OCG]");
+				wcscat(textBuffer, L" [VG]");
 			else if((ptr->second.ot & AVAIL_OCGTCG) == AVAIL_TCG)
 				wcscat(textBuffer, L" [TCG]");
 			else if((ptr->second.ot & AVAIL_CUSTOM) == AVAIL_CUSTOM)
@@ -1315,7 +1315,7 @@ void Game::DrawDeckBd() {
 			DrawShadowText(textFont, ptype, Resize(860, 187 + i * 66, 955, 207 + i * 66), Resize(1, 1, 0, 0));
 			textBuffer[0] = 0;
 			if((ptr->second.ot & AVAIL_OCGTCG) == AVAIL_OCG)
-				wcscat(textBuffer, L"[OCG]");
+				wcscat(textBuffer, L"[VG]");
 			else if((ptr->second.ot & AVAIL_OCGTCG) == AVAIL_TCG)
 				wcscat(textBuffer, L"[TCG]");
 			else if((ptr->second.ot & AVAIL_CUSTOM) == AVAIL_CUSTOM)
