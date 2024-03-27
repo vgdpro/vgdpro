@@ -1415,8 +1415,8 @@ void DeckBuilder::FilterCards() {
 		if (strpointer == dataManager.strings_end)
 			continue;
 		const CardString& text = strpointer->second;
-		if(data.type & TYPE_TOKEN)
-			continue;
+		// if(data.type & TYPE_TOKEN)
+		// 	continue;
 		switch(filter_type) {
 		case 1: {
 			if(!(data.type & TYPE_MONSTER) || (data.type & filter_type2) != filter_type2)
@@ -1456,7 +1456,7 @@ void DeckBuilder::FilterCards() {
 		case 2: {
 			if(!(data.type & TYPE_SPELL))
 				continue;
-			if(filter_type2 && data.type != filter_type2)
+			if(filter_type2 && data.type != filter_type2  &&(!data.type & (TYPE_TOKEN+TYPE_SPELL)))
 				continue;
 			break;
 		}
@@ -1758,6 +1758,8 @@ bool DeckBuilder::CardNameContains(const wchar_t* haystack, const wchar_t* needl
 bool DeckBuilder::push_main(code_pointer pointer, int seq) {
 	// if(pointer->second.type & (TYPE_FUSION | TYPE_SYNCHRO | TYPE_XYZ | TYPE_LINK))
 	// 	return false;
+	if(pointer->second.type & (TYPE_TOKEN))
+		return false;
 	auto& container = deckManager.current_deck.main;
 	int maxc = mainGame->is_siding ? 64 : 60;
 	if((int)container.size() >= maxc)
