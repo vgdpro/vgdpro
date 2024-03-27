@@ -281,16 +281,10 @@ void SingleDuel::UpdateDeck(DuelPlayer* dp, void* pdata, unsigned int len) {
 	int sidec = BufferIO::ReadInt32(deckbuf);
 
 	// FILE* fp = fopen("error.log", "at");
-	// if(!fp)
-	// 	return;
-	// time_t nowtime = time(NULL);
-	// tm* localedtime = localtime(&nowtime);
-	// char timebuf[40];
-	// strftime(timebuf, 40, "%Y-%m-%d %H:%M:%S", localedtime);
 	// // for(int i = 0; i < len; ++i) {
     // // 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
 	// // }
-	// fprintf(fp, "%d\n",(int*)deckbuf);
+	// fprintf(fp, "%d\n",(int*)location1);
 	// fclose(fp);
 	// // verify data
 	const unsigned int possibleMaxLength = (len - 8) / 4;
@@ -973,7 +967,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			int cp = pbuf[11];
 			pbuf += 16;
 			NetServer::SendBufferToPlayer(players[cc], STOC_GAME_MSG, offset, pbuf - offset);
-			if (!(cl & (LOCATION_GRAVE + LOCATION_OVERLAY + LOCATION_EXILE)) && ((cl & (LOCATION_DECK + LOCATION_HAND)) || (cp & POS_FACEDOWN)))
+			if (!(cl & (LOCATION_GRAVE + LOCATION_OVERLAY + LOCATION_EXILE + LOCATION_ORDER + LOCATION_DAMAGE + LOCATION_SPARE + LOCATION_GZONE)) && ((cl & (LOCATION_DECK + LOCATION_HAND)) || (cp & POS_FACEDOWN)))
 				BufferIO::WriteInt32(pbufw, 0);
 			NetServer::SendBufferToPlayer(players[1 - cc], STOC_GAME_MSG, offset, pbuf - offset);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)

@@ -1278,6 +1278,14 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 						mainGame->dField.remove_act = true;
 					else if(pcard->location == LOCATION_EXILE)
 						mainGame->dField.exile_act = true;
+					else if(pcard->location == LOCATION_ORDER)
+						mainGame->dField.order_act = true;
+					else if(pcard->location == LOCATION_DAMAGE)
+						mainGame->dField.damage_act = true;
+					else if(pcard->location == LOCATION_SPARE)
+						mainGame->dField.spare_act = true;
+					else if(pcard->location == LOCATION_GZONE)
+						mainGame->dField.gzone_act = true;
 					else if(pcard->location == LOCATION_EXTRA)
 						mainGame->dField.extra_act = true;
 				}
@@ -1341,6 +1349,14 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 				mainGame->dField.grave_act = true;
 			else if (pcard->location == LOCATION_EXILE)
 				mainGame->dField.exile_act = true;
+			else if (pcard->location == LOCATION_ORDER)
+				mainGame->dField.order_act = true;
+			else if (pcard->location == LOCATION_DAMAGE)
+				mainGame->dField.damage_act = true;
+			else if (pcard->location == LOCATION_SPARE)
+				mainGame->dField.spare_act = true;
+			else if (pcard->location == LOCATION_GZONE)
+				mainGame->dField.gzone_act = true;
 			else if (pcard->location == LOCATION_REMOVED)
 				mainGame->dField.remove_act = true;
 			else if (pcard->location == LOCATION_EXTRA)
@@ -1413,6 +1429,14 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 						mainGame->dField.grave_act = true;
 					else if(pcard->location == LOCATION_EXILE)
 						mainGame->dField.exile_act = true;
+					else if(pcard->location == LOCATION_ORDER)
+						mainGame->dField.order_act = true;
+					else if(pcard->location == LOCATION_DAMAGE)
+						mainGame->dField.damage_act = true;
+					else if(pcard->location == LOCATION_SPARE)
+						mainGame->dField.spare_act = true;
+					else if(pcard->location == LOCATION_GZONE)
+						mainGame->dField.gzone_act = true;
 					else if(pcard->location == LOCATION_REMOVED)
 						mainGame->dField.remove_act = true;
 					else if(pcard->location == LOCATION_EXTRA)
@@ -1694,6 +1718,14 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 					mainGame->dField.grave_act = true;
 				else if(l == LOCATION_EXILE)
 					mainGame->dField.exile_act = true;
+				else if(l == LOCATION_ORDER)
+					mainGame->dField.order_act = true;
+				else if(l == LOCATION_DAMAGE)
+					mainGame->dField.damage_act = true;
+				else if(l == LOCATION_SPARE)
+					mainGame->dField.spare_act = true;
+				else if(l == LOCATION_GZONE)
+					mainGame->dField.gzone_act = true;
 				else if(l == LOCATION_REMOVED)
 					mainGame->dField.remove_act = true;
 				else if(l == LOCATION_EXTRA)
@@ -3880,6 +3912,26 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			for(int seq = 0; seq < val; ++seq) {
 				ClientCard* ccard = new ClientCard;
 				mainGame->dField.AddCard(ccard, p, LOCATION_EXILE, seq);
+			}
+			val = BufferIO::ReadInt8(pbuf);
+			for(int seq = 0; seq < val; ++seq) {
+				ClientCard* ccard = new ClientCard;
+				mainGame->dField.AddCard(ccard, p, LOCATION_ORDER, seq);
+			}
+			val = BufferIO::ReadInt8(pbuf);
+			for(int seq = 0; seq < val; ++seq) {
+				ClientCard* ccard = new ClientCard;
+				mainGame->dField.AddCard(ccard, p, LOCATION_DAMAGE, seq);
+			}
+			val = BufferIO::ReadInt8(pbuf);
+			for(int seq = 0; seq < val; ++seq) {
+				ClientCard* ccard = new ClientCard;
+				mainGame->dField.AddCard(ccard, p, LOCATION_SPARE, seq);
+			}
+			val = BufferIO::ReadInt8(pbuf);
+			for(int seq = 0; seq < val; ++seq) {
+				ClientCard* ccard = new ClientCard;
+				mainGame->dField.AddCard(ccard, p, LOCATION_GZONE, seq);
 			}
 			val = BufferIO::ReadInt8(pbuf);
 			for(int seq = 0; seq < val; ++seq) {

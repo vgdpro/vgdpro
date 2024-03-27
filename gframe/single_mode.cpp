@@ -832,6 +832,14 @@ void SingleMode::SinglePlayReload() {
 	ReloadLocation(1, LOCATION_REMOVED, flag, queryBuffer);
 	ReloadLocation(0, LOCATION_EXILE, flag, queryBuffer);
 	ReloadLocation(1, LOCATION_EXILE, flag, queryBuffer);
+	ReloadLocation(0, LOCATION_ORDER, flag, queryBuffer);
+	ReloadLocation(1, LOCATION_ORDER, flag, queryBuffer);
+	ReloadLocation(0, LOCATION_DAMAGE, flag, queryBuffer);
+	ReloadLocation(1, LOCATION_DAMAGE, flag, queryBuffer);
+	ReloadLocation(0, LOCATION_SPARE, flag, queryBuffer);
+	ReloadLocation(1, LOCATION_SPARE, flag, queryBuffer);
+	ReloadLocation(0, LOCATION_GZONE, flag, queryBuffer);
+	ReloadLocation(1, LOCATION_GZONE, flag, queryBuffer);
 }
 uint32 SingleMode::MessageHandler(intptr_t fduel, uint32 type) {
 	if(!enable_log)

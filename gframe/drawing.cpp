@@ -200,6 +200,14 @@ void Game::DrawBackGround() {
 			vertex = matManager.vFieldGrave[dField.hovered_controler][rule];
 		else if (dField.hovered_location == LOCATION_EXILE)
 			vertex = matManager.vFieldExile[dField.hovered_controler][rule];
+		else if (dField.hovered_location == LOCATION_ORDER)
+			vertex = matManager.vFieldOrder[dField.hovered_controler][rule];
+		else if (dField.hovered_location == LOCATION_DAMAGE)
+			vertex = matManager.vFieldDamage[dField.hovered_controler][rule];
+		else if (dField.hovered_location == LOCATION_SPARE)
+			vertex = matManager.vFieldSpare[dField.hovered_controler][rule];
+		else if (dField.hovered_location == LOCATION_GZONE)
+			vertex = matManager.vFieldGzone[dField.hovered_controler][rule];
 		else if (dField.hovered_location == LOCATION_REMOVED)
 			vertex = matManager.vFieldRemove[dField.hovered_controler][rule];
 		else if (dField.hovered_location == LOCATION_EXTRA)
@@ -316,6 +324,14 @@ void Game::DrawCards() {
 		for(auto it = dField.grave[p].begin(); it != dField.grave[p].end(); ++it)
 			DrawCard(*it);
 		for(auto it = dField.exile[p].begin(); it != dField.exile[p].end(); ++it)
+			DrawCard(*it);
+		for(auto it = dField.order[p].begin(); it != dField.order[p].end(); ++it)
+			DrawCard(*it);
+		for(auto it = dField.damage[p].begin(); it != dField.damage[p].end(); ++it)
+			DrawCard(*it);
+		for(auto it = dField.spare[p].begin(); it != dField.spare[p].end(); ++it)
+			DrawCard(*it);
+		for(auto it = dField.gzone[p].begin(); it != dField.gzone[p].end(); ++it)
 			DrawCard(*it);
 		for(auto it = dField.remove[p].begin(); it != dField.remove[p].end(); ++it)
 			DrawCard(*it);
@@ -445,6 +461,30 @@ void Game::DrawMisc() {
 	if(dField.exile_act) {
 		im.setTranslation(vector3df((matManager.vFieldExile[0][rule][0].Pos.X + matManager.vFieldExile[0][rule][1].Pos.X) / 2,
 			(matManager.vFieldExile[0][rule][0].Pos.Y + matManager.vFieldExile[0][rule][2].Pos.Y) / 2, dField.exile[0].size() * 0.01f + 0.02f));
+		driver->setTransform(irr::video::ETS_WORLD, im);
+		driver->drawVertexPrimitiveList(matManager.vActivate, 4, matManager.iRectangle, 2);
+	}
+	if(dField.order_act) {
+		im.setTranslation(vector3df((matManager.vFieldOrder[0][rule][0].Pos.X + matManager.vFieldOrder[0][rule][1].Pos.X) / 2,
+			(matManager.vFieldOrder[0][rule][0].Pos.Y + matManager.vFieldOrder[0][rule][2].Pos.Y) / 2, dField.order[0].size() * 0.01f + 0.02f));
+		driver->setTransform(irr::video::ETS_WORLD, im);
+		driver->drawVertexPrimitiveList(matManager.vActivate, 4, matManager.iRectangle, 2);
+	}
+	if(dField.damage_act) {
+		im.setTranslation(vector3df((matManager.vFieldDamage[0][rule][0].Pos.X + matManager.vFieldDamage[0][rule][1].Pos.X) / 2,
+			(matManager.vFieldDamage[0][rule][0].Pos.Y + matManager.vFieldDamage[0][rule][2].Pos.Y) / 2, dField.damage[0].size() * 0.01f + 0.02f));
+		driver->setTransform(irr::video::ETS_WORLD, im);
+		driver->drawVertexPrimitiveList(matManager.vActivate, 4, matManager.iRectangle, 2);
+	}
+	if(dField.spare_act) {
+		im.setTranslation(vector3df((matManager.vFieldSpare[0][rule][0].Pos.X + matManager.vFieldSpare[0][rule][1].Pos.X) / 2,
+			(matManager.vFieldSpare[0][rule][0].Pos.Y + matManager.vFieldSpare[0][rule][2].Pos.Y) / 2, dField.spare[0].size() * 0.01f + 0.02f));
+		driver->setTransform(irr::video::ETS_WORLD, im);
+		driver->drawVertexPrimitiveList(matManager.vActivate, 4, matManager.iRectangle, 2);
+	}
+	if(dField.gzone_act) {
+		im.setTranslation(vector3df((matManager.vFieldGzone[0][rule][0].Pos.X + matManager.vFieldGzone[0][rule][1].Pos.X) / 2,
+			(matManager.vFieldGzone[0][rule][0].Pos.Y + matManager.vFieldGzone[0][rule][2].Pos.Y) / 2, dField.gzone[0].size() * 0.01f + 0.02f));
 		driver->setTransform(irr::video::ETS_WORLD, im);
 		driver->drawVertexPrimitiveList(matManager.vActivate, 4, matManager.iRectangle, 2);
 	}
@@ -693,6 +733,18 @@ void Game::DrawMisc() {
 		if (dField.exile[0].size()) {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.exile[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
+		if (dField.order[0].size()) {
+			DrawShadowText(numFont, dataManager.GetNumString(dField.order[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		}
+		if (dField.damage[0].size()) {
+			DrawShadowText(numFont, dataManager.GetNumString(dField.damage[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		}
+		if (dField.spare[0].size()) {
+			DrawShadowText(numFont, dataManager.GetNumString(dField.spare[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		}
+		if (dField.gzone[0].size()) {
+			DrawShadowText(numFont, dataManager.GetNumString(dField.gzone[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		}
 		if (dField.remove[0].size()) {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.remove[0].size()), Resize(837, 376, 986, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
@@ -718,6 +770,18 @@ void Game::DrawMisc() {
 		}
 		if (dField.exile[1].size()) {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.exile[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		}
+		if (dField.order[1].size()) {
+			DrawShadowText(numFont, dataManager.GetNumString(dField.order[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		}
+		if (dField.damage[1].size()) {
+			DrawShadowText(numFont, dataManager.GetNumString(dField.damage[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		}
+		if (dField.spare[1].size()) {
+			DrawShadowText(numFont, dataManager.GetNumString(dField.spare[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		}
+		if (dField.gzone[1].size()) {
+			DrawShadowText(numFont, dataManager.GetNumString(dField.gzone[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.remove[1].size()) {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.remove[1].size()), Resize(420, 311, 464, 282), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);

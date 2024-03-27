@@ -230,7 +230,7 @@ bool ClientCard::client_card_sort(ClientCard* c1, ClientCard* c2) {
 			return c1->sequence < c2->sequence;
 	}
 	else {
-		if(c1->location & (LOCATION_DECK | LOCATION_GRAVE | LOCATION_REMOVED | LOCATION_EXTRA | LOCATION_EXILE)) {
+		if(c1->location & (LOCATION_DECK | LOCATION_GRAVE | LOCATION_REMOVED | LOCATION_EXTRA | LOCATION_EXILE | LOCATION_DAMAGE |LOCATION_ORDER |LOCATION_SPARE |LOCATION_GZONE )) {
 			auto it1 = std::find_if(mainGame->dField.chains.rbegin(), mainGame->dField.chains.rend(), [c1](const ChainInfo& ch) {
 				return c1 == ch.chain_card || ch.target.find(c1) != ch.target.end();
 				});

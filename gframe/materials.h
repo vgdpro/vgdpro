@@ -22,7 +22,11 @@ public:
 	//S3DVertex vBackLine[76];
 	S3DVertex vFieldDeck[2][4];
 	S3DVertex vFieldGrave[2][2][4];    //[player][rule], rule = 0: dule_rule <= 3, 1: dule_rule >= 4
-	S3DVertex vFieldExile[2][2][4];	
+	S3DVertex vFieldExile[2][2][4];
+	S3DVertex vFieldOrder[2][2][4];
+	S3DVertex vFieldDamage[2][2][4];
+	S3DVertex vFieldSpare[2][2][4];
+	S3DVertex vFieldGzone[2][2][4];	
 	S3DVertex vFieldExtra[2][4];
 	S3DVertex vFieldRemove[2][2][4];   //[player][rule]
 	S3DVertex vFieldMzone[2][7][4];    //[player][sequence]
