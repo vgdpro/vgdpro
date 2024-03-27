@@ -910,7 +910,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					break;
 				}
 				case 3: {
-					mainGame->cbCardType2->setEnabled(false);
+					mainGame->cbCardType2->setEnabled(true);
 					mainGame->cbRace->setEnabled(false);
 					mainGame->cbAttribute->setEnabled(false);
 					mainGame->ebAttack->setEnabled(false);
