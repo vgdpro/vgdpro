@@ -910,7 +910,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					break;
 				}
 				case 3: {
-					mainGame->cbCardType2->setEnabled(false);
+					mainGame->cbCardType2->setEnabled(true);
 					mainGame->cbRace->setEnabled(false);
 					mainGame->cbAttribute->setEnabled(false);
 					mainGame->ebAttack->setEnabled(false);
@@ -919,7 +919,9 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					//mainGame->ebScale->setEnabled(false);
 					mainGame->cbCardType2->clear();
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1080), 0);
-					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1070), TYPE_TRAP);
+					mainGame->cbCardType2->addItem(dataManager.GetSysString(1070), TYPE_TRAP+TYPE_COUNTER+TYPE_TOKEN);
+					mainGame->cbCardType2->addItem(dataManager.GetSysString(1072), TYPE_TRAP+TYPE_COUNTER);
+					mainGame->cbCardType2->addItem(dataManager.GetSysString(1071), TYPE_TRAP+TYPE_TOKEN);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1067), TYPE_TRAP + TYPE_CONTINUOUS);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1070), TYPE_TRAP + TYPE_COUNTER);
 					break;
@@ -1758,7 +1760,7 @@ bool DeckBuilder::CardNameContains(const wchar_t* haystack, const wchar_t* needl
 bool DeckBuilder::push_main(code_pointer pointer, int seq) {
 	// if(pointer->second.type & (TYPE_FUSION | TYPE_SYNCHRO | TYPE_XYZ | TYPE_LINK))
 	// 	return false;
-	if(pointer->second.type & (TYPE_TOKEN))
+	if(pointer->second.type & (TYPE_TOKEN | TYPE_TRAP))
 		return false;
 	auto& container = deckManager.current_deck.main;
 	int maxc = mainGame->is_siding ? 64 : 60;
@@ -1775,6 +1777,8 @@ bool DeckBuilder::push_main(code_pointer pointer, int seq) {
 bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 	// if(!(pointer->second.type & (TYPE_FUSION | TYPE_SYNCHRO | TYPE_XYZ | TYPE_LINK)))
 	// 	return false;
+	if(pointer->second.type & TYPE_TOKEN)
+		return false;
 	auto& container = deckManager.current_deck.extra;
 	int maxc = mainGame->is_siding ? 20 : 15;
 	if((int)container.size() >= maxc)
