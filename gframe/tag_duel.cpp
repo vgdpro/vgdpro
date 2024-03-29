@@ -771,7 +771,7 @@ int TagDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			player = BufferIO::ReadInt8(pbuf);
 			count = BufferIO::ReadInt8(pbuf);
 			if(pbuf[5] != LOCATION_DECK) {
-				pbuf += count * 7;
+				pbuf += count * 8;
 				NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 				NetServer::ReSendToPlayer(players[1]);
 				NetServer::ReSendToPlayer(players[2]);
@@ -779,7 +779,7 @@ int TagDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 				for(auto oit = observers.begin(); oit != observers.end(); ++oit)
 					NetServer::ReSendToPlayer(*oit);
 			} else {
-				pbuf += count * 7;
+				pbuf += count * 8;
 				NetServer::SendBufferToPlayer(cur_player[player], STOC_GAME_MSG, offset, pbuf - offset);
 			}
 			break;

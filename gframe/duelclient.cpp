@@ -2137,7 +2137,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		std::vector<ClientCard*> panel_confirm;
 		ClientCard* pcard;
 		if(mainGame->dInfo.isReplay && mainGame->dInfo.isReplaySkiping) {
-			pbuf += count * 7;
+			pbuf += count * 8;
 			return true;
 		}
 		soundManager.PlaySoundEffect(SOUND_REVEAL);
@@ -2146,7 +2146,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		for (int i = 0; i < count; ++i) {
 			code = BufferIO::ReadInt32(pbuf);
 			c = mainGame->LocalPlayer(BufferIO::ReadInt8(pbuf));
-			l = BufferIO::ReadInt8(pbuf);
+			l = BufferIO::ReadInt16(pbuf);
 			s = BufferIO::ReadInt8(pbuf);
 			pcard = mainGame->dField.GetCard(c, l, s);
 			if (code != 0)
