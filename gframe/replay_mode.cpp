@@ -725,7 +725,7 @@ bool ReplayMode::ReplayAnalyze(unsigned char* msg, unsigned int len) {
 			break;
 		}
 		case MSG_REMOVE_COUNTER: {
-			pbuf += 7;
+			pbuf += 8;
 			DuelClient::ClientAnalyze(offset, pbuf - offset);
 			break;
 		}
