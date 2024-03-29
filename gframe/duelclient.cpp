@@ -3951,11 +3951,11 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		for(int i = 0; i < val; ++i) {
 			unsigned int code = (unsigned int)BufferIO::ReadInt32(pbuf);
 			int pcc = mainGame->LocalPlayer(BufferIO::ReadInt8(pbuf));
-			int pcl = BufferIO::ReadInt8(pbuf);
+			int pcl = BufferIO::ReadInt16(pbuf);
 			int pcs = BufferIO::ReadInt8(pbuf);
 			int subs = BufferIO::ReadInt8(pbuf);
 			int cc = mainGame->LocalPlayer(BufferIO::ReadInt8(pbuf));
-			int cl = BufferIO::ReadInt8(pbuf);
+			int cl = BufferIO::ReadInt16(pbuf);
 			int cs = BufferIO::ReadInt8(pbuf);
 			int desc = BufferIO::ReadInt32(pbuf);
 			ClientCard* pcard = mainGame->dField.GetCard(pcc, pcl, pcs, subs);

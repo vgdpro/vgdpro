@@ -605,7 +605,7 @@ bool SingleMode::SinglePlayAnalyze(unsigned char* msg, unsigned int len) {
 			break;
 		}
 		case MSG_ADD_COUNTER: {
-			pbuf += 7;
+			pbuf += 8;
 			DuelClient::ClientAnalyze(offset, pbuf - offset);
 			break;
 		}
@@ -738,7 +738,7 @@ bool SingleMode::SinglePlayAnalyze(unsigned char* msg, unsigned int len) {
 				pbuf += 6;
 			}
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 15;
+			pbuf += count * 17;
 			DuelClient::ClientAnalyze(offset, pbuf - offset);
 			SinglePlayReload();
 			mainGame->gMutex.lock();
