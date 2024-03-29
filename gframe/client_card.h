@@ -64,7 +64,7 @@ public:
 	unsigned int select_seq{ 0 };
 	unsigned char owner{ PLAYER_NONE };
 	unsigned char controler{ PLAYER_NONE };
-	unsigned char location{ 0 };
+	unsigned int location{ 0 };
 	unsigned char sequence{ 0 };
 	unsigned char position{ 0 };
 	unsigned int status{ 0 };

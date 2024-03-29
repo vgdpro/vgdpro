@@ -957,15 +957,17 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 		}
 		case MSG_MOVE: {
 			pbufw = pbuf;
-			int pc = pbuf[4];
-			int pl = pbuf[5];
+			BufferIO::ReadInt32(pbuf);
+			int pc = BufferIO::ReadInt8(pbuf);
+			int pl = BufferIO::ReadInt16(pbuf);
+			BufferIO::ReadInt16(pbuf);
 			/*int ps = pbuf[6];*/
 			/*int pp = pbuf[7];*/
-			int cc = pbuf[8];
-			int cl = pbuf[9];
-			int cs = pbuf[10];
-			int cp = pbuf[11];
-			pbuf += 16;
+			int cc = BufferIO::ReadInt8(pbuf);
+			int cl = BufferIO::ReadInt16(pbuf);
+			int cs = BufferIO::ReadInt8(pbuf);
+			int cp = BufferIO::ReadInt8(pbuf);
+			pbuf += 4;
 			NetServer::SendBufferToPlayer(players[cc], STOC_GAME_MSG, offset, pbuf - offset);
 			if (!(cl & (LOCATION_GRAVE + LOCATION_OVERLAY + LOCATION_EXILE + LOCATION_ORDER + LOCATION_DAMAGE + LOCATION_SPARE + LOCATION_GZONE)) && ((cl & (LOCATION_DECK + LOCATION_HAND)) || (cp & POS_FACEDOWN)))
 				BufferIO::WriteInt32(pbufw, 0);
