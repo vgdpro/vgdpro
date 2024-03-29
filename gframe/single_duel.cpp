@@ -588,6 +588,12 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 	while (pbuf - msgbuffer < (int)len) {
 		offset = pbuf;
 		unsigned char engType = BufferIO::ReadUInt8(pbuf);
+		FILE *fp = fopen("error.log", "at");
+		// for(int i = 0; i < len; ++i) {
+		// 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
+		// }
+		fprintf(fp, "%d\n", (int *)engType);
+		fclose(fp);
 		switch (engType) {
 		case MSG_RETRY: {
 			WaitforResponse(last_response);
@@ -650,9 +656,9 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 		case MSG_SELECT_BATTLECMD: {
 			player = BufferIO::ReadInt8(pbuf);
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 11;
+			pbuf += count * 12;
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 8 + 2;
+			pbuf += count * 9 + 2;
 			RefreshMzone(0);
 			RefreshMzone(1);
 			RefreshSzone(0);
@@ -666,17 +672,17 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 		case MSG_SELECT_IDLECMD: {
 			player = BufferIO::ReadInt8(pbuf);
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 7;
+			pbuf += count * 8;
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 7;
+			pbuf += count * 8;
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 7;
+			pbuf += count * 8;
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 7;
+			pbuf += count * 8;
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 7;
+			pbuf += count * 8;
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 11 + 3;
+			pbuf += count * 12 + 3;
 			RefreshMzone(0);
 			RefreshMzone(1);
 			RefreshSzone(0);
@@ -689,7 +695,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 		}
 		case MSG_SELECT_EFFECTYN: {
 			player = BufferIO::ReadInt8(pbuf);
-			pbuf += 12;
+			pbuf += 13;
 			WaitforResponse(player);
 			NetServer::SendBufferToPlayer(players[player], STOC_GAME_MSG, offset, pbuf - offset);
 			return 1;
@@ -719,7 +725,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 				pbufw = pbuf;
 				/*code = */BufferIO::ReadInt32(pbuf);
 				c = BufferIO::ReadInt8(pbuf);
-				/*l = */BufferIO::ReadInt8(pbuf);
+				/*l = */BufferIO::ReadInt16(pbuf);
 				/*s = */BufferIO::ReadInt8(pbuf);
 				/*ss = */BufferIO::ReadInt8(pbuf);
 				if (c != player) BufferIO::WriteInt32(pbufw, 0);
@@ -737,7 +743,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 				pbufw = pbuf;
 				/*code = */BufferIO::ReadInt32(pbuf);
 				c = BufferIO::ReadInt8(pbuf);
-				/*l = */BufferIO::ReadInt8(pbuf);
+				/*l = */BufferIO::ReadInt16(pbuf);
 				/*s = */BufferIO::ReadInt8(pbuf);
 				/*ss = */BufferIO::ReadInt8(pbuf);
 				if (c != player) BufferIO::WriteInt32(pbufw, 0);
@@ -747,7 +753,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 				pbufw = pbuf;
 				/*code = */BufferIO::ReadInt32(pbuf);
 				c = BufferIO::ReadInt8(pbuf);
-				/*l = */BufferIO::ReadInt8(pbuf);
+				/*l = */BufferIO::ReadInt16(pbuf);
 				/*s = */BufferIO::ReadInt8(pbuf);
 				/*ss = */BufferIO::ReadInt8(pbuf);
 				if (c != player) BufferIO::WriteInt32(pbufw, 0);
@@ -759,7 +765,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 		case MSG_SELECT_CHAIN: {
 			player = BufferIO::ReadInt8(pbuf);
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += 10 + count * 13;
+			pbuf += 10 + count * 14;
 			WaitforResponse(player);
 			NetServer::SendBufferToPlayer(players[player], STOC_GAME_MSG, offset, pbuf - offset);
 			return 1;
@@ -783,7 +789,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			player = BufferIO::ReadInt8(pbuf);
 			pbuf += 4;
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 9;
+			pbuf += count * 10;
 			WaitforResponse(player);
 			NetServer::SendBufferToPlayer(players[player], STOC_GAME_MSG, offset, pbuf - offset);
 			return 1;
@@ -793,9 +799,9 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			player = BufferIO::ReadInt8(pbuf);
 			pbuf += 6;
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 11;
+			pbuf += count * 12;
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 11;
+			pbuf += count * 12;
 			WaitforResponse(player);
 			NetServer::SendBufferToPlayer(players[player], STOC_GAME_MSG, offset, pbuf - offset);
 			return 1;
@@ -803,7 +809,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 		case MSG_SORT_CARD: {
 			player = BufferIO::ReadInt8(pbuf);
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 7;
+			pbuf += count * 8;
 			WaitforResponse(player);
 			NetServer::SendBufferToPlayer(players[player], STOC_GAME_MSG, offset, pbuf - offset);
 			return 1;
@@ -908,9 +914,9 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			break;
 		}
 		case MSG_SHUFFLE_SET_CARD: {
-			int loc = BufferIO::ReadInt8(pbuf);
+			int loc = BufferIO::ReadInt16(pbuf);
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 8;
+			pbuf += count * 10;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -979,12 +985,12 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			break;
 		}
 		case MSG_POS_CHANGE: {
-			int cc = pbuf[4];
-			int cl = pbuf[5];
-			int cs = pbuf[6];
-			int pp = pbuf[7];
-			int cp = pbuf[8];
-			pbuf += 9;
+			BufferIO::ReadInt32(pbuf);
+			int cc = BufferIO::ReadInt8(pbuf);
+			int cl = BufferIO::ReadInt16(pbuf);
+			int cs = BufferIO::ReadInt8(pbuf);
+			int pp = BufferIO::ReadInt8(pbuf);
+			int cp = BufferIO::ReadInt8(pbuf);
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -995,7 +1001,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 		}
 		case MSG_SET: {
 			BufferIO::WriteInt32(pbuf, 0);
-			pbuf += 4;
+			pbuf += 5;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -1003,13 +1009,16 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			break;
 		}
 		case MSG_SWAP: {
-			int c1 = pbuf[4];
-			int l1 = pbuf[5];
-			int s1 = pbuf[6];
-			int c2 = pbuf[12];
-			int l2 = pbuf[13];
-			int s2 = pbuf[14];
-			pbuf += 16;
+			BufferIO::ReadInt32(pbuf);
+			int c1 = BufferIO::ReadInt8(pbuf);
+			int l1 = BufferIO::ReadInt16(pbuf);
+			int s1 = BufferIO::ReadInt8(pbuf);
+			BufferIO::ReadInt32(pbuf);
+			BufferIO::ReadInt8(pbuf);
+			int c2 = BufferIO::ReadInt8(pbuf);
+			int l2 = BufferIO::ReadInt16(pbuf);
+			int s2 = BufferIO::ReadInt8(pbuf);
+			BufferIO::ReadInt8(pbuf);
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -1027,7 +1036,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			break;
 		}
 		case MSG_SUMMONING: {
-			pbuf += 8;
+			pbuf += 9;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -1046,7 +1055,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			break;
 		}
 		case MSG_SPSUMMONING: {
-			pbuf += 8;
+			pbuf += 9;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -1065,8 +1074,9 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			break;
 		}
 		case MSG_FLIPSUMMONING: {
-			RefreshSingle(pbuf[4], pbuf[5], pbuf[6]);
-			pbuf += 8;
+			BufferIO::ReadInt32(pbuf);
+			RefreshSingle(BufferIO::ReadInt8(pbuf), BufferIO::ReadInt16(pbuf), BufferIO::ReadInt8(pbuf));
+			pbuf += 1;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -1085,7 +1095,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			break;
 		}
 		case MSG_CHAINING: {
-			pbuf += 16;
+			pbuf += 18;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -1166,7 +1176,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 		case MSG_RANDOM_SELECTED: {
 			player = BufferIO::ReadInt8(pbuf);
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 4;
+			pbuf += count * 5;
 			NetServer::SendBufferToPlayer(players[player], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -1216,7 +1226,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			break;
 		}
 		case MSG_EQUIP: {
-			pbuf += 8;
+			pbuf += 10;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -1240,7 +1250,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			break;
 		}
 		case MSG_CARD_TARGET: {
-			pbuf += 8;
+			pbuf += 10;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -1248,7 +1258,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			break;
 		}
 		case MSG_CANCEL_TARGET: {
-			pbuf += 8;
+			pbuf += 10;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -1280,7 +1290,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			break;
 		}
 		case MSG_ATTACK: {
-			pbuf += 8;
+			pbuf += 10;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -1288,7 +1298,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			break;
 		}
 		case MSG_BATTLE: {
-			pbuf += 26;
+			pbuf += 28;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
@@ -1322,7 +1332,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 		}
 		case MSG_MISSED_EFFECT: {
 			player = pbuf[0];
-			pbuf += 8;
+			pbuf += 9;
 			NetServer::SendBufferToPlayer(players[player], STOC_GAME_MSG, offset, pbuf - offset);
 			break;
 		}
@@ -1384,7 +1394,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			return 1;
 		}
 		case MSG_CARD_HINT: {
-			pbuf += 9;
+			pbuf += 10;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
