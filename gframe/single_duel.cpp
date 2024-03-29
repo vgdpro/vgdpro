@@ -821,7 +821,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 		case MSG_CONFIRM_EXTRATOP: {
 			player = BufferIO::ReadInt8(pbuf);
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 7;
+			pbuf += count * 8;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			for (auto oit = observers.begin(); oit != observers.end(); ++oit)

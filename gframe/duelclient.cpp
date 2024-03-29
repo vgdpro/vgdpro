@@ -2100,7 +2100,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		mainGame->dField.selectable_cards.clear();
 		for (int i = 0; i < count; ++i) {
 			code = BufferIO::ReadInt32(pbuf);
-			pbuf += 3;
+			pbuf += 4;
 			pcard = *(mainGame->dField.extra[player].rbegin() + i + mainGame->dField.extra_p_count[player]);
 			if (code != 0)
 				pcard->SetCode(code);
