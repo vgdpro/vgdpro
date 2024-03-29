@@ -3062,12 +3062,12 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		//soundManager.PlaySoundEffect(SOUND_TARGET);
 		int count = BufferIO::ReadInt8(pbuf);
 		if(mainGame->dInfo.isReplay && mainGame->dInfo.isReplaySkiping) {
-			pbuf += count * 4;
+			pbuf += count * 5;
 			return true;
 		}
 		for (int i = 0; i < count; ++i) {
 			int c = mainGame->LocalPlayer(BufferIO::ReadInt8(pbuf));
-			int l = BufferIO::ReadInt8(pbuf);
+			int l = BufferIO::ReadUInt16(pbuf);
 			int s = BufferIO::ReadInt8(pbuf);
 			/*int ss = */BufferIO::ReadInt8(pbuf);
 			ClientCard* pcard = mainGame->dField.GetCard(c, l, s);

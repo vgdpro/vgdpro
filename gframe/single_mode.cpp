@@ -553,7 +553,7 @@ bool SingleMode::SinglePlayAnalyze(unsigned char* msg, unsigned int len) {
 		}
 		case MSG_BECOME_TARGET: {
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 4;
+			pbuf += count * 5;
 			DuelClient::ClientAnalyze(offset, pbuf - offset);
 			break;
 		}
