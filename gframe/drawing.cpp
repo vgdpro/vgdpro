@@ -728,7 +728,7 @@ void Game::DrawMisc() {
 		}
 	} else {
 		if (dField.grave[0].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.grave[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+			DrawShadowText(numFont, dataManager.GetNumString(dField.grave[0].size()), Resize(904, 563, 1025, 553), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.exile[0].size()) {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.exile[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
@@ -746,7 +746,7 @@ void Game::DrawMisc() {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.gzone[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.remove[0].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.remove[0].size()), Resize(837, 376, 986, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+			DrawShadowText(numFont, dataManager.GetNumString(dField.remove[0].size()), Resize(845, 376, 981, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 	}
 	if(dField.extra[1].size()) {
