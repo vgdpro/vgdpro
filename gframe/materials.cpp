@@ -237,17 +237,17 @@ Materials::Materials() {
 	SetS3DVertex(vFieldExile[0][1], 7.85f, 0.1f, 8.7f, 1.3f, 0, 1, 0, 0, 0, 0);
 	SetS3DVertex(vFieldExile[1][1], 0.05f, -0.1f, -0.8f, -1.3f, 0, 1, 0, 0, 0, 0);
 	//order
-	SetS3DVertex(vFieldOrder[0][1], 2.0f, 1.4f, 1.2f, 2.6f, 0, 1, 0, 0, 0, 0);
-	SetS3DVertex(vFieldOrder[1][1], 5.9f, -1.4f, 6.75f, -2.6f, 0, 1, 0, 0, 0, 0);
+	SetS3DVertex(vFieldOrder[0][1], 1.2f, 1.4f, 2.0f, 2.6f, 0, 1, 0, 0, 0, 0);
+	SetS3DVertex(vFieldOrder[1][1], 6.75f, -1.4f, 5.9f, -2.6f, 0, 1, 0, 0, 0, 0);
 	//Damage
 	SetS3DVertex(vFieldDamage[0][1], 0.2f, 2.7f, 1.0f, 3.9f, 0, 1, 0, 0, 0, 0);
 	SetS3DVertex(vFieldDamage[1][1], 7.7f, -2.7f, 6.9f, -3.9f, 0, 1, 0, 0, 0, 0);
 	//spare
-	SetS3DVertex(vFieldSpare[0][1], 0.05f, 1.4f, -0.8f, 2.6f, 0, 1, 0, 0, 0, 0);
-	SetS3DVertex(vFieldSpare[1][1], 7.85f, -1.4f, 8.7f, -2.6f, 0, 1, 0, 0, 0, 0);
+	SetS3DVertex(vFieldSpare[0][1], -0.8f, 1.4f, 0.05f, 2.6f, 0, 1, 0, 0, 0, 0);
+	SetS3DVertex(vFieldSpare[1][1], 8.7f, -1.4f, 7.85f, -2.6f, 0, 1, 0, 0, 0, 0);
 	//Gzone
 	SetS3DVertex(vFieldGzone[0][1], 3.4f, 0.6f, 4.5f, -0.6f, 0, 1, 0, 0, 0, 0);
-	SetS3DVertex(vFieldGzone[1][1], 3.4f, 0.6f, 4.5f, -0.6f, 0, 1, 0, 0, 0, 0);
+	SetS3DVertex(vFieldGzone[1][1], 4.5f, 0.6f, 3.4f, -0.6f, 0, 1, 0, 0, 0, 0);
 	//extra
 	SetS3DVertex(vFieldExtra[0], 6.9f, 1.4f, 7.7f, 2.6f, 0, 1, 0, 0, 0, 0);
 	SetS3DVertex(vFieldExtra[1], 1.0f, -1.4f, 0.2f, -2.6f, 0, 1, 0, 0, 0, 0);
@@ -258,7 +258,7 @@ Materials::Materials() {
 	SetS3DVertex(vFieldSzone[0][2][1], 0.2f, 1.4f, 1.0f, 2.6f, 0, 1, 0, 0, 0, 0);
 	SetS3DVertex(vFieldSzone[1][2][1], 7.7f, -1.4f, 6.9f, -2.6f, 0, 1, 0, 0, 0, 0);
 	//field
-	SetS3DVertex(vFieldSzone[0][5][1],5.9f, 0.1f, 6.75f, 1.3f, 0, 1, 0, 0, 0, 0);
+	SetS3DVertex(vFieldSzone[0][5][1], 5.9f, 0.1f, 6.75f, 1.3f, 0, 1, 0, 0, 0, 0);
 	SetS3DVertex(vFieldSzone[1][5][1], 2.0f, -0.1f, 1.2f, -1.3f, 0, 1, 0, 0, 0, 0);
 
 	//LScale
