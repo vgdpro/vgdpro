@@ -2543,10 +2543,9 @@ void ClientField::GetHoverField(int x, int y) {
 				hovered_controler = 1;
 				hovered_location = LOCATION_MZONE;
 				hovered_sequence = 4 - (sequence + 1);
-			} else if(boardy >= matManager.vFieldGzone[1][rule][2].Pos.Y && boardy <= matManager.vFieldGzone[1][rule][0].Pos.Y) {
-				hovered_controler = 1;
-				hovered_location = LOCATION_MZONE;
-				hovered_sequence = 4 - (sequence + 1);
+			} else if(boardy >= matManager.vFieldGzone[0][rule][0].Pos.Y && boardy <= matManager.vFieldGzone[0][rule][2].Pos.Y) {
+				hovered_controler = 0;
+				hovered_location = LOCATION_GZONE;
 			} 
 		}
 	}
