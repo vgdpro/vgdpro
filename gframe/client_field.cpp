@@ -1291,13 +1291,25 @@ void ClientField::GetCardLocation(ClientCard* pcard, irr::core::vector3df* t, ir
 		t->Y = (matManager.vFieldDamage[controler][rule][0].Pos.Y + matManager.vFieldDamage[controler][rule][2].Pos.Y) / 2;
 		t->Z = 0.01f + 0.01f * sequence;
 		if (controler == 0) {
-			r->X = 0.0f;
-			r->Y = 0.0f;
-			r->Z = 0.0f;
+			if(pcard->position & POS_FACEUP) {
+				r->X = 0.0f;
+				r->Y = 0.0f;
+				r->Z = 0.0f;
+			} else {
+				r->X = 0.0f;
+				r->Y = 3.1415926f;
+				r->Z = 0.0f;
+			}
 		} else {
-			r->X = 0.0f;
-			r->Y = 0.0f;
-			r->Z = 3.1415926f;
+			if(pcard->position & POS_FACEUP) {
+				r->X = 0.0f;
+				r->Y = 0.0f;
+				r->Z = 3.1415926f;
+			} else {
+				r->X = 0.0f;
+				r->Y = 3.1415926f;
+				r->Z = 3.1415926f;
+			}
 		}
 		break;
 	}
@@ -1306,13 +1318,25 @@ void ClientField::GetCardLocation(ClientCard* pcard, irr::core::vector3df* t, ir
 		t->Y = (matManager.vFieldSpare[controler][rule][0].Pos.Y + matManager.vFieldSpare[controler][rule][2].Pos.Y) / 2;
 		t->Z = 0.01f + 0.01f * sequence;
 		if (controler == 0) {
-			r->X = 0.0f;
-			r->Y = 0.0f;
-			r->Z = 0.0f;
+			if(pcard->position & POS_FACEUP) {
+				r->X = 0.0f;
+				r->Y = 0.0f;
+				r->Z = 0.0f;
+			} else {
+				r->X = 0.0f;
+				r->Y = 3.1415926f;
+				r->Z = 0.0f;
+			}
 		} else {
-			r->X = 0.0f;
-			r->Y = 0.0f;
-			r->Z = 3.1415926f;
+			if(pcard->position & POS_FACEUP) {
+				r->X = 0.0f;
+				r->Y = 0.0f;
+				r->Z = 3.1415926f;
+			} else {
+				r->X = 0.0f;
+				r->Y = 3.1415926f;
+				r->Z = 3.1415926f;
+			}
 		}
 		break;
 	}
