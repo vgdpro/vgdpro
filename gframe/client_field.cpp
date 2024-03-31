@@ -65,7 +65,10 @@ ClientField::~ClientField() {
 			delete card;
 		}
 		remove[i].clear();
-
+		for (auto& card : emblem[i]) {
+			delete card;
+		}
+		emblem[i].clear();
 		for (auto& card : extra[i]) {
 			delete card;
 		}
@@ -112,6 +115,9 @@ void ClientField::Clear() {
 		for(auto cit = gzone[i].begin(); cit != gzone[i].end(); ++cit)
 			delete *cit;
 		gzone[i].clear();
+		for(auto cit = emblem[i].begin(); cit != emblem[i].end(); ++cit)
+			delete *cit;
+		emblem[i].clear();
 		for(auto cit = remove[i].begin(); cit != remove[i].end(); ++cit)
 			delete *cit;
 		remove[i].clear();
@@ -150,6 +156,7 @@ void ClientField::Clear() {
 	damage_act = false;
 	spare_act = false;
 	gzone_act = false;
+	emblem_act = false;
 	remove_act = false;
 	extra_act = false;
 	pzone_act[0] = false;
@@ -559,6 +566,7 @@ void ClientField::ClearCommandFlag() {
 	damage_act = false;
 	spare_act = false;
 	gzone_act = false;
+	emblem_act = false;
 	remove_act = false;
 	pzone_act[0] = false;
 	pzone_act[1] = false;
@@ -597,6 +605,7 @@ void ClientField::ClearChainSelect() {
 	damage_act = false;
 	spare_act = false;
 	gzone_act = false;
+	emblem_act = false;
 	remove_act = false;
 	extra_act = false;
 	conti_act = false;
@@ -893,6 +902,7 @@ void ClientField::ReplaySwap() {
 	std::swap(damage[0], damage[1]);
 	std::swap(spare[0], spare[1]);
 	std::swap(gzone[0], gzone[1]);
+	std::swap(emblem[0], emblem[1]);
 	std::swap(remove[0], remove[1]);
 	std::swap(extra[0], extra[1]);
 	std::swap(extra_p_count[0], extra_p_count[1]);
@@ -947,6 +957,11 @@ void ClientField::ReplaySwap() {
 			(*cit)->is_moving = false;
 		}
 		for(auto cit = gzone[p].begin(); cit != gzone[p].end(); ++cit) {
+			(*cit)->controler = 1 - (*cit)->controler;
+			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
+			(*cit)->is_moving = false;
+		}
+		for(auto cit = emblem[p].begin(); cit != emblem[p].end(); ++cit) {
 			(*cit)->controler = 1 - (*cit)->controler;
 			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
 			(*cit)->is_moving = false;
@@ -1022,6 +1037,10 @@ void ClientField::RefreshAllCards() {
 			(*cit)->is_moving = false;
 		}
 		for(auto cit = gzone[p].begin(); cit != gzone[p].end(); ++cit) {
+			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
+			(*cit)->is_moving = false;
+		}
+		for(auto cit = emblem[p].begin(); cit != emblem[p].end(); ++cit) {
 			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
 			(*cit)->is_moving = false;
 		}
@@ -1266,6 +1285,9 @@ void ClientField::GetCardLocation(ClientCard* pcard, irr::core::vector3df* t, ir
 			if (pcard->position & POS_FACEDOWN)
 				r->Y = 3.1415926f;
 			else r->Y = 0.0f;
+		}
+		if(sequence == 2){
+			t->Z =0.01f + 0.01f * order[controler].size();
 		}
 		break;
 	}
