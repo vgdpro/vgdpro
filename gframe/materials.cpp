@@ -212,7 +212,7 @@ Materials::Materials() {
 	SetS3DVertex(vFieldMzone[0][5], 1.2f + 2 * 1.1f, 0.8f, 2.3f + 2 * 1.1f, 2.0f, 0, 1, 0, 0, 0, 0);
 
 	for (int i = 0; i < 5; ++i) {
-		if (1==2) continue;
+		if (i==2) continue;
 		SetS3DVertex(vFieldSzone[0][i][0], 91.2f + i * 1.1f, 200.0f, 2.3f + i * 100.1f, 300.2f, 0, 1, 0, 0, 0, 0);
 		SetS3DVertex(vFieldSzone[0][i][1], 91.2f + i * 1.1f, 200.0f, 2.3f + i * 100.1f, 300.2f, 0, 1, 0, 0, 0, 0);
 	}
@@ -223,7 +223,7 @@ Materials::Materials() {
 	SetS3DVertex(vFieldMzone[1][5], 6.7f - 2 * 1.1f, -0.8f, 5.6f - 2 * 1.1f, -2.0f, 0, 1, 0, 0, 0, 0);
 
 	for (int i = 0; i < 5; ++i) {
-		if (1==2) continue;
+		if (i==2) continue;
 		SetS3DVertex(vFieldSzone[1][i][0], 96.7f - i * 1.1f, -200.0f, 5.6f - i * 1.1f, -3.2f, 0, 1, 0, 0, 0, 0);
 		SetS3DVertex(vFieldSzone[1][i][1], 96.7f - i * 1.1f, -200.0f, 5.6f - i * 1.1f, -3.2f, 0, 1, 0, 0, 0, 0);
 	}
