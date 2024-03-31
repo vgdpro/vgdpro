@@ -2449,7 +2449,51 @@ void ClientField::GetHoverField(int x, int y) {
 				hovered_controler = 1;
 				hovered_location = LOCATION_DAMAGE;
 			}
-		} if(boardx >= matManager.vFieldExtra[1][1].Pos.X && boardx <= matManager.vFieldExtra[1][0].Pos.X) {
+		} if (boardx >= matManager.vFieldMzone[0][0][0].Pos.X && boardx <= matManager.vFieldMzone[0][4][1].Pos.X) {
+			int sequence = (boardx - matManager.vFieldMzone[0][0][0].Pos.X) / (matManager.vFieldMzone[0][0][1].Pos.X - matManager.vFieldMzone[0][0][0].Pos.X);
+			if (sequence > 4)
+				sequence = 4;
+			if (boardy >= matManager.vFieldMzone[0][0][0].Pos.Y && boardy <= matManager.vFieldMzone[0][0][2].Pos.Y) {
+				hovered_controler = 0;
+				hovered_location = LOCATION_MZONE;
+				if (sequence == 0) {
+					hovered_sequence = 0;
+				}
+				else if (sequence == 2) {
+					hovered_sequence = 4;
+				}
+				else if (sequence == 1) {
+					hovered_sequence = 5;
+				}
+			}
+			else if (boardy >= matManager.vFieldMzone[0][1][0].Pos.Y && boardy <= matManager.vFieldMzone[0][1][2].Pos.Y) {
+				hovered_controler = 0;
+				hovered_location = LOCATION_MZONE;
+				hovered_sequence = sequence + 1;
+			}
+			else if (boardy >= matManager.vFieldMzone[1][0][2].Pos.Y && boardy <= matManager.vFieldMzone[1][0][0].Pos.Y) {
+				hovered_controler = 1;
+				hovered_location = LOCATION_MZONE;
+				if (sequence == 0) {
+					hovered_sequence = 4;
+				}
+				else if (sequence == 2) {
+					hovered_sequence = 0;
+				}
+				else if (sequence == 1) {
+					hovered_sequence = 5;
+				}
+			}
+			else if (boardy >= matManager.vFieldMzone[1][1][2].Pos.Y && boardy <= matManager.vFieldMzone[1][1][0].Pos.Y) {
+				hovered_controler = 1;
+				hovered_location = LOCATION_MZONE;
+				hovered_sequence = 4 - (sequence + 1);
+			}
+			else if (boardy >= matManager.vFieldGzone[0][rule][0].Pos.Y && boardy <= matManager.vFieldGzone[0][rule][2].Pos.Y && boardx >= 3.4f && boardx <= 4.5f) {
+				hovered_controler = 0;
+				hovered_location = LOCATION_GZONE;
+			}
+		} else if(boardx >= matManager.vFieldExtra[1][1].Pos.X && boardx <= matManager.vFieldExtra[1][0].Pos.X) {
 			if(boardy >= matManager.vFieldExtra[1][2].Pos.Y && boardy <= matManager.vFieldExtra[1][0].Pos.Y) {
 				hovered_controler = 1;
 				hovered_location = LOCATION_EXTRA;
@@ -2511,42 +2555,6 @@ void ClientField::GetHoverField(int x, int y) {
 				hovered_controler = 1;
 				hovered_location = LOCATION_SPARE;
 			}
-		} else if(boardx >= matManager.vFieldMzone[0][0][0].Pos.X && boardx <= matManager.vFieldMzone[0][4][1].Pos.X) {
-			int sequence = (boardx - matManager.vFieldMzone[0][0][0].Pos.X) / (matManager.vFieldMzone[0][0][1].Pos.X - matManager.vFieldMzone[0][0][0].Pos.X);
-			if(sequence > 4)
-				sequence = 4;
-			if(boardy >= matManager.vFieldMzone[0][0][0].Pos.Y && boardy <= matManager.vFieldMzone[0][0][2].Pos.Y) {
-				hovered_controler = 0;
-				hovered_location = LOCATION_MZONE;
-				if(sequence == 0){
-					hovered_sequence = 0;
-				} else if(sequence == 2){
-					hovered_sequence = 4;
-				} else if(sequence == 1){
-					hovered_sequence = 5;
-				} 
-			} else if(boardy >= matManager.vFieldMzone[0][1][0].Pos.Y && boardy <= matManager.vFieldMzone[0][1][2].Pos.Y) {
-				hovered_controler = 0;
-				hovered_location = LOCATION_MZONE;
-				hovered_sequence = sequence + 1;
-			} else if(boardy >= matManager.vFieldMzone[1][0][2].Pos.Y && boardy <= matManager.vFieldMzone[1][0][0].Pos.Y) {
-				hovered_controler = 1;
-				hovered_location = LOCATION_MZONE;
-				if(sequence == 0){
-					hovered_sequence = 4;
-				} else if(sequence == 2){
-					hovered_sequence = 0;
-				} else if(sequence == 1){
-					hovered_sequence = 5;
-				}
-			} else if(boardy >= matManager.vFieldMzone[1][1][2].Pos.Y && boardy <= matManager.vFieldMzone[1][1][0].Pos.Y) {
-				hovered_controler = 1;
-				hovered_location = LOCATION_MZONE;
-				hovered_sequence = 4 - (sequence + 1);
-			} else if(boardy >= matManager.vFieldGzone[0][rule][0].Pos.Y && boardy <= matManager.vFieldGzone[0][rule][2].Pos.Y) {
-				hovered_controler = 0;
-				hovered_location = LOCATION_GZONE;
-			} 
 		}
 	}
 }
