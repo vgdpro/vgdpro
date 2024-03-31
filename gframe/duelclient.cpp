@@ -2627,7 +2627,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 					pcard->position = cp;
 					mainGame->dField.AddCard(pcard, cc, cl, cs);
 					mainGame->gMutex.unlock();
-					if (pl == cl && pc == cc && (cl & 0x7C71)) {
+					if (pl == cl && pc == cc && (cl & 0xFC71)) {
 						pcard->dPos = irr::core::vector3df(-0.3f, 0, 0);
 						pcard->dRot = irr::core::vector3df(0, 0, 0);
 						if (pc == 1) pcard->dPos.X = 0.3f;
@@ -2674,7 +2674,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 				pcard->is_showequip = false;
 				pcard->is_showtarget = false;
 				pcard->is_showchaintarget = false;
-				ClientCard* olcard = mainGame->dField.GetCard(cc, cl & 0x7C7F, cs);
+				ClientCard* olcard = mainGame->dField.GetCard(cc, cl & 0xFC7F, cs);
 				if(mainGame->dInfo.isReplay && mainGame->dInfo.isReplaySkiping) {
 					mainGame->dField.RemoveCard(pc, pl, ps);
 					olcard->overlayed.push_back(pcard);
@@ -2702,7 +2702,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 					}
 				}
 			} else if (!(cl & LOCATION_OVERLAY)) {
-				ClientCard* olcard = mainGame->dField.GetCard(pc, pl & 0x7c7f, ps);
+				ClientCard* olcard = mainGame->dField.GetCard(pc, pl & 0xFC7f, ps);
 				ClientCard* pcard = olcard->overlayed[pp];
 				if(mainGame->dInfo.isReplay && mainGame->dInfo.isReplaySkiping) {
 					olcard->overlayed.erase(olcard->overlayed.begin() + pcard->sequence);
@@ -2731,9 +2731,9 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 					mainGame->WaitFrameSignal(5);
 				}
 			} else {
-				ClientCard* olcard1 = mainGame->dField.GetCard(pc, pl & 0x7c7f, ps);
+				ClientCard* olcard1 = mainGame->dField.GetCard(pc, pl & 0xfc7f, ps);
 				ClientCard* pcard = olcard1->overlayed[pp];
-				ClientCard* olcard2 = mainGame->dField.GetCard(cc, cl & 0x7c7f, cs);
+				ClientCard* olcard2 = mainGame->dField.GetCard(cc, cl & 0xfc7f, cs);
 				if(mainGame->dInfo.isReplay && mainGame->dInfo.isReplaySkiping) {
 					olcard1->overlayed.erase(olcard1->overlayed.begin() + pcard->sequence);
 					olcard2->overlayed.push_back(pcard);

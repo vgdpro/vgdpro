@@ -1862,7 +1862,7 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 					SetShowMark(mcard, true);
 					if(mcard->code) {
 						mainGame->ShowCardInfo(mcard->code);
-						if(mcard->location & 0xe) {
+						if(mcard->location & 0xC7BE) {
 							std::wstring str;
 							myswprintf(formatBuffer, L"%ls", dataManager.GetName(mcard->code));
 							str.append(formatBuffer);
@@ -2489,9 +2489,14 @@ void ClientField::GetHoverField(int x, int y) {
 				hovered_location = LOCATION_MZONE;
 				hovered_sequence = 4 - (sequence + 1);
 			}
-			else if (boardy >= matManager.vFieldGzone[0][rule][0].Pos.Y && boardy <= matManager.vFieldGzone[0][rule][2].Pos.Y && boardx >= 3.4f && boardx <= 4.5f) {
-				hovered_controler = 0;
-				hovered_location = LOCATION_GZONE;
+			else if (boardy >= matManager.vFieldGzone[0][rule][0].Pos.Y && boardy <= matManager.vFieldGzone[0][rule][2].Pos.Y) {
+				if(sequence == 1){
+					hovered_controler = 0;
+					if(gzone[1].size()>0){
+						hovered_controler = 1;
+					}
+					hovered_location = LOCATION_GZONE;
+				}
 			}
 		} else if(boardx >= matManager.vFieldExtra[1][1].Pos.X && boardx <= matManager.vFieldExtra[1][0].Pos.X) {
 			if(boardy >= matManager.vFieldExtra[1][2].Pos.Y && boardy <= matManager.vFieldExtra[1][0].Pos.Y) {
