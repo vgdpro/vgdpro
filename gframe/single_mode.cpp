@@ -837,6 +837,8 @@ void SingleMode::SinglePlayReload() {
 	ReloadLocation(1, LOCATION_EXILE, flag, queryBuffer);
 	ReloadLocation(0, LOCATION_ORDER, flag, queryBuffer);
 	ReloadLocation(1, LOCATION_ORDER, flag, queryBuffer);
+	ReloadLocation(0, LOCATION_EMBLEM, flag, queryBuffer);
+	ReloadLocation(1, LOCATION_EMBLEM, flag, queryBuffer);
 	ReloadLocation(0, LOCATION_DAMAGE, flag, queryBuffer);
 	ReloadLocation(1, LOCATION_DAMAGE, flag, queryBuffer);
 	ReloadLocation(0, LOCATION_SPARE, flag, queryBuffer);

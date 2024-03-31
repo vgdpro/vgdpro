@@ -202,6 +202,8 @@ void Game::DrawBackGround() {
 			vertex = matManager.vFieldExile[dField.hovered_controler][rule];
 		else if (dField.hovered_location == LOCATION_ORDER)
 			vertex = matManager.vFieldOrder[dField.hovered_controler][rule];
+		else if (dField.hovered_location == LOCATION_EMBLEM)
+			vertex = matManager.vFieldEmblem[dField.hovered_controler][rule];
 		else if (dField.hovered_location == LOCATION_DAMAGE)
 			vertex = matManager.vFieldDamage[dField.hovered_controler][rule];
 		else if (dField.hovered_location == LOCATION_SPARE)

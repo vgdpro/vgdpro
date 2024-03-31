@@ -427,6 +427,12 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 								selectable_cards.push_back(order[command_controler][i]);
 						break;
 					}
+					case LOCATION_EMBLEM: {
+						for(size_t i = 0; i < emblem[command_controler].size(); ++i)
+							if(emblem[command_controler][i]->cmdFlag & COMMAND_ACTIVATE)
+								selectable_cards.push_back(emblem[command_controler][i]);
+						break;
+					}
 					case LOCATION_DAMAGE: {
 						for(size_t i = 0; i < damage[command_controler].size(); ++i)
 							if(damage[command_controler][i]->cmdFlag & COMMAND_ACTIVATE)
@@ -655,6 +661,13 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 					for(int32 i = (int32)order[command_controler].size() - 1; i >= 0 ; --i)
 						selectable_cards.push_back(order[command_controler][i]);
 					myswprintf(formatBuffer, L"%ls(%d)", dataManager.GetSysString(1004), order[command_controler].size());
+					mainGame->wCardSelect->setText(formatBuffer);
+					break;
+				}
+				case LOCATION_EMBLEM: {
+					for(int32 i = (int32)emblem[command_controler].size() - 1; i >= 0 ; --i)
+						selectable_cards.push_back(emblem[command_controler][i]);
+					myswprintf(formatBuffer, L"%ls(%d)", dataManager.GetSysString(1004), emblem[command_controler].size());
 					mainGame->wCardSelect->setText(formatBuffer);
 					break;
 				}
@@ -1015,7 +1028,7 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 							mainGame->stCardPos[i]->setBackgroundColor(0xffd0d0d0);
 						else
 							mainGame->stCardPos[i]->setBackgroundColor(0xffffffff);
-					} else if(selectable_cards[i + pos]->location == LOCATION_DECK || selectable_cards[i + pos]->location == LOCATION_EXTRA || selectable_cards[i + pos]->location == LOCATION_REMOVED || selectable_cards[i + pos]->location == LOCATION_EXILE || selectable_cards[i + pos]->location == LOCATION_ORDER || selectable_cards[i + pos]->location == LOCATION_DAMAGE || selectable_cards[i + pos]->location == LOCATION_SPARE || selectable_cards[i + pos]->location == LOCATION_GZONE) {
+					} else if(selectable_cards[i + pos]->location == LOCATION_DECK || selectable_cards[i + pos]->location == LOCATION_EXTRA || selectable_cards[i + pos]->location == LOCATION_REMOVED || selectable_cards[i + pos]->location == LOCATION_EXILE || selectable_cards[i + pos]->location == LOCATION_ORDER || selectable_cards[i + pos]->location == LOCATION_EMBLEM || selectable_cards[i + pos]->location == LOCATION_DAMAGE || selectable_cards[i + pos]->location == LOCATION_SPARE || selectable_cards[i + pos]->location == LOCATION_GZONE) {
 						if(selectable_cards[i + pos]->position & POS_FACEDOWN)
 							mainGame->stCardPos[i]->setOverrideColor(0xff0000ff);
 						if(selectable_cards[i + pos]->is_selected)
@@ -1231,6 +1244,15 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 					mainGame->wCardSelect->setText(formatBuffer);
 					break;
 				}
+				case LOCATION_EMBLEM: {
+					if(emblem[hovered_controler].size() == 0)
+						break;
+					for(int32 i = (int32)emblem[hovered_controler].size() - 1; i >= 0 ; --i)
+						selectable_cards.push_back(emblem[hovered_controler][i]);
+					myswprintf(formatBuffer, L"%ls(%d)", dataManager.GetSysString(1004), emblem[hovered_controler].size());
+					mainGame->wCardSelect->setText(formatBuffer);
+					break;
+				}
 				case LOCATION_DAMAGE: {
 					if(damage[hovered_controler].size() == 0)
 						break;
@@ -1405,6 +1427,12 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 					ShowMenu(COMMAND_LIST, x, y);
 					break;
 				}
+				case LOCATION_EMBLEM: {
+					if(emblem[hovered_controler].size() == 0)
+						break;
+					ShowMenu(COMMAND_LIST, x, y);
+					break;
+				}
 				case LOCATION_DAMAGE: {
 					if(damage[hovered_controler].size() == 0)
 						break;
@@ -1496,6 +1524,17 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 						break;
 					for(size_t i = 0; i < order[hovered_controler].size(); ++i)
 						command_flag |= order[hovered_controler][i]->cmdFlag;
+					command_flag |= COMMAND_LIST;
+					list_command = 1;
+					ShowMenu(command_flag, x, y);
+					break;
+				}
+				case LOCATION_EMBLEM: {
+					int command_flag = 0;
+					if(emblem[hovered_controler].size() == 0)
+						break;
+					for(size_t i = 0; i < emblem[hovered_controler].size(); ++i)
+						command_flag |= emblem[hovered_controler][i]->cmdFlag;
 					command_flag |= COMMAND_LIST;
 					list_command = 1;
 					ShowMenu(command_flag, x, y);
@@ -1798,6 +1837,9 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 				} else if(hovered_location == LOCATION_ORDER) {
 					if(order[hovered_controler].size())
 						mcard = order[hovered_controler].back();
+				} else if(hovered_location == LOCATION_EMBLEM) {
+					if(emblem[hovered_controler].size())
+						mcard = emblem[hovered_controler].back();
 				} else if(hovered_location == LOCATION_DAMAGE) {
 					if(damage[hovered_controler].size())
 						mcard = damage[hovered_controler].back();
@@ -2539,6 +2581,9 @@ void ClientField::GetHoverField(int x, int y) {
 			} else if(boardy >= matManager.vFieldOrder[1][rule][2].Pos.Y && boardy <= matManager.vFieldOrder[1][rule][0].Pos.Y) {
 				hovered_controler = 1;
 				hovered_location = LOCATION_ORDER;
+			} else if(boardy >= matManager.vFieldEmblem[1][rule][2].Pos.Y && boardy <= matManager.vFieldEmblem[1][rule][0].Pos.Y) {
+				hovered_controler = 1;
+				hovered_location = LOCATION_EMBLEM;
 			}
 		} else if(boardx >= matManager.vFieldDeck[1][1].Pos.X && boardx <= matManager.vFieldDeck[1][0].Pos.X) {
 			if(boardy >= matManager.vFieldDeck[1][2].Pos.Y && boardy <= matManager.vFieldDeck[1][0].Pos.Y) {
@@ -2551,6 +2596,9 @@ void ClientField::GetHoverField(int x, int y) {
 			} else if(boardy >= matManager.vFieldOrder[0][rule][0].Pos.Y && boardy <= matManager.vFieldOrder[0][rule][2].Pos.Y) {
 				hovered_controler = 0;
 				hovered_location = LOCATION_ORDER;
+			} else if(boardy >= matManager.vFieldEmblem[0][rule][0].Pos.Y && boardy <= matManager.vFieldEmblem[0][rule][2].Pos.Y) {
+				hovered_controler = 0;
+				hovered_location = LOCATION_EMBLEM;
 			}
 		} else if(boardx >= matManager.vFieldExile[0][rule][0].Pos.X && boardx <= matManager.vFieldExile[0][rule][1].Pos.X) {
 			if(boardy >= matManager.vFieldExile[0][rule][0].Pos.Y && boardy <= matManager.vFieldExile[0][rule][2].Pos.Y) {

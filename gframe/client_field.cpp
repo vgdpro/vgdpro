@@ -207,6 +207,9 @@ ClientCard* ClientField::GetCard(int controler, int location, int sequence, int 
 	case LOCATION_ORDER:
 		lst = &order[controler];
 		break;
+	case LOCATION_EMBLEM:
+		lst = &emblem[controler];
+		break;
 	case LOCATION_DAMAGE:
 		lst = &damage[controler];
 		break;
@@ -286,6 +289,11 @@ void ClientField::AddCard(ClientCard* pcard, int controler, int location, int se
 	case LOCATION_ORDER: {
 		order[controler].push_back(pcard);
 		pcard->sequence = order[controler].size() - 1;
+		break;
+	}
+	case LOCATION_EMBLEM: {
+		emblem[controler].push_back(pcard);
+		pcard->sequence = emblem[controler].size() - 1;
 		break;
 	}
 	case LOCATION_DAMAGE: {
@@ -396,6 +404,17 @@ ClientCard* ClientField::RemoveCard(int controler, int location, int sequence) {
 		order[controler].erase(order[controler].end() - 1);
 		break;
 	}
+	case LOCATION_EMBLEM: {
+		pcard = emblem[controler][sequence];
+		for (size_t i = sequence; i < emblem[controler].size() - 1; ++i) {
+			emblem[controler][i] = emblem[controler][i + 1];
+			emblem[controler][i]->sequence--;
+			emblem[controler][i]->curPos -= irr::core::vector3df(0, 0, 0.01f);
+			emblem[controler][i]->mTransform.setTranslation(emblem[controler][i]->curPos);
+		}
+		emblem[controler].erase(emblem[controler].end() - 1);
+		break;
+	}
 	case LOCATION_DAMAGE: {
 		pcard = damage[controler][sequence];
 		for (size_t i = sequence; i < damage[controler].size() - 1; ++i) {
@@ -486,6 +505,9 @@ void ClientField::UpdateFieldCard(int controler, int location, unsigned char* da
 		break;
 	case LOCATION_ORDER:
 		lst = &order[controler];
+		break;
+	case LOCATION_EMBLEM:
+		lst = &emblem[controler];
 		break;
 	case LOCATION_DAMAGE:
 		lst = &damage[controler];
@@ -1071,6 +1093,12 @@ void ClientField::GetChainLocation(int controler, int location, int sequence, ir
 		t->Z = order[controler].size() * 0.01f + 0.03f;
 		break;
 	}
+	case LOCATION_EMBLEM: {
+		t->X = (matManager.vFieldOrder[controler][rule][0].Pos.X + matManager.vFieldOrder[controler][rule][1].Pos.X) / 2;
+		t->Y = (matManager.vFieldOrder[controler][rule][0].Pos.Y + matManager.vFieldOrder[controler][rule][2].Pos.Y) / 2;
+		t->Z = emblem[controler].size() * 0.01f + 0.03f;
+		break;
+	}
 	case LOCATION_DAMAGE: {
 		t->X = (matManager.vFieldDamage[controler][rule][0].Pos.X + matManager.vFieldDamage[controler][rule][1].Pos.X) / 2;
 		t->Y = (matManager.vFieldDamage[controler][rule][0].Pos.Y + matManager.vFieldDamage[controler][rule][2].Pos.Y) / 2;
@@ -1280,6 +1308,22 @@ void ClientField::GetCardLocation(ClientCard* pcard, irr::core::vector3df* t, ir
 			r->Y = 0.0f;
 			r->Z = 0.0f;
 		} else {
+			r->X = 0.0f;
+			r->Y = 0.0f;
+			r->Z = 3.1415926f;
+		}
+		break;
+	}
+	case LOCATION_EMBLEM: {
+		t->X = (matManager.vFieldEmblem[controler][rule][0].Pos.X + matManager.vFieldEmblem[controler][rule][1].Pos.X) / 2;
+		t->Y = (matManager.vFieldEmblem[controler][rule][0].Pos.Y + matManager.vFieldEmblem[controler][rule][2].Pos.Y) / 2;
+		t->Z = 0.01f + 0.01f * sequence;
+		if (controler == 0) {
+			r->X = 0.0f;
+			r->Y = 0.0f;
+			r->Z = 0.0f;
+		}
+		else {
 			r->X = 0.0f;
 			r->Y = 0.0f;
 			r->Z = 3.1415926f;

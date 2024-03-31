@@ -1280,6 +1280,8 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 						mainGame->dField.exile_act = true;
 					else if(pcard->location == LOCATION_ORDER)
 						mainGame->dField.order_act = true;
+					else if (pcard->location == LOCATION_EMBLEM)
+						mainGame->dField.emblem_act = true;
 					else if(pcard->location == LOCATION_DAMAGE)
 						mainGame->dField.damage_act = true;
 					else if(pcard->location == LOCATION_SPARE)
@@ -1351,6 +1353,8 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 				mainGame->dField.exile_act = true;
 			else if (pcard->location == LOCATION_ORDER)
 				mainGame->dField.order_act = true;
+			else if (pcard->location == LOCATION_EMBLEM)
+				mainGame->dField.emblem_act = true;
 			else if (pcard->location == LOCATION_DAMAGE)
 				mainGame->dField.damage_act = true;
 			else if (pcard->location == LOCATION_SPARE)
@@ -1431,6 +1435,8 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 						mainGame->dField.exile_act = true;
 					else if(pcard->location == LOCATION_ORDER)
 						mainGame->dField.order_act = true;
+					else if (pcard->location == LOCATION_EMBLEM)
+						mainGame->dField.emblem_act = true;
 					else if(pcard->location == LOCATION_DAMAGE)
 						mainGame->dField.damage_act = true;
 					else if(pcard->location == LOCATION_SPARE)
@@ -1720,6 +1726,8 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 					mainGame->dField.exile_act = true;
 				else if(l == LOCATION_ORDER)
 					mainGame->dField.order_act = true;
+				else if (l == LOCATION_EMBLEM)
+					mainGame->dField.emblem_act = true;
 				else if(l == LOCATION_DAMAGE)
 					mainGame->dField.damage_act = true;
 				else if(l == LOCATION_SPARE)
@@ -3918,6 +3926,11 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			for(int seq = 0; seq < val; ++seq) {
 				ClientCard* ccard = new ClientCard;
 				mainGame->dField.AddCard(ccard, p, LOCATION_ORDER, seq);
+			}
+			val = BufferIO::ReadInt8(pbuf);
+			for (int seq = 0; seq < val; ++seq) {
+				ClientCard* ccard = new ClientCard;
+				mainGame->dField.AddCard(ccard, p, LOCATION_EMBLEM, seq);
 			}
 			val = BufferIO::ReadInt8(pbuf);
 			for(int seq = 0; seq < val; ++seq) {

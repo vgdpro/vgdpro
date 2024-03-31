@@ -975,7 +975,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			int cp = BufferIO::ReadInt8(pbuf);
 			pbuf += 4;
 			NetServer::SendBufferToPlayer(players[cc], STOC_GAME_MSG, offset, pbuf - offset);
-			if (!(cl & (LOCATION_GRAVE + LOCATION_OVERLAY + LOCATION_EXILE + LOCATION_ORDER + LOCATION_DAMAGE + LOCATION_SPARE + LOCATION_GZONE)) && ((cl & (LOCATION_DECK + LOCATION_HAND)) || (cp & POS_FACEDOWN)))
+			if (!(cl & (LOCATION_GRAVE + LOCATION_OVERLAY + LOCATION_EXILE + LOCATION_ORDER + LOCATION_EMBLEM + LOCATION_DAMAGE + LOCATION_SPARE + LOCATION_GZONE)) && ((cl & (LOCATION_DECK + LOCATION_HAND)) || (cp & POS_FACEDOWN)))
 				BufferIO::WriteInt32(pbufw, 0);
 			NetServer::SendBufferToPlayer(players[1 - cc], STOC_GAME_MSG, offset, pbuf - offset);
 			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
