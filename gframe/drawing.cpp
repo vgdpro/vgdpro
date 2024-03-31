@@ -731,7 +731,7 @@ void Game::DrawMisc() {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.grave[0].size()), Resize(904, 563, 1025, 553), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.exile[0].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.exile[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+			DrawShadowText(numFont, dataManager.GetNumString(dField.exile[0].size()), Resize(906, 376, 1061, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.order[0].size()) {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.order[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
