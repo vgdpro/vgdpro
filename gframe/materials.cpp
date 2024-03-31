@@ -257,6 +257,8 @@ Materials::Materials() {
 	//Szone
 	SetS3DVertex(vFieldSzone[0][2][1], 0.2f, 1.4f, 1.0f, 2.6f, 0, 1, 0, 0, 0, 0);
 	SetS3DVertex(vFieldSzone[1][2][1], 7.7f, -1.4f, 6.9f, -2.6f, 0, 1, 0, 0, 0, 0);
+	SetS3DVertex(vFieldEmblem[0][1], 0.2f, 1.4f, 1.0f, 2.6f, 0, 1, 0, 0, 0, 0);
+	SetS3DVertex(vFieldEmblem[1][1], 7.7f, -1.4f, 6.9f, -2.6f, 0, 1, 0, 0, 0, 0);
 	//field
 	SetS3DVertex(vFieldSzone[0][5][1], 5.9f, 0.1f, 6.75f, 1.3f, 0, 1, 0, 0, 0, 0);
 	SetS3DVertex(vFieldSzone[1][5][1], 2.0f, -0.1f, 1.2f, -1.3f, 0, 1, 0, 0, 0, 0);
