@@ -1780,7 +1780,7 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 	if(pointer->second.type & TYPE_TOKEN)
 		return false;
 	auto& container = deckManager.current_deck.extra;
-	int maxc = mainGame->is_siding ? 20 : 15;
+	int maxc = mainGame->is_siding ? 20 : 4;
 	if((int)container.size() >= maxc)
 		return false;
 	if(seq >= 0 && seq < (int)container.size())
