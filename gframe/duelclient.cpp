@@ -2481,9 +2481,9 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		mainGame->HideElement(mainGame->wSurrender);
 		if(!mainGame->dInfo.isReplay && mainGame->dInfo.player_type < 7) {
 			if(mainGame->gameConf.control_mode == 0) {
-				mainGame->btnChainIgnore->setVisible(true);
-				mainGame->btnChainAlways->setVisible(true);
-				mainGame->btnChainWhenAvail->setVisible(true);
+				mainGame->btnChainIgnore->setVisible(false);
+				mainGame->btnChainAlways->setVisible(false);
+				mainGame->btnChainWhenAvail->setVisible(false);
 				mainGame->dField.UpdateChainButtons();
 			} else {
 				mainGame->btnChainIgnore->setVisible(false);
