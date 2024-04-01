@@ -1228,7 +1228,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 	}
 	case MSG_UPDATE_DATA: {
 		int player = mainGame->LocalPlayer(BufferIO::ReadInt8(pbuf));
-		int location = BufferIO::ReadInt8(pbuf);
+		int location = BufferIO::ReadInt16(pbuf);
 		mainGame->gMutex.lock();
 		mainGame->dField.UpdateFieldCard(player, location, pbuf);
 		mainGame->gMutex.unlock();
@@ -1236,7 +1236,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 	}
 	case MSG_UPDATE_CARD: {
 		int player = mainGame->LocalPlayer(BufferIO::ReadInt8(pbuf));
-		int loc = BufferIO::ReadInt8(pbuf);
+		int loc = BufferIO::ReadInt16(pbuf);
 		int seq = BufferIO::ReadInt8(pbuf);
 		mainGame->gMutex.lock();
 		mainGame->dField.UpdateCard(player, loc, seq, pbuf);
@@ -1307,8 +1307,8 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		}
 		mainGame->gMutex.lock();
 		if(BufferIO::ReadInt8(pbuf)) {
-			mainGame->btnM2->setVisible(true);
-			mainGame->btnM2->setEnabled(true);
+			mainGame->btnM2->setVisible(false);
+			mainGame->btnM2->setEnabled(false);
 			mainGame->btnM2->setPressed(false);
 		}
 		if(BufferIO::ReadInt8(pbuf)) {

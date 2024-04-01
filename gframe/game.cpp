@@ -338,12 +338,12 @@ bool Game::Initialize() {
 	btnPhaseStatus->setIsPushButton(true);
 	btnPhaseStatus->setPressed(true);
 	btnPhaseStatus->setVisible(false);
-	btnBP = env->addButton(rect<s32>(160, 0, 210, 20), wPhase, BUTTON_BP, L"\xff22\xff30");
-	btnBP->setVisible(false);
 	btnM2 = env->addButton(rect<s32>(160, 0, 210, 20), wPhase, BUTTON_M2, L"\xff2d\xff12");
 	btnM2->setVisible(false);
 	btnEP = env->addButton(rect<s32>(320, 0, 370, 20), wPhase, BUTTON_EP, L"\xff25\xff30");
 	btnEP->setVisible(false);
+	btnBP = env->addButton(rect<s32>(160, 0, 210, 20), wPhase, BUTTON_BP, L"\xff22\xff30");
+	btnBP->setVisible(false);
 	//tab
 	wInfos = env->addTabControl(rect<s32>(1, 275, 301, 639), 0, true);
 	wInfos->setTabExtraWidth(21);
@@ -1949,10 +1949,10 @@ void Game::OnResize() {
 	btnClearLog->setRelativePosition(Resize(160, 300, 210, 325));
 
 	wPhase->setRelativePosition(Resize(480, 310, 855, 330));
-	btnPhaseStatus->setRelativePosition(Resize(0, 0, 50, 20));
-	btnBP->setRelativePosition(Resize(160, 0, 210, 20));
-	btnM2->setRelativePosition(Resize(160, 0, 210, 20));
-	btnEP->setRelativePosition(Resize(320, 0, 370, 20));
+	btnPhaseStatus->setRelativePosition(Resize(80, 0, 130, 20));
+	btnBP->setRelativePosition(Resize(240, 0, 290, 20));
+	btnM2->setRelativePosition(Resize(240, 0, 290, 20));
+	btnEP->setRelativePosition(Resize(240, 0, 290, 20));
 
 	wChat->setRelativePosition(recti(wInfos->getRelativePosition().LowerRightCorner.X + 6, window_size.Height - 25, window_size.Width, window_size.Height));
 	ebChatInput->setRelativePosition(recti(3, 2, window_size.Width - wChat->getRelativePosition().UpperLeftCorner.X - 6, 22));

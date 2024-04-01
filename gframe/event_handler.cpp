@@ -2750,7 +2750,7 @@ void ClientField::ShowMenu(int flag, int x, int y) {
 void ClientField::HideMenu() {
 	mainGame->wCmdMenu->setVisible(false);
 	mainGame->btnBP->setEnabled(true);
-	mainGame->btnM2->setEnabled(true);
+	mainGame->btnM2->setEnabled(false);
 	mainGame->btnEP->setEnabled(true);
 }
 void ClientField::UpdateChainButtons() {
