@@ -1634,7 +1634,7 @@ void Game::AddLog(const wchar_t* msg, int param) {
 	}
 }
 void Game::AddChatMsg(const wchar_t* msg, int player) {
-	for(int i = 7; i > 0; --i) {
+	for (int i = 7; i > 0; --i) {
 		chatMsg[i] = chatMsg[i - 1];
 		chatTiming[i] = chatTiming[i - 1];
 		chatType[i] = chatType[i - 1];
@@ -1642,9 +1642,9 @@ void Game::AddChatMsg(const wchar_t* msg, int player) {
 	chatMsg[0].clear();
 	chatTiming[0] = 1200;
 	chatType[0] = player;
-	if(gameConf.hide_player_name && player < 4)
+	if (gameConf.hide_player_name && player < 4)
 		player = 10;
-	switch(player) {
+	switch (player) {
 	case 0: //from host
 		chatMsg[0].append(dInfo.hostname);
 		chatMsg[0].append(L": ");
@@ -1679,10 +1679,13 @@ void Game::AddChatMsg(const wchar_t* msg, int player) {
 		chatMsg[0].append(L"[********]: ");
 		break;
 	default: //from watcher or unknown
-		if(player < 11 || player > 19)
+		if (player < 11 || player > 19)
 			chatMsg[0].append(L"[---]: ");
 	}
 	chatMsg[0].append(msg);
+	wchar_t msg_front[256];
+	myswprintf(msg_front, L"[Chat]%ls", chatMsg[0].c_str());
+	AddLog(msg_front);
 }
 void Game::ClearChatMsg() {
 	for(int i = 7; i >= 0; --i) {

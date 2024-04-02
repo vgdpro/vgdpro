@@ -605,31 +605,38 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			player = BufferIO::ReadInt8(pbuf);
 			BufferIO::ReadInt32(pbuf);
 			switch (type) {
-			case 1:
-			case 2:
-			case 3:
-			case 5: {
-				NetServer::SendBufferToPlayer(players[player], STOC_GAME_MSG, offset, pbuf - offset);
-				break;
-			}
-			case 4:
-			case 6:
-			case 7:
-			case 8:
-			case 9:
-			case 11: {
-				NetServer::SendBufferToPlayer(players[1 - player], STOC_GAME_MSG, offset, pbuf - offset);
-				for(auto oit = observers.begin(); oit != observers.end(); ++oit)
-					NetServer::ReSendToPlayer(*oit);
-				break;
-			}
-			case 10: {
-				NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
-				NetServer::SendBufferToPlayer(players[1], STOC_GAME_MSG, offset, pbuf - offset);
-				for(auto oit = observers.begin(); oit != observers.end(); ++oit)
-					NetServer::ReSendToPlayer(*oit);
-				break;
-			}
+				case 1:
+				case 2:
+				case 3:
+				case 5: {
+					NetServer::SendBufferToPlayer(players[player], STOC_GAME_MSG, offset, pbuf - offset);
+					break;
+				}
+				case 4:
+				case 6:
+				case 7:
+				case 8:
+				case 9:
+				case 11: {
+					NetServer::SendBufferToPlayer(players[1 - player], STOC_GAME_MSG, offset, pbuf - offset);
+					for(auto oit = observers.begin(); oit != observers.end(); ++oit)
+						NetServer::ReSendToPlayer(*oit);
+					break;
+				}
+				case 10: {
+					NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
+					NetServer::SendBufferToPlayer(players[1], STOC_GAME_MSG, offset, pbuf - offset);
+					for(auto oit = observers.begin(); oit != observers.end(); ++oit)
+						NetServer::ReSendToPlayer(*oit);
+					break;
+				}
+				case 24: {
+					NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
+					NetServer::SendBufferToPlayer(players[1], STOC_GAME_MSG, offset, pbuf - offset);
+					for (auto oit = observers.begin(); oit != observers.end(); ++oit)
+						NetServer::ReSendToPlayer(*oit);
+					break;
+				}
 			}
 			break;
 		}

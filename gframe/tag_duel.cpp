@@ -540,33 +540,40 @@ int TagDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			player = BufferIO::ReadInt8(pbuf);
 			BufferIO::ReadInt32(pbuf);
 			switch (type) {
-			case 1:
-			case 2:
-			case 3:
-			case 5: {
-				NetServer::SendBufferToPlayer(cur_player[player], STOC_GAME_MSG, offset, pbuf - offset);
-				break;
-			}
-			case 4:
-			case 6:
-			case 7:
-			case 8:
-			case 9:
-			case 11: {
-				for(int i = 0; i < 4; ++i)
-					if(players[i] != cur_player[player])
+				case 1:
+				case 2:
+				case 3:
+				case 5: {
+					NetServer::SendBufferToPlayer(cur_player[player], STOC_GAME_MSG, offset, pbuf - offset);
+					break;
+				}
+				case 4:
+				case 6:
+				case 7:
+				case 8:
+				case 9:
+				case 11: {
+					for(int i = 0; i < 4; ++i)
+						if(players[i] != cur_player[player])
+							NetServer::SendBufferToPlayer(players[i], STOC_GAME_MSG, offset, pbuf - offset);
+					for(auto oit = observers.begin(); oit != observers.end(); ++oit)
+						NetServer::ReSendToPlayer(*oit);
+					break;
+				}
+				case 10: {
+					for(int i = 0; i < 4; ++i)
 						NetServer::SendBufferToPlayer(players[i], STOC_GAME_MSG, offset, pbuf - offset);
-				for(auto oit = observers.begin(); oit != observers.end(); ++oit)
-					NetServer::ReSendToPlayer(*oit);
-				break;
-			}
-			case 10: {
-				for(int i = 0; i < 4; ++i)
-					NetServer::SendBufferToPlayer(players[i], STOC_GAME_MSG, offset, pbuf - offset);
-				for(auto oit = observers.begin(); oit != observers.end(); ++oit)
-					NetServer::ReSendToPlayer(*oit);
-				break;
-			}
+					for(auto oit = observers.begin(); oit != observers.end(); ++oit)
+						NetServer::ReSendToPlayer(*oit);
+					break;
+				}
+				case 24: {
+					for (int i = 0; i < 4; ++i)
+						NetServer::SendBufferToPlayer(players[i], STOC_GAME_MSG, offset, pbuf - offset);
+					for (auto oit = observers.begin(); oit != observers.end(); ++oit)
+						NetServer::ReSendToPlayer(*oit);
+					break;
+				}
 			}
 			break;
 		}

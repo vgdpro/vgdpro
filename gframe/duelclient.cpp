@@ -917,223 +917,227 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		is_swapping = false;
 	}
 	switch(mainGame->dInfo.curMsg) {
-	case MSG_RETRY: {
-		if(last_successful_msg_length) {
-			auto p = last_successful_msg;
-			auto last_msg = BufferIO::ReadUInt8(p);
-			int err_desc = 1421;
-			switch(last_msg) {
-			case MSG_ANNOUNCE_CARD:
-				err_desc = 1422;
-				break;
-			case MSG_ANNOUNCE_ATTRIB:
-				err_desc = 1423;
-				break;
-			case MSG_ANNOUNCE_RACE:
-				err_desc = 1424;
-				break;
-			case MSG_ANNOUNCE_NUMBER:
-				err_desc = 1425;
-				break;
-			case MSG_SELECT_EFFECTYN:
-			case MSG_SELECT_YESNO:
-			case MSG_SELECT_OPTION:
-				err_desc = 1426;
-				break;
-			case MSG_SELECT_CARD:
-			case MSG_SELECT_UNSELECT_CARD:
-			case MSG_SELECT_TRIBUTE:
-			case MSG_SELECT_SUM:
-			case MSG_SORT_CARD:
-				err_desc = 1427;
-				break;
-			case MSG_SELECT_CHAIN:
-				err_desc = 1428;
-				break;
-			case MSG_SELECT_PLACE:
-			case MSG_SELECT_DISFIELD:
-				err_desc = 1429;
-				break;
-			case MSG_SELECT_POSITION:
-				err_desc = 1430;
-				break;
-			case MSG_SELECT_COUNTER:
-				err_desc = 1431;
-				break;
-			default:
-				break;
-			}
-			mainGame->gMutex.lock();
-			mainGame->stMessage->setText(dataManager.GetDesc(err_desc));
-			mainGame->PopupElement(mainGame->wMessage);
-			mainGame->gMutex.unlock();
-			mainGame->actionSignal.Reset();
-			mainGame->actionSignal.Wait();
-			select_hint = last_select_hint;
-			return ClientAnalyze(last_successful_msg, last_successful_msg_length);
-		}
-		mainGame->gMutex.lock();
-		mainGame->stMessage->setText(L"Error occurs.");
-		mainGame->PopupElement(mainGame->wMessage);
-		mainGame->gMutex.unlock();
-		mainGame->actionSignal.Reset();
-		mainGame->actionSignal.Wait();
-		if(!mainGame->dInfo.isSingleMode) {
-			mainGame->closeDoneSignal.Reset();
-			mainGame->closeSignal.Set();
-			mainGame->closeDoneSignal.Wait();
-			mainGame->gMutex.lock();
-			mainGame->dInfo.isStarted = false;
-			mainGame->dInfo.isFinished = false;
-			mainGame->btnCreateHost->setEnabled(true);
-			mainGame->btnJoinHost->setEnabled(true);
-			mainGame->btnJoinCancel->setEnabled(true);
-			mainGame->btnStartBot->setEnabled(true);
-			mainGame->btnBotCancel->setEnabled(true);
-			mainGame->stTip->setVisible(false);
-			mainGame->device->setEventReceiver(&mainGame->menuHandler);
-			if(bot_mode)
-				mainGame->ShowElement(mainGame->wSinglePlay);
-			else
-				mainGame->ShowElement(mainGame->wLanWindow);
-			mainGame->gMutex.unlock();
-			event_base_loopbreak(client_base);
-			if(exit_on_return)
-				mainGame->device->closeDevice();
-		}
-		return false;
-	}
-	case MSG_HINT: {
-		int type = BufferIO::ReadInt8(pbuf);
-		int player = BufferIO::ReadInt8(pbuf);
-		int data = BufferIO::ReadInt32(pbuf);
-		if(mainGame->dInfo.isReplay && mainGame->dInfo.isReplaySkiping)
-			return true;
-		switch (type) {
-		case HINT_EVENT: {
-			myswprintf(event_string, L"%ls", dataManager.GetDesc(data));
-			break;
-		}
-		case HINT_MESSAGE: {
-			mainGame->gMutex.lock();
-			mainGame->stMessage->setText(dataManager.GetDesc(data));
-			mainGame->PopupElement(mainGame->wMessage);
-			mainGame->gMutex.unlock();
-			mainGame->actionSignal.Reset();
-			mainGame->actionSignal.Wait();
-			break;
-		}
-		case HINT_SELECTMSG: {
-			select_hint = data;
-			last_select_hint = data;
-			break;
-		}
-		case HINT_OPSELECTED: {
-			myswprintf(textBuffer, dataManager.GetSysString(1510), dataManager.GetDesc(data));
-			mainGame->AddLog(textBuffer);
-			mainGame->gMutex.lock();
-			mainGame->SetStaticText(mainGame->stACMessage, 310, mainGame->guiFont, textBuffer);
-			mainGame->PopupElement(mainGame->wACMessage, 20);
-			mainGame->gMutex.unlock();
-			mainGame->WaitFrameSignal(40);
-			break;
-		}
-		case HINT_EFFECT: {
-			mainGame->showcardcode = data;
-			mainGame->showcarddif = 0;
-			mainGame->showcard = 1;
-			mainGame->WaitFrameSignal(30);
-			break;
-		}
-		case HINT_RACE: {
-			myswprintf(textBuffer, dataManager.GetSysString(1511), dataManager.FormatRace(data));
-			mainGame->AddLog(textBuffer);
-			mainGame->gMutex.lock();
-			mainGame->SetStaticText(mainGame->stACMessage, 310, mainGame->guiFont, textBuffer);
-			mainGame->PopupElement(mainGame->wACMessage, 20);
-			mainGame->gMutex.unlock();
-			mainGame->WaitFrameSignal(40);
-			break;
-		}
-		case HINT_ATTRIB: {
-			myswprintf(textBuffer, dataManager.GetSysString(1511), dataManager.FormatAttribute(data));
-			mainGame->AddLog(textBuffer);
-			mainGame->gMutex.lock();
-			mainGame->SetStaticText(mainGame->stACMessage, 310, mainGame->guiFont, textBuffer);
-			mainGame->PopupElement(mainGame->wACMessage, 20);
-			mainGame->gMutex.unlock();
-			mainGame->WaitFrameSignal(40);
-			break;
-		}
-		case HINT_CODE: {
-			myswprintf(textBuffer, dataManager.GetSysString(1511), dataManager.GetName(data));
-			mainGame->AddLog(textBuffer, data);
-			mainGame->gMutex.lock();
-			mainGame->SetStaticText(mainGame->stACMessage, 310, mainGame->guiFont, textBuffer);
-			mainGame->PopupElement(mainGame->wACMessage, 20);
-			mainGame->gMutex.unlock();
-			mainGame->WaitFrameSignal(40);
-			break;
-		}
-		case HINT_NUMBER: {
-			myswprintf(textBuffer, dataManager.GetSysString(1512), data);
-			mainGame->AddLog(textBuffer);
-			mainGame->gMutex.lock();
-			mainGame->SetStaticText(mainGame->stACMessage, 310, mainGame->guiFont, textBuffer);
-			mainGame->PopupElement(mainGame->wACMessage, 20);
-			mainGame->gMutex.unlock();
-			mainGame->WaitFrameSignal(40);
-			break;
-		}
-		case HINT_CARD: {
-			mainGame->showcardcode = data;
-			mainGame->showcarddif = 0;
-			mainGame->showcard = 1;
-			mainGame->WaitFrameSignal(30);
-			break;
-		}
-		case HINT_ZONE: {
-			if(mainGame->LocalPlayer(player) == 1)
-				data = (data >> 16) | (data << 16);
-			for(unsigned filter = 0x1; filter != 0; filter <<= 1) {
-				std::wstring str;
-				if(unsigned s = filter & data) {
-					if(s & 0x60) {
-						str += dataManager.GetSysString(1081);
-						data &= ~0x600000;
-					} else if(s & 0xffff)
-						str += dataManager.GetSysString(102);
-					else if(s & 0xffff0000) {
-						str += dataManager.GetSysString(103);
-						s >>= 16;
-					}
-					if(s & 0x1f)
-						str += dataManager.GetSysString(1002);
-					else if(s & 0xff00) {
-						s >>= 8;
-						if(s & 0x1f)
-							str += dataManager.GetSysString(1003);
-						else if(s & 0x20)
-							str += dataManager.GetSysString(1008);
-						else if(s & 0xc0)
-							str += dataManager.GetSysString(1009);
-					}
-					int seq = 1;
-					for(int i = 0x1; i < 0x100; i <<= 1) {
-						if(s & i)
-							break;
-						++seq;
-					}
-					str += L"(" + std::to_wstring(seq) + L")";
-					myswprintf(textBuffer, dataManager.GetSysString(1510), str.c_str());
-					mainGame->AddLog(textBuffer);
+		case MSG_RETRY: {
+			if(last_successful_msg_length) {
+				auto p = last_successful_msg;
+				auto last_msg = BufferIO::ReadUInt8(p);
+				int err_desc = 1421;
+				switch(last_msg) {
+				case MSG_ANNOUNCE_CARD:
+					err_desc = 1422;
+					break;
+				case MSG_ANNOUNCE_ATTRIB:
+					err_desc = 1423;
+					break;
+				case MSG_ANNOUNCE_RACE:
+					err_desc = 1424;
+					break;
+				case MSG_ANNOUNCE_NUMBER:
+					err_desc = 1425;
+					break;
+				case MSG_SELECT_EFFECTYN:
+				case MSG_SELECT_YESNO:
+				case MSG_SELECT_OPTION:
+					err_desc = 1426;
+					break;
+				case MSG_SELECT_CARD:
+				case MSG_SELECT_UNSELECT_CARD:
+				case MSG_SELECT_TRIBUTE:
+				case MSG_SELECT_SUM:
+				case MSG_SORT_CARD:
+					err_desc = 1427;
+					break;
+				case MSG_SELECT_CHAIN:
+					err_desc = 1428;
+					break;
+				case MSG_SELECT_PLACE:
+				case MSG_SELECT_DISFIELD:
+					err_desc = 1429;
+					break;
+				case MSG_SELECT_POSITION:
+					err_desc = 1430;
+					break;
+				case MSG_SELECT_COUNTER:
+					err_desc = 1431;
+					break;
+				default:
+					break;
 				}
+				mainGame->gMutex.lock();
+				mainGame->stMessage->setText(dataManager.GetDesc(err_desc));
+				mainGame->PopupElement(mainGame->wMessage);
+				mainGame->gMutex.unlock();
+				mainGame->actionSignal.Reset();
+				mainGame->actionSignal.Wait();
+				select_hint = last_select_hint;
+				return ClientAnalyze(last_successful_msg, last_successful_msg_length);
 			}
-			mainGame->dField.selectable_field = data;
-			mainGame->WaitFrameSignal(40);
-			mainGame->dField.selectable_field = 0;
-			break;
+			mainGame->gMutex.lock();
+			mainGame->stMessage->setText(L"Error occurs.");
+			mainGame->PopupElement(mainGame->wMessage);
+			mainGame->gMutex.unlock();
+			mainGame->actionSignal.Reset();
+			mainGame->actionSignal.Wait();
+			if(!mainGame->dInfo.isSingleMode) {
+				mainGame->closeDoneSignal.Reset();
+				mainGame->closeSignal.Set();
+				mainGame->closeDoneSignal.Wait();
+				mainGame->gMutex.lock();
+				mainGame->dInfo.isStarted = false;
+				mainGame->dInfo.isFinished = false;
+				mainGame->btnCreateHost->setEnabled(true);
+				mainGame->btnJoinHost->setEnabled(true);
+				mainGame->btnJoinCancel->setEnabled(true);
+				mainGame->btnStartBot->setEnabled(true);
+				mainGame->btnBotCancel->setEnabled(true);
+				mainGame->stTip->setVisible(false);
+				mainGame->device->setEventReceiver(&mainGame->menuHandler);
+				if(bot_mode)
+					mainGame->ShowElement(mainGame->wSinglePlay);
+				else
+					mainGame->ShowElement(mainGame->wLanWindow);
+				mainGame->gMutex.unlock();
+				event_base_loopbreak(client_base);
+				if(exit_on_return)
+					mainGame->device->closeDevice();
+			}
+			return false;
 		}
+		case MSG_HINT: {
+			int type = BufferIO::ReadInt8(pbuf);
+			int player = BufferIO::ReadInt8(pbuf);
+			int data = BufferIO::ReadInt32(pbuf);
+			if(mainGame->dInfo.isReplay && mainGame->dInfo.isReplaySkiping)
+				return true;
+			switch (type) {
+			case HINT_EVENT: {
+				myswprintf(event_string, L"%ls", dataManager.GetDesc(data));
+				break;
+			}
+			case HINT_MESSAGE: {
+				mainGame->gMutex.lock();
+				mainGame->stMessage->setText(dataManager.GetDesc(data));
+				mainGame->PopupElement(mainGame->wMessage);
+				mainGame->gMutex.unlock();
+				mainGame->actionSignal.Reset();
+				mainGame->actionSignal.Wait();
+				break;
+			}
+			case HINT_SELECTMSG: {
+				select_hint = data;
+				last_select_hint = data;
+				break;
+			}
+			case HINT_OPSELECTED: {
+				myswprintf(textBuffer, dataManager.GetSysString(1510), dataManager.GetDesc(data));
+				mainGame->AddLog(textBuffer);
+				mainGame->gMutex.lock();
+				mainGame->SetStaticText(mainGame->stACMessage, 310, mainGame->guiFont, textBuffer);
+				mainGame->PopupElement(mainGame->wACMessage, 20);
+				mainGame->gMutex.unlock();
+				mainGame->WaitFrameSignal(40);
+				break;
+			}
+			case HINT_EFFECT: {
+				mainGame->showcardcode = data;
+				mainGame->showcarddif = 0;
+				mainGame->showcard = 1;
+				mainGame->WaitFrameSignal(30);
+				break;
+			}
+			case HINT_RACE: {
+				myswprintf(textBuffer, dataManager.GetSysString(1511), dataManager.FormatRace(data));
+				mainGame->AddLog(textBuffer);
+				mainGame->gMutex.lock();
+				mainGame->SetStaticText(mainGame->stACMessage, 310, mainGame->guiFont, textBuffer);
+				mainGame->PopupElement(mainGame->wACMessage, 20);
+				mainGame->gMutex.unlock();
+				mainGame->WaitFrameSignal(40);
+				break;
+			}
+			case HINT_ATTRIB: {
+				myswprintf(textBuffer, dataManager.GetSysString(1511), dataManager.FormatAttribute(data));
+				mainGame->AddLog(textBuffer);
+				mainGame->gMutex.lock();
+				mainGame->SetStaticText(mainGame->stACMessage, 310, mainGame->guiFont, textBuffer);
+				mainGame->PopupElement(mainGame->wACMessage, 20);
+				mainGame->gMutex.unlock();
+				mainGame->WaitFrameSignal(40);
+				break;
+			}
+			case HINT_CODE: {
+				myswprintf(textBuffer, dataManager.GetSysString(1511), dataManager.GetName(data));
+				mainGame->AddLog(textBuffer, data);
+				mainGame->gMutex.lock();
+				mainGame->SetStaticText(mainGame->stACMessage, 310, mainGame->guiFont, textBuffer);
+				mainGame->PopupElement(mainGame->wACMessage, 20);
+				mainGame->gMutex.unlock();
+				mainGame->WaitFrameSignal(40);
+				break;
+			}
+			case HINT_NUMBER: {
+				myswprintf(textBuffer, dataManager.GetSysString(1512), data);
+				mainGame->AddLog(textBuffer);
+				mainGame->gMutex.lock();
+				mainGame->SetStaticText(mainGame->stACMessage, 310, mainGame->guiFont, textBuffer);
+				mainGame->PopupElement(mainGame->wACMessage, 20);
+				mainGame->gMutex.unlock();
+				mainGame->WaitFrameSignal(40);
+				break;
+			}
+			case HINT_CARD: {
+				mainGame->showcardcode = data;
+				mainGame->showcarddif = 0;
+				mainGame->showcard = 1;
+				mainGame->WaitFrameSignal(30);
+				break;
+			}
+			case HINT_ZONE: {
+				if(mainGame->LocalPlayer(player) == 1)
+					data = (data >> 16) | (data << 16);
+				for(unsigned filter = 0x1; filter != 0; filter <<= 1) {
+					std::wstring str;
+					if(unsigned s = filter & data) {
+						if(s & 0x60) {
+							str += dataManager.GetSysString(1081);
+							data &= ~0x600000;
+						} else if(s & 0xffff)
+							str += dataManager.GetSysString(102);
+						else if(s & 0xffff0000) {
+							str += dataManager.GetSysString(103);
+							s >>= 16;
+						}
+						if(s & 0x1f)
+							str += dataManager.GetSysString(1002);
+						else if(s & 0xff00) {
+							s >>= 8;
+							if(s & 0x1f)
+								str += dataManager.GetSysString(1003);
+							else if(s & 0x20)
+								str += dataManager.GetSysString(1008);
+							else if(s & 0xc0)
+								str += dataManager.GetSysString(1009);
+						}
+						int seq = 1;
+						for(int i = 0x1; i < 0x100; i <<= 1) {
+							if(s & i)
+								break;
+							++seq;
+						}
+						str += L"(" + std::to_wstring(seq) + L")";
+						myswprintf(textBuffer, dataManager.GetSysString(1510), str.c_str());
+						mainGame->AddLog(textBuffer);
+					}
+				}
+				mainGame->dField.selectable_field = data;
+				mainGame->WaitFrameSignal(40);
+				mainGame->dField.selectable_field = 0;
+				break;
+			}
+			// lyric
+			case 24: { //HINT_LYRIC
+				mainGame->AddChatMsg(dataManager.GetDesc(data), 15);
+			}
 		}
 		break;
 	}
@@ -2506,6 +2510,9 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			mainGame->showcard = 101;
 			mainGame->WaitFrameSignal(40);
 			mainGame->showcard = 0;
+			// Turn info log
+			myswprintf(textBuffer, dataManager.GetSysString(2004), mainGame->dInfo.turn);
+			mainGame->AddLog(textBuffer);
 		}
 		return true;
 	}
@@ -2991,6 +2998,12 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		mainGame->gMutex.lock();
 		mainGame->dField.chains.push_back(mainGame->dField.current_chain);
 		mainGame->gMutex.unlock();
+		// Chain info log
+		// controller 0 means ourside, 1 means opponent
+		auto controller = mainGame->dField.current_chain.controler ? dataManager.GetSysString(103) : dataManager.GetSysString(102);
+		const auto chain_number = mainGame->dField.chains.size();
+		myswprintf(textBuffer, dataManager.GetSysString(2003), chain_number, controller, event_string);
+		mainGame->AddLog(textBuffer, mainGame->dField.current_chain.code);
 		if (ct > 1)
 			mainGame->WaitFrameSignal(20);
 		mainGame->dField.last_chain = true;
@@ -3035,6 +3048,9 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			mainGame->showcard = 3;
 			mainGame->WaitFrameSignal(30);
 			mainGame->showcard = 0;
+			// log negated
+			myswprintf(textBuffer, dataManager.GetSysString(2005), dataManager.GetName(mainGame->showcardcode));
+			mainGame->AddLog(textBuffer, mainGame->showcardcode);
 		}
 		return true;
 	}
