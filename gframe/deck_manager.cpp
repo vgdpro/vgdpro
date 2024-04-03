@@ -145,7 +145,13 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 	deck.clear();
 	int code;
 	int errorcode = 0;
+	uint16_t deckcountry = 0;
 	CardData cd;
+	for(int i=0; i<(mainc+extrac);++i){
+		if(deckcountry == 0 && (cd.country & 0x1) && (cd.country != 0 && (cd.country & (cd.country - 1)) == 0)){
+			deckcountry = cd.get_country()
+		}
+	}
 	for(int i = 0; i < mainc; ++i) {
 		code = dbuf[i];
 		if(!dataManager.GetData(code, &cd)) {
@@ -158,7 +164,13 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 			deck.main.push_back(dataManager.GetCodePointer(code));
 			continue;
 		}
-		else if(deck.main.size() < 60) {
+		else if (deckcountry != 0 || cd.country & 0x1)
+		{
+			if(!cd.country&deckcountry){
+				continue;
+			}
+		}
+		else if(deck.main.size() < 50) {
 			deck.main.push_back(dataManager.GetCodePointer(code));
 		}
 	}
@@ -170,20 +182,28 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 		}
 		if(cd.type & TYPE_TOKEN)
 			continue;
-		if(deck.extra.size() < 15)
-			deck.extra.push_back(dataManager.GetCodePointer(code));
-	}
-	for(int i = 0; i < sidec; ++i) {
-		code = dbuf[mainc +extrac + i];
-		if(!dataManager.GetData(code, &cd)) {
-			errorcode = code;
-			continue;
+		else if (deckcountry != 0 || cd.country & 0x1)
+		{
+			if (!cd.country & deckcountry)
+			{
+				continue;
+			}
 		}
-		if(cd.type & TYPE_TOKEN)
-			continue;
-		if(deck.side.size() < 15)
-			deck.side.push_back(dataManager.GetCodePointer(code));
+		else if(deck.extra.size() < 15){
+			deck.extra.push_back(dataManager.GetCodePointer(code));
+		}
 	}
+	// for(int i = 0; i < sidec; ++i) {
+	// 	code = dbuf[mainc +extrac + i];
+	// 	if(!dataManager.GetData(code, &cd)) {
+	// 		errorcode = code;
+	// 		continue;
+	// 	}
+	// 	if(cd.type & TYPE_TOKEN)
+	// 		continue;
+	// 	if(deck.side.size() < 15)
+	// 		deck.side.push_back(dataManager.GetCodePointer(code));
+	// }
 	return errorcode;
 }
 bool DeckManager::LoadSide(Deck& deck, int* dbuf, int mainc, int sidec) {
