@@ -916,6 +916,12 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		mainGame->gMutex.unlock();
 		is_swapping = false;
 	}
+	FILE *fp = fopen("error.log", "at");
+	// for(int i = 0; i < len; ++i) {
+	// 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
+	// }
+	fprintf(fp, "%d\n", (int *)mainGame->dInfo.curMsg);
+	fclose(fp);
 	switch(mainGame->dInfo.curMsg) {
 		case MSG_RETRY: {
 			if(last_successful_msg_length) {

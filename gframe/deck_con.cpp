@@ -1765,10 +1765,10 @@ bool DeckBuilder::push_main(code_pointer pointer, int seq) {
 		return false;
 	auto& container = deckManager.current_deck.main;
 	int maxc = mainGame->is_siding ? 64 : 50;
-	if (!(deckManager.current_deck.deckcountry & pointer->second.country))
-	{
-		return false;
-	}
+	// if (!(deckManager.current_deck.deckcountry & pointer->second.country))
+	// {
+	// 	return false;
+	// }
 	
 	if((int)container.size() >= maxc)
 		return false;
@@ -1787,10 +1787,10 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 		return false;
 	auto& container = deckManager.current_deck.extra;
 	int maxc = mainGame->is_siding ? 20 : 30;
-	if (!(deckManager.current_deck.deckcountry & pointer->second.country))
-	{
-		return false;
-	}
+	// if (!(deckManager.current_deck.deckcountry & pointer->second.country))
+	// {
+	// 	return false;
+	// }
 	
 	if((int)container.size() >= maxc)
 		return false;

@@ -588,12 +588,6 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 	while (pbuf - msgbuffer < (int)len) {
 		offset = pbuf;
 		unsigned char engType = BufferIO::ReadUInt8(pbuf);
-		FILE *fp = fopen("error.log", "at");
-		// for(int i = 0; i < len; ++i) {
-		// 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
-		// }
-		fprintf(fp, "%d\n", (int *)engType);
-		fclose(fp);
 		switch (engType) {
 		case MSG_RETRY: {
 			WaitforResponse(last_response);
