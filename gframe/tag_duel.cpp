@@ -521,6 +521,22 @@ void TagDuel::DuelEndProc() {
 	duel_stage = DUEL_STAGE_END;
 }
 void TagDuel::Surrender(DuelPlayer* dp) {
+	if(dp->type > 1 || !pduel)
+		return;
+	unsigned char wbuf[3];
+	uint32 player = dp->type;
+	wbuf[0] = MSG_WIN;
+	wbuf[1] = 1 - player;
+	wbuf[2] = 0;
+	NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, wbuf, 3);
+	NetServer::ReSendToPlayer(players[1]);
+	NetServer::ReSendToPlayer(players[2]);
+	NetServer::ReSendToPlayer(players[3]);
+	for(auto oit = observers.begin(); oit != observers.end(); ++oit)
+		NetServer::ReSendToPlayer(*oit);
+	EndDuel();
+	DuelEndProc();
+	event_del(etimer);
 	return;
 }
 int TagDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
