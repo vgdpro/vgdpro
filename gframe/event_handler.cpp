@@ -2707,12 +2707,7 @@ void ClientField::ShowMenu(int flag, int x, int y) {
 		height += offset;
 	} else mainGame->btnSSet->setVisible(false);
 	if(flag & COMMAND_REPOS) {
-		if(clicked_card->position & POS_FACEDOWN)
-			mainGame->btnRepos->setText(dataManager.GetSysString(1154));
-		else if(clicked_card->position & POS_ATTACK)
-			mainGame->btnRepos->setText(dataManager.GetSysString(1155));
-		else
-			mainGame->btnRepos->setText(dataManager.GetSysString(1156));
+		mainGame->btnRepos->setText(dataManager.GetSysString(1156));
 		mainGame->btnRepos->setVisible(true);
 		mainGame->btnRepos->setRelativePosition(position2di(1, height));
 		height += offset;
