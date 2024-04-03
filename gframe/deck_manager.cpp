@@ -148,7 +148,7 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 	uint16_t deckcountry = 0;
 	CardData cd;
 	for(int i=0; i<(mainc+extrac);++i){
-		if(deckcountry == 0 && (cd.country & 0x1) && (cd.country != 0 && (cd.country & (cd.country - 1)) == 0)){
+		if(deckcountry == 0 && (!(cd.country & 0x1)) && (cd.country != 0 && (cd.country & (cd.country - 1)) == 0)){
 			deckcountry = cd.country;
 		}
 	}
