@@ -236,7 +236,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 				break;
 			}
 			case BUTTON_EFFECT_FILTER: {
-				mainGame->PopupElement(mainGame->wCategories);
+				//mainGame->PopupElement(mainGame->wCategories);
 				break;
 			}
 			case BUTTON_START_FILTER: {
@@ -250,14 +250,14 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 				break;
 			}
 			case BUTTON_CATEGORY_OK: {
-				filter_effect = 0;
-				long long filter = 0x1;
-				for(int i = 0; i < 32; ++i, filter <<= 1)
-					if(mainGame->chkCategory[i]->isChecked())
-						filter_effect |= filter;
-				mainGame->btnEffectFilter->setPressed(filter_effect > 0);
-				mainGame->HideElement(mainGame->wCategories);
-				InstantSearch();
+				// filter_effect = 0;
+				// long long filter = 0x1;
+				// for(int i = 0; i < 32; ++i, filter <<= 1)
+				// 	if(mainGame->chkCategory[i]->isChecked())
+				// 		filter_effect |= filter;
+				// mainGame->btnEffectFilter->setPressed(filter_effect > 0);
+				// mainGame->HideElement(mainGame->wCategories);
+				// InstantSearch();
 				break;
 			}
 			case BUTTON_MANAGE_DECK: {
@@ -841,7 +841,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 				mainGame->ebAttack->setText(L"");
 				mainGame->ebDefense->setText(L"");
 				mainGame->ebStar->setText(L"");
-				//mainGame->ebScale->setText(L"");
+				mainGame->ebScale->setText(L"");
 				switch(mainGame->cbCardType->getSelected()) {
 				case 0: {
 					mainGame->cbCardType2->setEnabled(false);
@@ -851,7 +851,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					mainGame->ebAttack->setEnabled(false);
 					mainGame->ebDefense->setEnabled(false);
 					mainGame->ebStar->setEnabled(false);
-					//mainGame->ebScale->setEnabled(false);
+					mainGame->ebScale->setEnabled(false);
 					break;
 				}
 				case 1: {
@@ -864,7 +864,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					mainGame->ebAttack->setEnabled(true);
 					mainGame->ebDefense->setEnabled(true);
 					mainGame->ebStar->setEnabled(true);
-					//mainGame->ebScale->setEnabled(true);
+					mainGame->ebScale->setEnabled(true);
 					mainGame->cbCardType2->clear();
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1080), 0);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1054), TYPE_MONSTER + TYPE_NORMAL);
@@ -898,12 +898,13 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					mainGame->ebAttack->setEnabled(false);
 					mainGame->ebDefense->setEnabled(false);
 					mainGame->ebStar->setEnabled(false);
-					//mainGame->ebScale->setEnabled(false);
+					mainGame->ebScale->setEnabled(false);
 					mainGame->cbCardType2->clear();
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1080), 0);
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1054), TYPE_SPELL);
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1066), TYPE_SPELL + TYPE_QUICKPLAY);
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1067), TYPE_SPELL + TYPE_CONTINUOUS);
+					mainGame->cbCardType2->addItem(dataManager.GetSysString(1064), TYPE_SPELL + TYPE_TOKEN);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1057), TYPE_SPELL + TYPE_RITUAL);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1068), TYPE_SPELL + TYPE_EQUIP);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1069), TYPE_SPELL + TYPE_FIELD);
@@ -916,12 +917,12 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					mainGame->ebAttack->setEnabled(false);
 					mainGame->ebDefense->setEnabled(false);
 					mainGame->ebStar->setEnabled(false);
-					//mainGame->ebScale->setEnabled(false);
+					mainGame->ebScale->setEnabled(false);
 					mainGame->cbCardType2->clear();
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1080), 0);
-					mainGame->cbCardType2->addItem(dataManager.GetSysString(1070), TYPE_TRAP+TYPE_COUNTER+TYPE_TOKEN);
+					mainGame->cbCardType2->addItem(dataManager.GetSysString(1070), TYPE_TRAP+TYPE_NORMAL);
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1072), TYPE_TRAP+TYPE_COUNTER);
-					mainGame->cbCardType2->addItem(dataManager.GetSysString(1071), TYPE_TRAP+TYPE_TOKEN);
+					mainGame->cbCardType2->addItem(dataManager.GetSysString(1071), TYPE_TRAP+TYPE_FUSION+TYPE_COUNTER);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1067), TYPE_TRAP + TYPE_CONTINUOUS);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1070), TYPE_TRAP + TYPE_COUNTER);
 					break;
@@ -1542,7 +1543,7 @@ void DeckBuilder::ClearSearch() {
 	mainGame->ebAttack->setEnabled(false);
 	mainGame->ebDefense->setEnabled(false);
 	mainGame->ebStar->setEnabled(false);
-	//mainGame->ebScale->setEnabled(false);
+	mainGame->ebScale->setEnabled(false);
 	mainGame->ebCardName->setText(L"");
 	mainGame->scrFilter->setVisible(false);
 	mainGame->scrFilter->setPos(0);
@@ -1557,14 +1558,14 @@ void DeckBuilder::ClearFilter() {
 	mainGame->ebAttack->setText(L"");
 	mainGame->ebDefense->setText(L"");
 	mainGame->ebStar->setText(L"");
-	//mainGame->ebScale->setText(L"");
+	mainGame->ebScale->setText(L"");
 	filter_effect = 0;
 	for(int i = 0; i < 32; ++i)
 		mainGame->chkCategory[i]->setChecked(false);
 	filter_marks = 0;
 	//for(int i = 0; i < 8; i++)
 		//mainGame->btnMark[i]->setPressed(false);
-	mainGame->btnEffectFilter->setPressed(false);
+	//mainGame->btnEffectFilter->setPressed(false);
 	//mainGame->btnMarksFilter->setPressed(false);
 }
 void DeckBuilder::SortList() {
@@ -1763,7 +1764,12 @@ bool DeckBuilder::push_main(code_pointer pointer, int seq) {
 	if(pointer->second.type & (TYPE_TOKEN | TYPE_TRAP))
 		return false;
 	auto& container = deckManager.current_deck.main;
-	int maxc = mainGame->is_siding ? 64 : 60;
+	int maxc = mainGame->is_siding ? 64 : 50;
+	// if (!(deckManager.current_deck.deckcountry & pointer->second.country))
+	// {
+	// 	return false;
+	// }
+	
 	if((int)container.size() >= maxc)
 		return false;
 	if(seq >= 0 && seq < (int)container.size())
@@ -1780,7 +1786,12 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 	if(pointer->second.type & TYPE_TOKEN)
 		return false;
 	auto& container = deckManager.current_deck.extra;
-	int maxc = mainGame->is_siding ? 20 : 15;
+	int maxc = mainGame->is_siding ? 20 : 30;
+	// if (!(deckManager.current_deck.deckcountry & pointer->second.country))
+	// {
+	// 	return false;
+	// }
+	
 	if((int)container.size() >= maxc)
 		return false;
 	if(seq >= 0 && seq < (int)container.size())

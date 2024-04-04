@@ -18,6 +18,7 @@ struct Deck {
 	std::vector<code_pointer> main;
 	std::vector<code_pointer> extra;
 	std::vector<code_pointer> side;
+	uint16 deckcountry = 0;
 	Deck() {}
 	Deck(const Deck& ndeck) {
 		main = ndeck.main;

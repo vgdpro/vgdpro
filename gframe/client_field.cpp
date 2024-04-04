@@ -65,7 +65,10 @@ ClientField::~ClientField() {
 			delete card;
 		}
 		remove[i].clear();
-
+		for (auto& card : emblem[i]) {
+			delete card;
+		}
+		emblem[i].clear();
 		for (auto& card : extra[i]) {
 			delete card;
 		}
@@ -112,6 +115,9 @@ void ClientField::Clear() {
 		for(auto cit = gzone[i].begin(); cit != gzone[i].end(); ++cit)
 			delete *cit;
 		gzone[i].clear();
+		for(auto cit = emblem[i].begin(); cit != emblem[i].end(); ++cit)
+			delete *cit;
+		emblem[i].clear();
 		for(auto cit = remove[i].begin(); cit != remove[i].end(); ++cit)
 			delete *cit;
 		remove[i].clear();
@@ -150,6 +156,7 @@ void ClientField::Clear() {
 	damage_act = false;
 	spare_act = false;
 	gzone_act = false;
+	emblem_act = false;
 	remove_act = false;
 	extra_act = false;
 	pzone_act[0] = false;
@@ -184,7 +191,7 @@ void ClientField::Initial(int player, int deckc, int extrac) {
 ClientCard* ClientField::GetCard(int controler, int location, int sequence, int sub_seq) {
 	std::vector<ClientCard*>* lst = 0;
 	bool is_xyz = (location & LOCATION_OVERLAY) != 0;
-	location &= 0x7f;
+	location &= 0xff7f;
 	switch(location) {
 	case LOCATION_DECK:
 		lst = &deck[controler];
@@ -206,6 +213,9 @@ ClientCard* ClientField::GetCard(int controler, int location, int sequence, int 
 		break;
 	case LOCATION_ORDER:
 		lst = &order[controler];
+		break;
+	case LOCATION_EMBLEM:
+		lst = &emblem[controler];
 		break;
 	case LOCATION_DAMAGE:
 		lst = &damage[controler];
@@ -286,6 +296,11 @@ void ClientField::AddCard(ClientCard* pcard, int controler, int location, int se
 	case LOCATION_ORDER: {
 		order[controler].push_back(pcard);
 		pcard->sequence = order[controler].size() - 1;
+		break;
+	}
+	case LOCATION_EMBLEM: {
+		emblem[controler].push_back(pcard);
+		pcard->sequence = emblem[controler].size() - 1;
 		break;
 	}
 	case LOCATION_DAMAGE: {
@@ -396,6 +411,17 @@ ClientCard* ClientField::RemoveCard(int controler, int location, int sequence) {
 		order[controler].erase(order[controler].end() - 1);
 		break;
 	}
+	case LOCATION_EMBLEM: {
+		pcard = emblem[controler][sequence];
+		for (size_t i = sequence; i < emblem[controler].size() - 1; ++i) {
+			emblem[controler][i] = emblem[controler][i + 1];
+			emblem[controler][i]->sequence--;
+			emblem[controler][i]->curPos -= irr::core::vector3df(0, 0, 0.01f);
+			emblem[controler][i]->mTransform.setTranslation(emblem[controler][i]->curPos);
+		}
+		emblem[controler].erase(emblem[controler].end() - 1);
+		break;
+	}
 	case LOCATION_DAMAGE: {
 		pcard = damage[controler][sequence];
 		for (size_t i = sequence; i < damage[controler].size() - 1; ++i) {
@@ -487,6 +513,9 @@ void ClientField::UpdateFieldCard(int controler, int location, unsigned char* da
 	case LOCATION_ORDER:
 		lst = &order[controler];
 		break;
+	case LOCATION_EMBLEM:
+		lst = &emblem[controler];
+		break;
 	case LOCATION_DAMAGE:
 		lst = &damage[controler];
 		break;
@@ -537,6 +566,7 @@ void ClientField::ClearCommandFlag() {
 	damage_act = false;
 	spare_act = false;
 	gzone_act = false;
+	emblem_act = false;
 	remove_act = false;
 	pzone_act[0] = false;
 	pzone_act[1] = false;
@@ -575,6 +605,7 @@ void ClientField::ClearChainSelect() {
 	damage_act = false;
 	spare_act = false;
 	gzone_act = false;
+	emblem_act = false;
 	remove_act = false;
 	extra_act = false;
 	conti_act = false;
@@ -605,9 +636,9 @@ void ClientField::ShowSelectCard(bool buttonok, bool chain) {
 	for(size_t i = 0; i < ct; ++i) {
 		mainGame->stCardPos[i]->enableOverrideColor(false);
 		// image
-		if(selectable_cards[i]->code)
+		if (selectable_cards[i]->code)
 			mainGame->imageLoading.insert(std::make_pair(mainGame->btnCardSelect[i], selectable_cards[i]->code));
-		else if(conti_selecting)
+		else if (conti_selecting)
 			mainGame->imageLoading.insert(std::make_pair(mainGame->btnCardSelect[i], selectable_cards[i]->chain_code));
 		else
 			mainGame->btnCardSelect[i]->setImage(imageManager.tCover[selectable_cards[i]->controler + 2]);
@@ -871,6 +902,7 @@ void ClientField::ReplaySwap() {
 	std::swap(damage[0], damage[1]);
 	std::swap(spare[0], spare[1]);
 	std::swap(gzone[0], gzone[1]);
+	std::swap(emblem[0], emblem[1]);
 	std::swap(remove[0], remove[1]);
 	std::swap(extra[0], extra[1]);
 	std::swap(extra_p_count[0], extra_p_count[1]);
@@ -925,6 +957,11 @@ void ClientField::ReplaySwap() {
 			(*cit)->is_moving = false;
 		}
 		for(auto cit = gzone[p].begin(); cit != gzone[p].end(); ++cit) {
+			(*cit)->controler = 1 - (*cit)->controler;
+			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
+			(*cit)->is_moving = false;
+		}
+		for(auto cit = emblem[p].begin(); cit != emblem[p].end(); ++cit) {
 			(*cit)->controler = 1 - (*cit)->controler;
 			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
 			(*cit)->is_moving = false;
@@ -1003,6 +1040,10 @@ void ClientField::RefreshAllCards() {
 			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
 			(*cit)->is_moving = false;
 		}
+		for(auto cit = emblem[p].begin(); cit != emblem[p].end(); ++cit) {
+			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
+			(*cit)->is_moving = false;
+		}
 		for(auto cit = remove[p].begin(); cit != remove[p].end(); ++cit) {
 			GetCardLocation(*cit, &(*cit)->curPos, &(*cit)->curRot, true);
 			(*cit)->is_moving = false;
@@ -1069,6 +1110,12 @@ void ClientField::GetChainLocation(int controler, int location, int sequence, ir
 		t->X = (matManager.vFieldOrder[controler][rule][0].Pos.X + matManager.vFieldOrder[controler][rule][1].Pos.X) / 2;
 		t->Y = (matManager.vFieldOrder[controler][rule][0].Pos.Y + matManager.vFieldOrder[controler][rule][2].Pos.Y) / 2;
 		t->Z = order[controler].size() * 0.01f + 0.03f;
+		break;
+	}
+	case LOCATION_EMBLEM: {
+		t->X = (matManager.vFieldOrder[controler][rule][0].Pos.X + matManager.vFieldOrder[controler][rule][1].Pos.X) / 2;
+		t->Y = (matManager.vFieldOrder[controler][rule][0].Pos.Y + matManager.vFieldOrder[controler][rule][2].Pos.Y) / 2;
+		t->Z = emblem[controler].size() * 0.01f + 0.03f;
 		break;
 	}
 	case LOCATION_DAMAGE: {
@@ -1239,6 +1286,9 @@ void ClientField::GetCardLocation(ClientCard* pcard, irr::core::vector3df* t, ir
 				r->Y = 3.1415926f;
 			else r->Y = 0.0f;
 		}
+		if(sequence == 2){
+			t->Z =0.01f + 0.01f * order[controler].size();
+		}
 		break;
 	}
 	case LOCATION_GRAVE: {
@@ -1280,6 +1330,22 @@ void ClientField::GetCardLocation(ClientCard* pcard, irr::core::vector3df* t, ir
 			r->Y = 0.0f;
 			r->Z = 0.0f;
 		} else {
+			r->X = 0.0f;
+			r->Y = 0.0f;
+			r->Z = 3.1415926f;
+		}
+		break;
+	}
+	case LOCATION_EMBLEM: {
+		t->X = (matManager.vFieldEmblem[controler][rule][0].Pos.X + matManager.vFieldEmblem[controler][rule][1].Pos.X) / 2;
+		t->Y = (matManager.vFieldEmblem[controler][rule][0].Pos.Y + matManager.vFieldEmblem[controler][rule][2].Pos.Y) / 2;
+		t->Z = 0.01f + 0.01f * sequence;
+		if (controler == 0) {
+			r->X = 0.0f;
+			r->Y = 0.0f;
+			r->Z = 0.0f;
+		}
+		else {
 			r->X = 0.0f;
 			r->Y = 0.0f;
 			r->Z = 3.1415926f;
@@ -1345,13 +1411,33 @@ void ClientField::GetCardLocation(ClientCard* pcard, irr::core::vector3df* t, ir
 		t->Y = (matManager.vFieldGzone[controler][rule][0].Pos.Y + matManager.vFieldGzone[controler][rule][2].Pos.Y) / 2;
 		t->Z = 0.01f + 0.01f * sequence;
 		if (controler == 0) {
-			r->X = 0.0f;
-			r->Y = 0.0f;
-			r->Z = 0.0f;
+			if (pcard->position & POS_DEFENSE) {
+				r->X = 0.0f;
+				r->Z = -3.1415926f / 2.0f;
+				if (pcard->position & POS_FACEDOWN)
+					r->Y = 3.1415926f + 0.001f;
+				else r->Y = 0.0f;
+			} else {
+				r->X = 0.0f;
+				r->Z = 0.0f;
+				if (pcard->position & POS_FACEDOWN)
+					r->Y = 3.1415926f;
+				else r->Y = 0.0f;
+			}
 		} else {
-			r->X = 0.0f;
-			r->Y = 0.0f;
-			r->Z = 3.1415926f;
+			if (pcard->position & POS_DEFENSE) {
+				r->X = 0.0f;
+				r->Z = 3.1415926f / 2.0f;
+				if (pcard->position & POS_FACEDOWN)
+					r->Y = 3.1415926f + 0.001f;
+				else r->Y = 0.0f;
+			} else {
+				r->X = 0.0f;
+				r->Z = 3.1415926f;
+				if (pcard->position & POS_FACEDOWN)
+					r->Y = 3.1415926f;
+				else r->Y = 0.0f;
+			}
 		}
 		break;
 	}

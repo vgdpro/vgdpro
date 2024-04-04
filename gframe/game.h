@@ -618,7 +618,7 @@ extern Game* mainGame;
 #define COMMAND_OPERATION	0x0100
 #define COMMAND_RESET		0x0200
 
-#define POSITION_HINT		0x8000
+#define POSITION_HINT		0x200//0x8000
 
 #define BUTTON_LAN_MODE				100
 #define BUTTON_SINGLE_MODE			101
