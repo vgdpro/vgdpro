@@ -18,7 +18,6 @@ struct Deck {
 	std::vector<code_pointer> main;
 	std::vector<code_pointer> extra;
 	std::vector<code_pointer> side;
-	uint16 deckcountry = 0;
 	int trigger_card = 0;
 	int trigger_heal =0;
 	int trigger_crit =0;
@@ -36,7 +35,6 @@ struct Deck {
 		main.clear();
 		extra.clear();
 		side.clear();
-		deckcountry = 0;
 		trigger_card = 0;
 		trigger_heal = 0;
 		trigger_crit = 0;
@@ -66,7 +64,7 @@ public:
 	bool LoadDeck(irr::gui::IGUIComboBox* cbCategory, irr::gui::IGUIComboBox* cbDeck);
 	FILE* OpenDeckFile(const wchar_t* file, const char* mode);
 	IReadFile* OpenDeckReader(const wchar_t* file);
-	bool CheckCard(Deck& deck, CardData cd);
+	bool CheckCard(Deck& deck, CardDataC cd);
 	bool LoadDeck(const wchar_t* file, bool is_packlist = false);
 	bool LoadDeck(std::istringstream* deckStream, bool is_packlist = false);
 	bool SaveDeck(Deck& deck, const wchar_t* file);

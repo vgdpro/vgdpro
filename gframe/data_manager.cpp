@@ -81,17 +81,18 @@ bool DataManager::LoadDB(const wchar_t* wfile) {
 			cd.race = sqlite3_column_int(pStmt, 8);
 			cd.attribute = sqlite3_column_int(pStmt, 9);
 			cd.category = sqlite3_column_int(pStmt, 10);
+			cd.country = sqlite3_column_int(pStmt, 11);
 			_datas[cd.code] = cd;
-			if(const char* text = (const char*)sqlite3_column_text(pStmt, 12)) {
+			if(const char* text = (const char*)sqlite3_column_text(pStmt, 13)) {
 				BufferIO::DecodeUTF8(text, strBuffer);
 				cs.name = strBuffer;
 			}
-			if(const char* text = (const char*)sqlite3_column_text(pStmt, 13)) {
+			if(const char* text = (const char*)sqlite3_column_text(pStmt, 14)) {
 				BufferIO::DecodeUTF8(text, strBuffer);
 				cs.text = strBuffer;
 			}
 			for(int i = 0; i < 16; ++i) {
-				if(const char* text = (const char*)sqlite3_column_text(pStmt, i + 14)) {
+				if(const char* text = (const char*)sqlite3_column_text(pStmt, i + 15)) {
 					BufferIO::DecodeUTF8(text, strBuffer);
 					cs.desc[i] = strBuffer;
 				}
@@ -188,6 +189,31 @@ bool DataManager::GetData(unsigned int code, CardData* pData) {
 		pData->lscale = data.lscale;
 		pData->rscale = data.rscale;
 		pData->link_marker = data.link_marker;
+		pData->country = data.country;
+	}
+	return true;
+}
+bool DataManager::GetData(unsigned int code, CardDataC* pData) {
+	code_pointer cdit = _datas.find(code);
+	if(cdit == _datas.end())
+		return false;
+	auto& data = cdit->second;
+	if (pData) {
+		pData->code = data.code;
+		pData->alias = data.alias;
+		memcpy(pData->setcode, data.setcode, SIZE_SETCODE);
+		pData->type = data.type;
+		pData->level = data.level;
+		pData->attribute = data.attribute;
+		pData->race = data.race;
+		pData->attack = data.attack;
+		pData->defense = data.defense;
+		pData->lscale = data.lscale;
+		pData->rscale = data.rscale;
+		pData->link_marker = data.link_marker;
+		pData->country = data.country;
+		pData->category = data.category;
+		pData->ot = data.ot;
 	}
 	return true;
 }
@@ -301,7 +327,7 @@ const wchar_t* DataManager::FormatAttribute(int attribute) {
 	wchar_t* p = attBuffer;
 	unsigned filter = 1;
 	int i = 1010;
-	for(; filter != 0x80; filter <<= 1, ++i) {
+	for(; filter != 0x40; filter <<= 1, ++i) {
 		if(attribute & filter) {
 			BufferIO::CopyWStrRef(GetSysString(i), p, 16);
 			*p = L'|';

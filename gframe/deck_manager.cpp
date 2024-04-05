@@ -145,13 +145,18 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 	deck.clear();
 	int code;
 	int errorcode = 0;
-	uint16_t deckcountry = 0;
-	CardData cd;
-	for(int i=0; i<(mainc+extrac);++i){
-		if(deckcountry == 0 && (!(cd.country & 0x1)) && (cd.country != 0 && (cd.country & (cd.country - 1)) == 0)){
-			deckcountry = cd.country;
-		}
-	}
+	CardDataC cd;
+	// for(int i=0; i<(mainc+extrac);++i){
+	// 	code = dbuf[i];
+	// 	if(!dataManager.GetData(code, &cd)) {
+	// 		errorcode = code;
+	// 		continue;
+	// 	}
+	// 	int country = cd.country & 0x0FFF;
+	// 	if(deck.deckcountry == 0 && (!(country & 0x1)) && (country != 0 && (country & (country - 1)) == 0)){
+	// 		deck.deckcountry = country;
+	// 	}
+	// }
 	for(int i = 0; i < mainc; ++i) {
 		code = dbuf[i];
 		if(!dataManager.GetData(code, &cd)) {
@@ -195,16 +200,16 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 	// }
 	return errorcode;
 }
-bool DeckManager::CheckCard(Deck& deck, CardData cd)
+bool DeckManager::CheckCard(Deck& deck, CardDataC cd)
 {
-	//势力
-	if (deck.deckcountry != 0 || cd.country & 0x1)
-	{
-		if (!cd.country & deck.deckcountry)
-		{
-			return false;
-		}
-	}
+	// //势力
+	// if (deck.deckcountry != 0 || cd.country & 0x1)
+	// {
+	// 	if (!(cd.country & deck.deckcountry) && !(cd.country & 0x1))
+	// 	{
+	// 		return false;
+	// 	}
+	// }
 
 	//触发
 	if (!(cd.race & RACE_WARRIOR))
@@ -266,7 +271,7 @@ bool DeckManager::CheckCard(Deck& deck, CardData cd)
 	}
 
 	//结晶碎片
-	if (cd.attribute == 1016)
+	if (cd.attribute & ATTRIBUTE_DEVINE)
 	{
 		if (deck.regalis_piece)
 		{

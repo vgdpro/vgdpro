@@ -1498,7 +1498,8 @@ void DeckBuilder::FilterCards() {
 				match = elements_iterator->setcode && data.is_setcode(elements_iterator->setcode);
 			} else {
 				int trycode = BufferIO::GetVal(elements_iterator->keyword.c_str());
-				bool tryresult = dataManager.GetData(trycode, 0);
+				CardData cd;
+				bool tryresult = dataManager.GetData(trycode, &cd);
 				if(!tryresult) {
 					match = CardNameContains(text.name.c_str(), elements_iterator->keyword.c_str())
 						|| text.text.find(elements_iterator->keyword) != std::wstring::npos
@@ -1830,7 +1831,7 @@ void DeckBuilder::pop_main(int seq) {
 	auto& container = deckManager.current_deck.main;
 	Deck& deck = deckManager.current_deck;
 	auto& pointer =std::next(container.begin(), seq);
-	CardData cd = (*pointer)->second;
+	CardDataC cd = (*pointer)->second;
 	if (!(cd.race & RACE_WARRIOR))
 	{
 		if(cd.race & RACE_SPELLCASTER){
@@ -1863,7 +1864,7 @@ void DeckBuilder::pop_extra(int seq) {
 	auto& container = deckManager.current_deck.extra;
 	Deck& deck = deckManager.current_deck;
 	auto& pointer =std::next(container.begin(), seq);
-	CardData cd = (*pointer)->second;
+	CardDataC cd = (*pointer)->second;
 	if (!(cd.race & RACE_WARRIOR))
 	{
 		if(cd.race & RACE_SPELLCASTER){
