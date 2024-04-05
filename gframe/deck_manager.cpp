@@ -187,17 +187,18 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 				deck.extra.push_back(dataManager.GetCodePointer(code));
 		}
 	}
-	// for(int i = 0; i < sidec; ++i) {
-	// 	code = dbuf[mainc +extrac + i];
-	// 	if(!dataManager.GetData(code, &cd)) {
-	// 		errorcode = code;
-	// 		continue;
-	// 	}
-	// 	if(cd.type & TYPE_TOKEN)
-	// 		continue;
-	// 	if(deck.side.size() < 15)
-	// 		deck.side.push_back(dataManager.GetCodePointer(code));
-	// }
+	for(int i = 0; i < sidec; ++i) {
+		code = dbuf[mainc +extrac + i];
+		if(!dataManager.GetData(code, &cd)) {
+			errorcode = code;
+			continue;
+		}
+		if(cd.type & TYPE_TOKEN)
+			continue;
+		if(deck.side.size() < 15)
+			if(CheckCard(deck,cd))
+				deck.side.push_back(dataManager.GetCodePointer(code));
+	}
 	return errorcode;
 }
 bool DeckManager::CheckCard(Deck& deck, CardDataC cd)

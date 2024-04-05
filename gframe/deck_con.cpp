@@ -1814,17 +1814,17 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 	return true;
 }
 bool DeckBuilder::push_side(code_pointer pointer, int seq) {
-	// auto& container = deckManager.current_deck.side;
-	// int maxc = mainGame->is_siding ? 20 : 15;
-	// if((int)container.size() >= maxc)
-	// 	return false;
-	// if(seq >= 0 && seq < (int)container.size())
-	// 	container.insert(container.begin() + seq, pointer);
-	// else
-	// 	container.push_back(pointer);
-	// is_modified = true;
-	// GetHoveredCard();
-	// return true;
+	auto& container = deckManager.current_deck.side;
+	int maxc = mainGame->is_siding ? 20 : 16;
+	if((int)container.size() >= maxc)
+		return false;
+	if(seq >= 0 && seq < (int)container.size())
+		container.insert(container.begin() + seq, pointer);
+	else
+		container.push_back(pointer);
+	is_modified = true;
+	GetHoveredCard();
+	return true;
 	return false;
 }
 void DeckBuilder::pop_main(int seq) {
@@ -1893,11 +1893,10 @@ void DeckBuilder::pop_extra(int seq) {
 	GetHoveredCard();
 }
 void DeckBuilder::pop_side(int seq) {
-	// auto& container = deckManager.current_deck.side;
-	// container.erase(container.begin() + seq);
-	// is_modified = true;
-	// GetHoveredCard();
-	
+	auto& container = deckManager.current_deck.side;
+	container.erase(container.begin() + seq);
+	is_modified = true;
+	GetHoveredCard();
 }
 bool DeckBuilder::check_limit(code_pointer pointer) {
 	unsigned int limitcode = pointer->second.alias ? pointer->second.alias : pointer->first;
