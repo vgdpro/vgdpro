@@ -1083,7 +1083,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					if(push_side(pointer))
 						pop_extra(hovered_seq);
 				} else {
-					if(push_extra(pointer) || push_main(pointer))
+					if(push_main(pointer)||push_extra(pointer))
 						pop_side(hovered_seq);
 				}
 				break;
@@ -1769,7 +1769,9 @@ bool DeckBuilder::push_main(code_pointer pointer, int seq) {
 	// {
 	// 	return false;
 	// }
-	
+	if(deckManager.CheckCard(deckManager.current_deck,pointer->second) == false){
+		return false;
+	}
 	if((int)container.size() >= maxc)
 		return false;
 	if(seq >= 0 && seq < (int)container.size())
@@ -1791,7 +1793,15 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 	// {
 	// 	return false;
 	// }
-	
+	//检查rider等级
+	for(auto& pcard : container){
+		if(pcard->second.level == pointer->second.level){
+			return false;
+		}
+	}
+	if(deckManager.CheckCard(deckManager.current_deck,pointer->second) == false){
+		return false;
+	}
 	if((int)container.size() >= maxc)
 		return false;
 	if(seq >= 0 && seq < (int)container.size())
@@ -1818,12 +1828,65 @@ bool DeckBuilder::push_side(code_pointer pointer, int seq) {
 }
 void DeckBuilder::pop_main(int seq) {
 	auto& container = deckManager.current_deck.main;
+	Deck& deck = deckManager.current_deck;
+	auto& pointer =std::next(container.begin(), seq);
+	CardData cd = (*pointer)->second;
+	if (!(cd.race & RACE_WARRIOR))
+	{
+		if(cd.race & RACE_SPELLCASTER){
+			deck.trigger_crit--;
+			deck.trigger_card--;
+		}
+		if(cd.race & RACE_FAIRY){
+			deck.trigger_draw--;
+			deck.trigger_card--;
+		}
+		if(cd.race & RACE_FIEND){
+			deck.trigger_heal--;
+			deck.trigger_card--;
+		}	
+		if(cd.race & RACE_ZOMBIE){
+			deck.trigger_front--;
+			deck.trigger_card--;
+		}	
+		if(cd.race & RACE_MACHINE){
+			deck.trigger_over == false;
+			deck.trigger_card--;
+		}			
+	}
+
 	container.erase(container.begin() + seq);
 	is_modified = true;
 	GetHoveredCard();
 }
 void DeckBuilder::pop_extra(int seq) {
 	auto& container = deckManager.current_deck.extra;
+	Deck& deck = deckManager.current_deck;
+	auto& pointer =std::next(container.begin(), seq);
+	CardData cd = (*pointer)->second;
+	if (!(cd.race & RACE_WARRIOR))
+	{
+		if(cd.race & RACE_SPELLCASTER){
+			deck.trigger_crit--;
+			deck.trigger_card--;
+		}
+		if(cd.race & RACE_FAIRY){
+			deck.trigger_draw--;
+			deck.trigger_card--;
+		}
+		if(cd.race & RACE_FIEND){
+			deck.trigger_heal--;
+			deck.trigger_card--;
+		}	
+		if(cd.race & RACE_ZOMBIE){
+			deck.trigger_front--;
+			deck.trigger_card--;
+		}	
+		if(cd.race & RACE_MACHINE){
+			deck.trigger_over == false;
+			deck.trigger_card--;
+		}			
+	}
 	container.erase(container.begin() + seq);
 	is_modified = true;
 	GetHoveredCard();

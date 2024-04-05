@@ -240,8 +240,8 @@ Materials::Materials() {
 	SetS3DVertex(vFieldOrder[0][1], 1.2f, 1.4f, 2.0f, 2.6f, 0, 1, 0, 0, 0, 0);
 	SetS3DVertex(vFieldOrder[1][1], 6.75f, -1.4f, 5.9f, -2.6f, 0, 1, 0, 0, 0, 0);
 	//Damage
-	SetS3DVertex(vFieldDamage[0][1], 0.2f, 2.7f, 1.0f, 3.9f, 0, 1, 0, 0, 0, 0);
-	SetS3DVertex(vFieldDamage[1][1], 7.7f, -2.7f, 6.9f, -3.9f, 0, 1, 0, 0, 0, 0);
+	SetS3DVertex(vFieldDamage[0][1], -0.4f, 2.7f, 1.3f, 3.9f, 0, 1, 0, 0, 0, 0);
+	SetS3DVertex(vFieldDamage[1][1], 8.3f, -2.7f, 6.6f, -3.9f, 0, 1, 0, 0, 0, 0);
 	//spare
 	SetS3DVertex(vFieldSpare[0][1], -0.8f, 1.4f, 0.05f, 2.6f, 0, 1, 0, 0, 0, 0);
 	SetS3DVertex(vFieldSpare[1][1], 8.7f, -1.4f, 7.85f, -2.6f, 0, 1, 0, 0, 0, 0);

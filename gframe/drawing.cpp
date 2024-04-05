@@ -741,22 +741,17 @@ void Game::DrawMisc() {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.grave[0].size()), Resize(904, 563, 1025, 553), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.exile[0].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.exile[0].size()), Resize(906, 376, 1061, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+			DrawShadowText(numFont, dataManager.GetNumString(dField.exile[0].size()), Resize(1015, 376, 959, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
-		if (dField.order[0].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.order[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
-		}
-		if (dField.damage[0].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.damage[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		if (dField.order[0].size() || dField.szone[0][2]) {
+			int shownum = dField.szone[0][2]? dField.order[0].size()+1:dField.order[0].size();
+			DrawShadowText(numFont, dataManager.GetNumString(shownum), Resize(464, 457, 479, 462), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.spare[0].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.spare[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
-		}
-		if (dField.gzone[0].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.gzone[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+			DrawShadowText(numFont, dataManager.GetNumString(dField.spare[0].size()), Resize(304, 457, 319, 462), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.emblem[0].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.emblem[0].size()), Resize(786, 376, 901, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+			DrawShadowText(numFont, dataManager.GetNumString(dField.emblem[0].size()), Resize(384, 457, 399, 462), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.remove[0].size()) {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.remove[0].size()), Resize(845, 376, 981, 381), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
@@ -764,11 +759,11 @@ void Game::DrawMisc() {
 	}
 	if(dField.extra[1].size()) {
 		int offset = (dField.extra[1].size() >= 10) ? 0 : numFont->getDimension(dataManager.GetNumString(1)).Width;
-		DrawShadowText(numFont, dataManager.GetNumString(dField.extra[1].size()), Resize(808, 208, 900, 233, offset, 0, 0, 0), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
-		DrawShadowText(numFont, dataManager.GetNumString(dField.extra_p_count[1], true), Resize(828, 208, 920, 233), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		DrawShadowText(numFont, dataManager.GetNumString(dField.extra[1].size()), Resize(445, 250, 454, 300, offset, 0, 0, 0), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		DrawShadowText(numFont, dataManager.GetNumString(dField.extra_p_count[1], true), Resize(465, 250, 474, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 	}
 	if(dField.deck[1].size()) {
-		DrawShadowText(numFont, dataManager.GetNumString(dField.deck[1].size()), Resize(465, 208, 483, 233), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		DrawShadowText(numFont, dataManager.GetNumString(dField.deck[1].size()), Resize(515, 250, 524, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 	}
 	if (rule == 0) {
 		if (dField.grave[1].size()) {
@@ -779,25 +774,20 @@ void Game::DrawMisc() {
 		}
 	} else {
 		if (dField.grave[1].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.grave[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+			DrawShadowText(numFont, dataManager.GetNumString(dField.grave[1].size()), Resize(465, 208, 483, 233), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.exile[1].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.exile[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+			DrawShadowText(numFont, dataManager.GetNumString(dField.exile[1].size()), Resize(300, 311, 445, 341), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
-		if (dField.order[1].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.order[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
-		}
-		if (dField.damage[1].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.damage[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+		if (dField.order[1].size() || dField.szone[1][2]) {
+			int shownum = dField.szone[1][2]? dField.order[1].size()+1:dField.order[1].size();
+			DrawShadowText(numFont, dataManager.GetNumString(dField.order[1].size()), Resize(813, 250, 822, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.spare[1].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.spare[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
-		}
-		if (dField.gzone[1].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.gzone[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+			DrawShadowText(numFont, dataManager.GetNumString(dField.spare[1].size()), Resize(833, 250, 852, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.emblem[1].size()) {
-			DrawShadowText(numFont, dataManager.GetNumString(dField.emblem[1].size()), Resize(455, 250, 464, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
+			DrawShadowText(numFont, dataManager.GetNumString(dField.emblem[1].size()), Resize(873, 250, 882, 300), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);
 		}
 		if (dField.remove[1].size()) {
 			DrawShadowText(numFont, dataManager.GetNumString(dField.remove[1].size()), Resize(420, 311, 464, 282), Resize(0, 1, 2, 1), 0xffffff00, 0xff000000, true, false, 0);

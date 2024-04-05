@@ -164,14 +164,9 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 			deck.main.push_back(dataManager.GetCodePointer(code));
 			continue;
 		}
-		else if (deckcountry != 0 || cd.country & 0x1)
-		{
-			if(!cd.country&deckcountry){
-				continue;
-			}
-		}
-		else if(deck.main.size() < 50) {
-			deck.main.push_back(dataManager.GetCodePointer(code));
+		else if(deck.main.size() < 51) {
+			if(CheckCard(deck,cd))
+				deck.main.push_back(dataManager.GetCodePointer(code));
 		}
 	}
 	for(int i = 0; i < extrac; ++i) {
@@ -182,15 +177,9 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 		}
 		if(cd.type & TYPE_TOKEN)
 			continue;
-		else if (deckcountry != 0 || cd.country & 0x1)
-		{
-			if (!cd.country & deckcountry)
-			{
-				continue;
-			}
-		}
-		else if(deck.extra.size() < 15){
-			deck.extra.push_back(dataManager.GetCodePointer(code));
+		else if(deck.extra.size() < 30){
+			if(CheckCard(deck,cd))
+				deck.extra.push_back(dataManager.GetCodePointer(code));
 		}
 	}
 	// for(int i = 0; i < sidec; ++i) {
@@ -205,6 +194,90 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 	// 		deck.side.push_back(dataManager.GetCodePointer(code));
 	// }
 	return errorcode;
+}
+bool DeckManager::CheckCard(Deck& deck, CardData cd)
+{
+	//势力
+	if (deck.deckcountry != 0 || cd.country & 0x1)
+	{
+		if (!cd.country & deck.deckcountry)
+		{
+			return false;
+		}
+	}
+
+	//触发
+	if (!(cd.race & RACE_WARRIOR))
+	{
+		if (deck.trigger_card >= 16)
+		{
+			return false;
+		}
+		if(cd.race & RACE_SPELLCASTER){
+			if (deck.trigger_crit >= 8)
+			{
+				return false;
+			}
+			else{
+				deck.trigger_crit++;
+				deck.trigger_card++;
+			}
+		}
+		if(cd.race & RACE_FAIRY){
+			if (deck.trigger_draw >= 8)
+			{
+				return false;
+			}
+			else{
+				deck.trigger_draw++;
+				deck.trigger_card++;
+			}
+		}
+		if(cd.race & RACE_FIEND){
+			if (deck.trigger_heal >= 4)
+			{
+				return false;
+			}
+			else{
+				deck.trigger_heal++;
+				deck.trigger_card++;
+			}
+		}	
+		if(cd.race & RACE_ZOMBIE){
+			if (deck.trigger_front >= 8)
+			{
+				return false;
+			}
+			else{
+				deck.trigger_front++;
+				deck.trigger_card++;
+			}
+		}	
+		if(cd.race & RACE_MACHINE){
+			if (deck.trigger_over)
+			{
+				return false;
+			}
+			else{
+				deck.trigger_over = true;
+				deck.trigger_card++;
+			}
+		}			
+	}
+
+	//结晶碎片
+	if (cd.attribute == 1016)
+	{
+		if (deck.regalis_piece)
+		{
+			return false;
+		}
+		else
+		{
+			deck.regalis_piece = true;
+		}
+	}
+	return true;
 }
 bool DeckManager::LoadSide(Deck& deck, int* dbuf, int mainc, int sidec) {
 	std::unordered_map<int, int> pcount;
