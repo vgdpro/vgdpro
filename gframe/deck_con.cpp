@@ -1794,13 +1794,27 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 	// {
 	// 	return false;
 	// }
+	Deck& deck = deckManager.current_deck;
+	for(auto& pcard : container){
+		if(pcard->second.country == 0x200){
+			if (pcard->second.code == 10602015)
+				deck.monster_marble_dragon++;
+			deck.monster_marble++;
+		}
+		else if (pcard->second.code == 10409097 || pcard->second.is_setcode(0xc042)){
+			deck.disaster++;
+		}
+	}
 	//检查rider等级
 	for(auto& pcard : container){
-		if(pcard->second.level == pointer->second.level){
+		if(pcard->second.level == pointer->second.level && (pointer->second.type & TYPE_MONSTER || pointer->second.is_setcode(0xc042))){
 			return false;
 		}
 	}
-	if(deckManager.CheckCard(deckManager.current_deck,pointer->second) == false){
+	if(!deckManager.CheckCard(deckManager.current_deck,pointer->second)){
+		return false;
+	}
+	if (!deckManager.CheckCardEx(deckManager.current_deck, pointer->second)) {
 		return false;
 	}
 	if((int)container.size() >= maxc)
@@ -1888,6 +1902,12 @@ void DeckBuilder::pop_extra(int seq) {
 			deck.trigger_card--;
 		}			
 	}
+	if (cd.code == 10409097 || cd.is_setcode(0xc042))
+		deck.disaster--;
+	if (cd.country == 0x200)
+		deck.monster_marble--;
+	if (cd.code == 10602015)
+		deck.monster_marble_dragon--;
 	container.erase(container.begin() + seq);
 	is_modified = true;
 	GetHoveredCard();

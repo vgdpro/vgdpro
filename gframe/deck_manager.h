@@ -22,7 +22,10 @@ struct Deck {
 	int trigger_heal =0;
 	int trigger_crit =0;
 	int trigger_draw =0;
-	int trigger_front =0;
+	int trigger_front = 0;
+	int monster_marble = 0;
+	int monster_marble_dragon = 0;
+	int disaster = 0;
 	bool trigger_over = false;
 	bool regalis_piece = false;
 	Deck() {}
@@ -40,6 +43,9 @@ struct Deck {
 		trigger_crit = 0;
 		trigger_draw = 0;
 		trigger_front = 0;
+		monster_marble = 0;
+		monster_marble_dragon = 0;
+		disaster = 0;
 		trigger_over = false;
 		regalis_piece = false;
 	}
@@ -65,6 +71,7 @@ public:
 	FILE* OpenDeckFile(const wchar_t* file, const char* mode);
 	IReadFile* OpenDeckReader(const wchar_t* file);
 	bool CheckCard(Deck& deck, CardDataC cd);
+	bool CheckCardEx(Deck& deck, CardDataC cd);
 	bool LoadDeck(const wchar_t* file, bool is_packlist = false);
 	bool LoadDeck(std::istringstream* deckStream, bool is_packlist = false);
 	bool SaveDeck(Deck& deck, const wchar_t* file);
