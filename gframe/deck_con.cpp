@@ -1764,8 +1764,6 @@ bool DeckBuilder::push_main(code_pointer pointer, int seq) {
 	// 	return false;
 	if(pointer->second.type & (TYPE_TOKEN | TYPE_TRAP))
 		return false;
-	if(pointer->second.type & (TYPE_TOKEN | TYPE_TRAP))
-		return false;
 	auto& container = deckManager.current_deck.main;
 	int maxc = mainGame->is_siding ? 64 : 50;
 	// if (!(deckManager.current_deck.deckcountry & pointer->second.country))
@@ -1788,7 +1786,7 @@ bool DeckBuilder::push_main(code_pointer pointer, int seq) {
 bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 	// if(!(pointer->second.type & (TYPE_FUSION | TYPE_SYNCHRO | TYPE_XYZ | TYPE_LINK)))
 	// 	return false;
-	if(pointer->second.type & TYPE_TOKEN)
+	if((pointer->second.type & TYPE_TOKEN) || (pointer->second.type & TYPE_TRAP && !pointer->second.type & TYPE_FUSION))
 		return false;
 	auto& container = deckManager.current_deck.extra;
 	Deck& deck = deckManager.current_deck;
