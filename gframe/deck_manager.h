@@ -23,9 +23,9 @@ struct Deck {
 	int trigger_crit =0;
 	int trigger_draw =0;
 	int trigger_front = 0;
-	int monster_marble = 0;
-	int monster_marble_dragon = 0;
-	int disaster = 0;
+	bool monster_marble = false;
+	bool monster_marble_dragon = false;
+	bool disaster = false;
 	bool trigger_over = false;
 	bool regalis_piece = false;
 	Deck() {}
@@ -43,9 +43,9 @@ struct Deck {
 		trigger_crit = 0;
 		trigger_draw = 0;
 		trigger_front = 0;
-		monster_marble = 0;
-		monster_marble_dragon = 0;
-		disaster = 0;
+		monster_marble = false;
+		monster_marble_dragon = false;
+		disaster = false;
 		trigger_over = false;
 		regalis_piece = false;
 	}

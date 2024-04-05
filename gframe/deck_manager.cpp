@@ -289,19 +289,9 @@ bool DeckManager::CheckCard(Deck& deck, CardDataC cd)
 bool DeckManager::CheckCardEx(Deck& deck, CardDataC cd)
 {
 	//龙树
-	if (deck.disaster == 0)
-	{
+	if (deck.disaster){
 		if (cd.code == 10409097 || cd.is_setcode(0xc042))
 		{
-			deck.disaster++;
-			return true;
-		}
-	}
-	else
-	{
-		if (cd.code == 10409097 || cd.is_setcode(0xc042))
-		{
-			deck.disaster++;
 			return true;
 		}
 		else if (cd.race & RACE_MACHINE)
@@ -309,31 +299,14 @@ bool DeckManager::CheckCardEx(Deck& deck, CardDataC cd)
 		return false;
 	}
 	//怪物弹珠
-	if (deck.monster_marble == 0)
-	{
+	if (deck.monster_marble){
 		if (cd.country == 0x200)
 		{
-			if (cd.code == 10602015 && deck.monster_marble_dragon == 0)
-				deck.monster_marble_dragon++;
-			deck.monster_marble++;
-			return true;
-		}
-	}
-	else
-	{
-		if (cd.country == 0x200)
-		{
-			deck.monster_marble++;
-			if (cd.code == 10602015 && deck.monster_marble_dragon == 0)
-			{
-				deck.monster_marble_dragon++;
-				return true;
-			}
-			else if (cd.code == 10602015)
+			if (cd.code == 10602015 && deck.monster_marble_dragon)
 				return false;
 			return true;
 		}
-		else return false;
+		return false;
 	}
 
 	return true;
