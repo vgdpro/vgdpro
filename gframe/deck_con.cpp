@@ -1816,6 +1816,10 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 bool DeckBuilder::push_side(code_pointer pointer, int seq) {
 	auto& container = deckManager.current_deck.side;
 	int maxc = mainGame->is_siding ? 20 : 16;
+
+	if(deckManager.CheckCard(deckManager.current_deck,pointer->second) == false){
+		return false;
+	}
 	if((int)container.size() >= maxc)
 		return false;
 	if(seq >= 0 && seq < (int)container.size())
