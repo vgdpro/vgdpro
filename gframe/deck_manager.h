@@ -18,6 +18,8 @@ struct Deck {
 	std::vector<code_pointer> main;
 	std::vector<code_pointer> extra;
 	std::vector<code_pointer> side;
+	std::vector<code_pointer> Gcheck;
+	uint16 deckcountry = 0;
 	int trigger_card = 0;
 	int trigger_heal =0;
 	int trigger_crit =0;
@@ -48,6 +50,7 @@ struct Deck {
 		disaster = false;
 		trigger_over = false;
 		regalis_piece = false;
+		deckcountry = 0;
 	}
 };
 

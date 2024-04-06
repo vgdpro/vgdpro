@@ -1447,13 +1447,12 @@ void DeckBuilder::FilterCards() {
 				        || (filter_lvtype == 5 && data.level >= filter_lv) || filter_lvtype == 6)
 					continue;
 			}
-			// if(filter_scltype) {
-			// 	if((filter_scltype == 1 && data.lscale != filter_scl) || (filter_scltype == 2 && data.lscale < filter_scl)
-			// 	        || (filter_scltype == 3 && data.lscale <= filter_scl) || (filter_scltype == 4 && (data.lscale > filter_scl))
-			// 	        || (filter_scltype == 5 && (data.lscale >= filter_scl)) || filter_scltype == 6
-			// 	        || !(data.type & TYPE_PENDULUM))
-			// 		continue;
-			// }
+			if(filter_scltype) {
+				if((filter_scltype == 1 && data.lscale != filter_scl) || (filter_scltype == 2 && data.lscale < filter_scl)
+				        || (filter_scltype == 3 && data.lscale <= filter_scl) || (filter_scltype == 4 && (data.lscale > filter_scl))
+				        || (filter_scltype == 5 && (data.lscale >= filter_scl)) || filter_scltype == 6)
+					continue;
+			}
 			break;
 		}
 		case 2: {
@@ -1476,17 +1475,9 @@ void DeckBuilder::FilterCards() {
 		if(filter_marks && (data.link_marker & filter_marks) != filter_marks)
 			continue;
 		if(filter_lm) {
-			if(filter_lm <= 3 && (!filterList->count(ptr->first) || (*filterList).at(ptr->first) != filter_lm - 1))
-				continue;
-			if(filter_lm == 4 && !(data.ot & AVAIL_OCG))
-				continue;
-			if(filter_lm == 5 && !(data.ot & AVAIL_TCG))
-				continue;
-			if(filter_lm == 6 && !(data.ot & AVAIL_SC))
-				continue;
-			if(filter_lm == 7 && !(data.ot & AVAIL_CUSTOM))
-				continue;
-			if(filter_lm == 8 && ((data.ot & AVAIL_OCGTCG) != AVAIL_OCGTCG))
+			unsigned filter = 1;
+			filter <<= filter_lm;
+			if(!(data.country & filter))
 				continue;
 		}
 		bool is_target = true;

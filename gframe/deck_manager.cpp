@@ -146,17 +146,17 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 	int code;
 	int errorcode = 0;
 	CardDataC cd;
-	// for(int i=0; i<(mainc+extrac);++i){
-	// 	code = dbuf[i];
-	// 	if(!dataManager.GetData(code, &cd)) {
-	// 		errorcode = code;
-	// 		continue;
-	// 	}
-	// 	int country = cd.country & 0x0FFF;
-	// 	if(deck.deckcountry == 0 && (!(country & 0x1)) && (country != 0 && (country & (country - 1)) == 0)){
-	// 		deck.deckcountry = country;
-	// 	}
-	// }
+	for(int i=0; i<(mainc+extrac);++i){
+		code = dbuf[i];
+		if(!dataManager.GetData(code, &cd)) {
+			errorcode = code;
+			continue;
+		}
+		int country = cd.country & 0x0FFF;
+		if(deck.deckcountry == 0 && (!(country & 0x1)) && (country != 0 && (country & (country - 1)) == 0)){
+			deck.deckcountry = country;
+		}
+	}
 	for(int i = 0; i < mainc; ++i) {
 		code = dbuf[i];
 		if(!dataManager.GetData(code, &cd)) {
@@ -203,14 +203,18 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 }
 bool DeckManager::CheckCard(Deck& deck, CardDataC cd)
 {
-	// //势力
-	// if (deck.deckcountry != 0 || cd.country & 0x1)
-	// {
-	// 	if (!(cd.country & deck.deckcountry) && !(cd.country & 0x1))
-	// 	{
-	// 		return false;
-	// 	}
-	// }
+	//势力
+	if (deck.deckcountry != 0 || cd.country & 0x1)
+	{
+		if (!(cd.country & deck.deckcountry) && !(cd.country & 0x1))
+		{
+			return false;
+		}
+		if (deck.deckcountry == 0x1)
+		{
+
+		}
+	}
 
 	//触发
 	if (!(cd.race & RACE_WARRIOR))

@@ -735,13 +735,17 @@ bool Game::Initialize() {
 	cbLimit->setMaxSelectionRows(10);
 	cbLimit->addItem(dataManager.GetSysString(1310));
 	cbLimit->addItem(dataManager.GetSysString(1316));
-	cbLimit->addItem(dataManager.GetSysString(1317));
 	cbLimit->addItem(dataManager.GetSysString(1318));
 	cbLimit->addItem(dataManager.GetSysString(1481));
 	cbLimit->addItem(dataManager.GetSysString(1482));
 	cbLimit->addItem(dataManager.GetSysString(1483));
 	cbLimit->addItem(dataManager.GetSysString(1484));
 	cbLimit->addItem(dataManager.GetSysString(1485));
+	cbLimit->addItem(dataManager.GetSysString(1486));
+	cbLimit->addItem(dataManager.GetSysString(1487));
+	cbLimit->addItem(dataManager.GetSysString(1488));
+	cbLimit->addItem(dataManager.GetSysString(1489));
+	cbLimit->addItem(dataManager.GetSysString(1490));
 	stAttribute = env->addStaticText(dataManager.GetSysString(1319), rect<s32>(10, 22 + 50 / 6, 70, 42 + 50 / 6), false, false, wFilter);
 	cbAttribute = env->addComboBox(rect<s32>(60, 20 + 50 / 6, 190, 40 + 50 / 6), wFilter, COMBOBOX_ATTRIBUTE);
 	cbAttribute->setMaxSelectionRows(10);

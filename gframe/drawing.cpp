@@ -1231,33 +1231,33 @@ void Game::DrawThumb(code_pointer cp, position2di pos, const std::unordered_map<
 			break;
 		}
 	}
-	bool showAvail = false;
-	bool showNotAvail = false;
-	int filter_lm = cbLimit->getSelected();
-	bool avail = !((filter_lm == 4 && !(cp->second.ot & AVAIL_OCG)
-				|| (filter_lm == 5 && !(cp->second.ot & AVAIL_TCG))
-				|| (filter_lm == 6 && !(cp->second.ot & AVAIL_SC))
-				|| (filter_lm == 7 && !(cp->second.ot & AVAIL_CUSTOM))
-				|| (filter_lm == 8 && (cp->second.ot & AVAIL_OCGTCG) != AVAIL_OCGTCG)));
-	if(filter_lm >= 4) {
-		showAvail = avail;
-		showNotAvail = !avail;
-	} else if(!(cp->second.ot & gameConf.defaultOT)) {
-		showNotAvail = true;
-	}
-	if(showAvail) {
-		if((cp->second.ot & AVAIL_OCG) && !(cp->second.ot & AVAIL_TCG))
-			driver->draw2DImage(imageManager.tOT, otloc, recti(0, 128, 128, 192), 0, 0, true);
-		else if((cp->second.ot & AVAIL_TCG) && !(cp->second.ot & AVAIL_OCG))
-			driver->draw2DImage(imageManager.tOT, otloc, recti(0, 192, 128, 256), 0, 0, true);
-	} else if(showNotAvail) {
-		if(cp->second.ot & AVAIL_OCG)
-			driver->draw2DImage(imageManager.tOT, otloc, recti(0, 0, 128, 64), 0, 0, true);
-		else if(cp->second.ot & AVAIL_TCG)
-			driver->draw2DImage(imageManager.tOT, otloc, recti(0, 64, 128, 128), 0, 0, true);
-		else if(!avail)
-			driver->draw2DImage(imageManager.tLim, otloc, recti(0, 0, 64, 64), 0, 0, true);
-	}
+	// bool showAvail = false;
+	// bool showNotAvail = false;
+	// int filter_lm = cbLimit->getSelected();
+	// bool avail = !((filter_lm == 4 && !(cp->second.ot & AVAIL_OCG)
+	// 			|| (filter_lm == 5 && !(cp->second.ot & AVAIL_TCG))
+	// 			|| (filter_lm == 6 && !(cp->second.ot & AVAIL_SC))
+	// 			|| (filter_lm == 7 && !(cp->second.ot & AVAIL_CUSTOM))
+	// 			|| (filter_lm == 8 && (cp->second.ot & AVAIL_OCGTCG) != AVAIL_OCGTCG)));
+	// if(filter_lm >= 4) {
+	// 	showAvail = avail;
+	// 	showNotAvail = !avail;
+	// } else if(!(cp->second.ot & gameConf.defaultOT)) {
+	// 	showNotAvail = true;
+	// }
+	// if(showAvail) {
+	// 	if((cp->second.ot & AVAIL_OCG) && !(cp->second.ot & AVAIL_TCG))
+	// 		driver->draw2DImage(imageManager.tOT, otloc, recti(0, 128, 128, 192), 0, 0, true);
+	// 	else if((cp->second.ot & AVAIL_TCG) && !(cp->second.ot & AVAIL_OCG))
+	// 		driver->draw2DImage(imageManager.tOT, otloc, recti(0, 192, 128, 256), 0, 0, true);
+	// } else if(showNotAvail) {
+	// 	if(cp->second.ot & AVAIL_OCG)
+	// 		driver->draw2DImage(imageManager.tOT, otloc, recti(0, 0, 128, 64), 0, 0, true);
+	// 	else if(cp->second.ot & AVAIL_TCG)
+	// 		driver->draw2DImage(imageManager.tOT, otloc, recti(0, 64, 128, 128), 0, 0, true);
+	// 	else if(!avail)
+	// 		driver->draw2DImage(imageManager.tLim, otloc, recti(0, 0, 64, 64), 0, 0, true);
+	// }
 }
 void Game::DrawDeckBd() {
 	wchar_t textBuffer[64];
@@ -1311,20 +1311,22 @@ void Game::DrawDeckBd() {
 			if(deckBuilder.hovered_pos == 2 && deckBuilder.hovered_seq == (int)i)
 				driver->draw2DRectangleOutline(Resize(313 + i * dx, 465, 359 + i * dx, 531));
 		}
-		//side deck
-		driver->draw2DRectangle(Resize(310, 537, 410, 557), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
-		driver->draw2DRectangleOutline(Resize(309, 536, 410, 557));
-		DrawShadowText(textFont, dataManager.GetSysString(1332), Resize(315, 537, 410, 557), Resize(1, 1, 1, 1), 0xffffffff, 0xff000000, false, true);
-		DrawShadowText(numFont, dataManager.numStrings[deckManager.current_deck.side.size()], Resize(380, 538, 440, 558), Resize(1, 1, 1, 1), 0xffffffff, 0xff000000, false, true);
-		driver->draw2DRectangle(Resize(310, 560, 797, 630), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
-		driver->draw2DRectangleOutline(Resize(309, 559, 797, 630));
-		if(deckManager.current_deck.side.size() <= 10)
-			dx = 436.0f / 9;
-		else dx = 436.0f / (deckManager.current_deck.side.size() - 1);
-		for(size_t i = 0; i < deckManager.current_deck.side.size(); ++i) {
-			DrawThumb(deckManager.current_deck.side[i], position2di(314 + i * dx, 564), deckBuilder.filterList);
-			if(deckBuilder.hovered_pos == 3 && deckBuilder.hovered_seq == (int)i)
-				driver->draw2DRectangleOutline(Resize(313 + i * dx, 563, 359 + i * dx, 629));
+		if(deckManager.current_deck.Gcheck.size() == 4){
+			//side deck
+			driver->draw2DRectangle(Resize(310, 537, 410, 557), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
+			driver->draw2DRectangleOutline(Resize(309, 536, 410, 557));
+			DrawShadowText(textFont, dataManager.GetSysString(1332), Resize(315, 537, 410, 557), Resize(1, 1, 1, 1), 0xffffffff, 0xff000000, false, true);
+			DrawShadowText(numFont, dataManager.numStrings[deckManager.current_deck.side.size()], Resize(380, 538, 440, 558), Resize(1, 1, 1, 1), 0xffffffff, 0xff000000, false, true);
+			driver->draw2DRectangle(Resize(310, 560, 797, 630), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
+			driver->draw2DRectangleOutline(Resize(309, 559, 797, 630));
+			if(deckManager.current_deck.side.size() <= 10)
+				dx = 436.0f / 9;
+			else dx = 436.0f / (deckManager.current_deck.side.size() - 1);
+			for(size_t i = 0; i < deckManager.current_deck.side.size(); ++i) {
+				DrawThumb(deckManager.current_deck.side[i], position2di(314 + i * dx, 564), deckBuilder.filterList);
+				if(deckBuilder.hovered_pos == 3 && deckBuilder.hovered_seq == (int)i)
+					driver->draw2DRectangleOutline(Resize(313 + i * dx, 563, 359 + i * dx, 629));
+			}
 		}
 	}
 	//search result
