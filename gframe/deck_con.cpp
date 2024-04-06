@@ -919,8 +919,8 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					mainGame->ebStar->setEnabled(false);
 					mainGame->ebScale->setEnabled(false);
 					mainGame->cbCardType2->clear();
-					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1080), 0);
-					mainGame->cbCardType2->addItem(dataManager.GetSysString(1070), TYPE_TRAP+TYPE_NORMAL);
+					mainGame->cbCardType2->addItem(dataManager.GetSysString(1080), 0);
+					mainGame->cbCardType2->addItem(dataManager.GetSysString(1070), TYPE_TRAP);
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1072), TYPE_TRAP+TYPE_COUNTER);
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1071), TYPE_TRAP+TYPE_FUSION+TYPE_COUNTER);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1067), TYPE_TRAP + TYPE_CONTINUOUS);
@@ -1788,7 +1788,10 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 	// 	return false;
 	if(pointer->second.type & TYPE_TOKEN)
 		return false;
+	if (pointer->second.type & TYPE_TRAP && !(pointer->second.type & TYPE_FUSION))
+		return false;
 	auto& container = deckManager.current_deck.extra;
+	Deck& deck = deckManager.current_deck;
 	int maxc = mainGame->is_siding ? 20 : 30;
 	// if (!(deckManager.current_deck.deckcountry & pointer->second.country))
 	// {
@@ -1796,11 +1799,49 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 	// }
 	//检查rider等级
 	for(auto& pcard : container){
-		if(pcard->second.level == pointer->second.level){
+		if(pcard->second.level == pointer->second.level && (pointer->second.type & TYPE_MONSTER || pointer->second.is_setcode(0xc042))){
 			return false;
 		}
 	}
-	if(deckManager.CheckCard(deckManager.current_deck,pointer->second) == false){
+
+	int monster_marble_chk = 0;
+	int monster_marble_dragon_chk = 0;
+	int disaster_chk = 0;
+	for(auto& pcard : container){
+		if(pcard->second.country == 0x200){
+			if (pcard->second.code == 10602015)
+				monster_marble_dragon_chk++;
+			monster_marble_chk++;
+		}
+		else if (pcard->second.code == 10409097 || pcard->second.is_setcode(0xc042)){
+			disaster_chk++;
+		}
+	}
+	if (monster_marble_chk != 0){
+		deck.monster_marble = true;
+		monster_marble_chk == 0;
+	}
+	else
+		deck.monster_marble = false;
+
+	if (monster_marble_dragon_chk != 0){
+		deck.monster_marble_dragon = true;
+		monster_marble_dragon_chk == 0;
+	}
+	else
+		deck.monster_marble_dragon = false;
+
+	if (disaster_chk != 0){
+		deck.disaster = true;
+		disaster_chk == 0;
+	}
+	else
+		deck.disaster = false;
+
+	if(!deckManager.CheckCard(deckManager.current_deck,pointer->second)){
+		return false;
+	}
+	if (!deckManager.CheckCardEx(deckManager.current_deck, pointer->second)) {
 		return false;
 	}
 	if((int)container.size() >= maxc)
