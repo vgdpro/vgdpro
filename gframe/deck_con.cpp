@@ -1836,6 +1836,14 @@ void DeckBuilder::pop_main(int seq) {
 	auto& container = deckManager.current_deck.main;
 	Deck& deck = deckManager.current_deck;
 	auto& pointer =std::next(container.begin(), seq);
+
+	CardDataC cd = (*pointer)->second;
+	auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(), cd.code);
+	if (it != deck.Gcheck.end()){
+		deck.Gcheck.erase(it);
+		deck.side.clear();
+	}
+	
 	container.erase(container.begin() + seq);
 	is_modified = true;
 	GetHoveredCard();
@@ -1844,6 +1852,14 @@ void DeckBuilder::pop_extra(int seq) {
 	auto& container = deckManager.current_deck.extra;
 	Deck& deck = deckManager.current_deck;
 	auto& pointer =std::next(container.begin(), seq);
+
+	CardDataC cd = (*pointer)->second;
+	auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(), cd.code);
+	if (it != deck.Gcheck.end()){
+		deck.Gcheck.erase(it);
+		deck.side.clear();
+	}
+	
 	container.erase(container.begin() + seq);
 	is_modified = true;
 	GetHoveredCard();
