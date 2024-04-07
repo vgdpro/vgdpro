@@ -1341,14 +1341,33 @@ void ClientField::GetCardLocation(ClientCard* pcard, irr::core::vector3df* t, ir
 		t->Y = (matManager.vFieldEmblem[controler][rule][0].Pos.Y + matManager.vFieldEmblem[controler][rule][2].Pos.Y) / 2;
 		t->Z = 0.01f + 0.01f * sequence;
 		if (controler == 0) {
-			r->X = 0.0f;
-			r->Y = 0.0f;
-			r->Z = 0.0f;
-		}
-		else {
-			r->X = 0.0f;
-			r->Y = 0.0f;
-			r->Z = 3.1415926f;
+			if (pcard->position & POS_DEFENSE) {
+				r->X = 0.0f;
+				r->Z = -3.1415926f / 2.0f;
+				if (pcard->position & POS_FACEDOWN)
+					r->Y = 3.1415926f + 0.001f;
+				else r->Y = 0.0f;
+			} else {
+				r->X = 0.0f;
+				r->Z = 0.0f;
+				if (pcard->position & POS_FACEDOWN)
+					r->Y = 3.1415926f;
+				else r->Y = 0.0f;
+			}
+		} else {
+			if (pcard->position & POS_DEFENSE) {
+				r->X = 0.0f;
+				r->Z = 3.1415926f / 2.0f;
+				if (pcard->position & POS_FACEDOWN)
+					r->Y = 3.1415926f + 0.001f;
+				else r->Y = 0.0f;
+			} else {
+				r->X = 0.0f;
+				r->Z = 3.1415926f;
+				if (pcard->position & POS_FACEDOWN)
+					r->Y = 3.1415926f;
+				else r->Y = 0.0f;
+			}
 		}
 		break;
 	}
