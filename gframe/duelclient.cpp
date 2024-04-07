@@ -1547,6 +1547,12 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		bool select_ready = mainGame->dField.select_min == 0;
 		mainGame->dField.select_ready = select_ready;
 		ClientCard* pcard;
+		FILE *fp = fopen("error.log", "at");
+		// for(int i = 0; i < len; ++i) {
+		// 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
+		// }
+		fprintf(fp, "阿巴阿巴%d\n", (int *)count);
+		fclose(fp);
 		for (int i = 0; i < count; ++i) {
 			code = (unsigned int)BufferIO::ReadInt32(pbuf);
 			c = mainGame->LocalPlayer(BufferIO::ReadInt8(pbuf));
@@ -1554,7 +1560,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			s = BufferIO::ReadInt8(pbuf);
 			ss = BufferIO::ReadInt8(pbuf);
 			if ((l & LOCATION_OVERLAY) > 0)
-				pcard = mainGame->dField.GetCard(c, l & 0x7f, s)->overlayed[ss];
+				pcard = mainGame->dField.GetCard(c, l & 0xff7f, s)->overlayed[ss];
 			else
 				pcard = mainGame->dField.GetCard(c, l, s);
 			if (code != 0 && pcard->code != code)
@@ -1563,7 +1569,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			mainGame->dField.selectable_cards.push_back(pcard);
 			pcard->is_selectable = true;
 			pcard->is_selected = false;
-			if (l & 0xf1)
+			if (l & 0xfff1)
 				panelmode = true;
 			if((l & LOCATION_HAND) && hand_count[c] >= 10) {
 				if(++select_count_in_hand[c] > 1)

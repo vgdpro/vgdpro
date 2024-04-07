@@ -652,6 +652,7 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 				}
 				case LOCATION_MZONE: {
 					ClientCard* pcard = mzone[command_controler][command_sequence];
+					selectable_cards.push_back(pcard);
 					for(int32 i = 0; i < (int32)pcard->overlayed.size(); ++i)
 						selectable_cards.push_back(pcard->overlayed[i]);
 					myswprintf(formatBuffer, L"%ls(%d)", dataManager.GetSysString(1007), pcard->overlayed.size());
@@ -1543,7 +1544,7 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 					if(!clicked_card)
 						break;
 					int command_flag = clicked_card->cmdFlag;
-					if(order[hovered_controler].size() != 0 && hovered_location == LOCATION_SZONE && hovered_sequence ==2)
+					if(clicked_card->overlayed.size() || (order[hovered_controler].size() != 0 && hovered_location == LOCATION_SZONE && hovered_sequence ==2))
 						command_flag |= COMMAND_LIST;
 					list_command = 0;
 					ShowMenu(command_flag, x, y);
