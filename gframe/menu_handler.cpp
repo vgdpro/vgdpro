@@ -20,12 +20,7 @@ void UpdateDeck() {
 	auto pdeck = deckbuf;
 	BufferIO::WriteInt32(pdeck, deckManager.current_deck.main.size());
 	BufferIO::WriteInt32(pdeck, deckManager.current_deck.extra.size());
-	if(deckManager.current_deck.Gcheck.size() ==4){
-		BufferIO::WriteInt32(pdeck, deckManager.current_deck.side.size());
-	}
-	else{
-		BufferIO::WriteInt32(pdeck, 0);
-	}
+	BufferIO::WriteInt32(pdeck, deckManager.current_deck.side.size());
 	for(size_t i = 0; i < deckManager.current_deck.main.size(); ++i)
 		BufferIO::WriteInt32(pdeck, deckManager.current_deck.main[i]->first);
 	for(size_t i = 0; i < deckManager.current_deck.extra.size(); ++i)

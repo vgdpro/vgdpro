@@ -1624,7 +1624,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			s = BufferIO::ReadInt8(pbuf);
 			ss = BufferIO::ReadInt8(pbuf);
 			if ((l & LOCATION_OVERLAY) > 0)
-				pcard = mainGame->dField.GetCard(c, l & 0x7f, s)->overlayed[ss];
+				pcard = mainGame->dField.GetCard(c, l & 0xff7f, s)->overlayed[ss];
 			else
 				pcard = mainGame->dField.GetCard(c, l, s);
 			if (code != 0 && pcard->code != code)
@@ -1648,7 +1648,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			s = BufferIO::ReadInt8(pbuf);
 			ss = BufferIO::ReadInt8(pbuf);
 			if ((l & LOCATION_OVERLAY) > 0)
-				pcard = mainGame->dField.GetCard(c, l & 0x7f, s)->overlayed[ss];
+				pcard = mainGame->dField.GetCard(c, l & 0xff7f, s)->overlayed[ss];
 			else
 				pcard = mainGame->dField.GetCard(c, l, s);
 			if (code != 0 && pcard->code != code)
@@ -1657,7 +1657,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			mainGame->dField.selectable_cards.push_back(pcard);
 			pcard->is_selectable = true;
 			pcard->is_selected = true;
-			if (l & 0xf1)
+			if (l & 0xfff1)
 				panelmode = true;
 			if((l & LOCATION_HAND) && hand_count[c] >= 10) {
 				if(++select_count_in_hand[c] > 1)
@@ -3084,7 +3084,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			int s = BufferIO::ReadInt8(pbuf);
 			int ss = BufferIO::ReadInt8(pbuf);
 			if ((l & LOCATION_OVERLAY) > 0)
-				pcards[i] = mainGame->dField.GetCard(c, l & 0x7f, s)->overlayed[ss];
+				pcards[i] = mainGame->dField.GetCard(c, l & 0xff7f, s)->overlayed[ss];
 			else
 				pcards[i] = mainGame->dField.GetCard(c, l, s);
 			pcards[i]->is_highlighting = true;

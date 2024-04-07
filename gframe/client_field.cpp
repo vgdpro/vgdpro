@@ -1063,7 +1063,7 @@ void ClientField::GetChainLocation(int controler, int location, int sequence, ir
 	t->Y = 0;
 	t->Z = 0;
 	int rule = (mainGame->dInfo.duel_rule >= 4) ? 1 : 0;
-	switch((location & 0x7f)) {
+	switch((location & 0xff7f)) {
 	case LOCATION_DECK: {
 		t->X = (matManager.vFieldDeck[controler][0].Pos.X + matManager.vFieldDeck[controler][1].Pos.X) / 2;
 		t->Y = (matManager.vFieldDeck[controler][0].Pos.Y + matManager.vFieldDeck[controler][2].Pos.Y) / 2;

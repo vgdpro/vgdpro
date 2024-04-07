@@ -141,7 +141,7 @@ int DeckManager::CheckDeck(Deck& deck, int lfhash, int rule) {
 	}
 	return 0;
 }
-int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec, bool is_packlist) {
+int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec, bool is_packlist, bool forduel) {
 	deck.clear();
 	int code;
 	int errorcode = 0;
@@ -176,18 +176,36 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 				deck.extra.push_back(dataManager.GetCodePointer(code));
 		}
 	}
-	for(int i = 0; i < sidec; ++i) {
-		code = dbuf[mainc +extrac + i];
-		if(!dataManager.GetData(code, &cd)) {
-			errorcode = code;
-			continue;
+	if(deck.Gcheck.size() == 4 && forduel){
+		for(int i = 0; i < sidec; ++i) {
+			code = dbuf[mainc +extrac + i];
+			if(!dataManager.GetData(code, &cd)) {
+				errorcode = code;
+				continue;
+			}
+			if(cd.type & TYPE_TOKEN)
+				continue;
+			if(deck.extra.size() < 15)
+				if(CheckCard(deck,cd))
+					deck.extra.push_back(dataManager.GetCodePointer(code));
 		}
-		if(cd.type & TYPE_TOKEN)
-			continue;
-		if(deck.side.size() < 15)
-			if(CheckCard(deck,cd))
-				deck.side.push_back(dataManager.GetCodePointer(code));
 	}
+	else if (!forduel)
+	{
+		for(int i = 0; i < sidec; ++i) {
+			code = dbuf[mainc +extrac + i];
+			if(!dataManager.GetData(code, &cd)) {
+				errorcode = code;
+				continue;
+			}
+			if(cd.type & TYPE_TOKEN)
+				continue;
+			if(deck.side.size() < 15)
+				if(CheckCard(deck,cd))
+					deck.side.push_back(dataManager.GetCodePointer(code));
+		}
+	}
+	
 	return errorcode;
 }
 bool DeckManager::CheckCard(Deck& deck, CardDataC cd)
