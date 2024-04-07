@@ -1841,7 +1841,6 @@ void DeckBuilder::pop_main(int seq) {
 	auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(), cd.code);
 	if (it != deck.Gcheck.end()){
 		deck.Gcheck.erase(it);
-		deck.side.clear();
 	}
 	
 	container.erase(container.begin() + seq);
@@ -1857,7 +1856,6 @@ void DeckBuilder::pop_extra(int seq) {
 	auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(), cd.code);
 	if (it != deck.Gcheck.end()){
 		deck.Gcheck.erase(it);
-		deck.side.clear();
 	}
 	
 	container.erase(container.begin() + seq);
