@@ -1476,7 +1476,7 @@ void DeckBuilder::FilterCards() {
 			continue;
 		if(filter_lm) {
 			unsigned filter = 1;
-			filter <<= filter_lm;
+			filter <<= (filter_lm-1);
 			if(!(data.country & filter))
 				continue;
 		}
@@ -1795,40 +1795,6 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 		}
 	}
 
-	int monster_marble_chk = 0;
-	int monster_marble_dragon_chk = 0;
-	int disaster_chk = 0;
-	for(auto& pcard : container){
-		if(pcard->second.country == 0x200){
-			if (pcard->second.code == 10602015)
-				monster_marble_dragon_chk++;
-			monster_marble_chk++;
-		}
-		else if (pcard->second.code == 10409097 || pcard->second.is_setcode(0xc042)){
-			disaster_chk++;
-		}
-	}
-	if (monster_marble_chk != 0){
-		deck.monster_marble = true;
-		monster_marble_chk == 0;
-	}
-	else
-		deck.monster_marble = false;
-
-	if (monster_marble_dragon_chk != 0){
-		deck.monster_marble_dragon = true;
-		monster_marble_dragon_chk == 0;
-	}
-	else
-		deck.monster_marble_dragon = false;
-
-	if (disaster_chk != 0){
-		deck.disaster = true;
-		disaster_chk == 0;
-	}
-	else
-		deck.disaster = false;
-
 	if(!deckManager.CheckCard(deckManager.current_deck,pointer->second)){
 		return false;
 	}
@@ -1848,7 +1814,10 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 bool DeckBuilder::push_side(code_pointer pointer, int seq) {
 	auto& container = deckManager.current_deck.side;
 	int maxc = mainGame->is_siding ? 20 : 16;
-
+	if(!(pointer->second.type & TYPE_SPIRIT))
+	{
+		return false;
+	}
 	if(deckManager.CheckCard(deckManager.current_deck,pointer->second) == false){
 		return false;
 	}
@@ -1867,31 +1836,6 @@ void DeckBuilder::pop_main(int seq) {
 	auto& container = deckManager.current_deck.main;
 	Deck& deck = deckManager.current_deck;
 	auto& pointer =std::next(container.begin(), seq);
-	CardDataC cd = (*pointer)->second;
-	if (!(cd.race & RACE_WARRIOR))
-	{
-		if(cd.race & RACE_SPELLCASTER){
-			deck.trigger_crit--;
-			deck.trigger_card--;
-		}
-		if(cd.race & RACE_FAIRY){
-			deck.trigger_draw--;
-			deck.trigger_card--;
-		}
-		if(cd.race & RACE_FIEND){
-			deck.trigger_heal--;
-			deck.trigger_card--;
-		}	
-		if(cd.race & RACE_ZOMBIE){
-			deck.trigger_front--;
-			deck.trigger_card--;
-		}	
-		if(cd.race & RACE_MACHINE){
-			deck.trigger_over == false;
-			deck.trigger_card--;
-		}			
-	}
-
 	container.erase(container.begin() + seq);
 	is_modified = true;
 	GetHoveredCard();
@@ -1900,30 +1844,6 @@ void DeckBuilder::pop_extra(int seq) {
 	auto& container = deckManager.current_deck.extra;
 	Deck& deck = deckManager.current_deck;
 	auto& pointer =std::next(container.begin(), seq);
-	CardDataC cd = (*pointer)->second;
-	if (!(cd.race & RACE_WARRIOR))
-	{
-		if(cd.race & RACE_SPELLCASTER){
-			deck.trigger_crit--;
-			deck.trigger_card--;
-		}
-		if(cd.race & RACE_FAIRY){
-			deck.trigger_draw--;
-			deck.trigger_card--;
-		}
-		if(cd.race & RACE_FIEND){
-			deck.trigger_heal--;
-			deck.trigger_card--;
-		}	
-		if(cd.race & RACE_ZOMBIE){
-			deck.trigger_front--;
-			deck.trigger_card--;
-		}	
-		if(cd.race & RACE_MACHINE){
-			deck.trigger_over == false;
-			deck.trigger_card--;
-		}			
-	}
 	container.erase(container.begin() + seq);
 	is_modified = true;
 	GetHoveredCard();

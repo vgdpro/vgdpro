@@ -18,18 +18,7 @@ struct Deck {
 	std::vector<code_pointer> main;
 	std::vector<code_pointer> extra;
 	std::vector<code_pointer> side;
-	std::vector<code_pointer> Gcheck;
-	uint16 deckcountry = 0;
-	int trigger_card = 0;
-	int trigger_heal =0;
-	int trigger_crit =0;
-	int trigger_draw =0;
-	int trigger_front = 0;
-	bool monster_marble = false;
-	bool monster_marble_dragon = false;
-	bool disaster = false;
-	bool trigger_over = false;
-	bool regalis_piece = false;
+	std::vector<uint32> Gcheck;
 	Deck() {}
 	Deck(const Deck& ndeck) {
 		main = ndeck.main;
@@ -40,17 +29,7 @@ struct Deck {
 		main.clear();
 		extra.clear();
 		side.clear();
-		trigger_card = 0;
-		trigger_heal = 0;
-		trigger_crit = 0;
-		trigger_draw = 0;
-		trigger_front = 0;
-		monster_marble = false;
-		monster_marble_dragon = false;
-		disaster = false;
-		trigger_over = false;
-		regalis_piece = false;
-		deckcountry = 0;
+		Gcheck.clear();
 	}
 };
 

@@ -296,7 +296,7 @@ void SingleDuel::UpdateDeck(DuelPlayer* dp, void* pdata, unsigned int len) {
 		return;
 	}
 	if(duel_count == 0) {
-		deck_error[dp->type] = deckManager.LoadDeck(pdeck[dp->type], (int*)deckbuf, mainc,extrac, sidec);
+		deck_error[dp->type] = deckManager.LoadDeck(pdeck[dp->type], (int*)deckbuf, mainc,extrac + sidec, 0);
 	} else {
 		if(deckManager.LoadSide(pdeck[dp->type], (int*)deckbuf, mainc, sidec)) {
 			ready[dp->type] = true;

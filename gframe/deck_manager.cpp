@@ -146,17 +146,6 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 	int code;
 	int errorcode = 0;
 	CardDataC cd;
-	for(int i=0; i<(mainc+extrac);++i){
-		code = dbuf[i];
-		if(!dataManager.GetData(code, &cd)) {
-			errorcode = code;
-			continue;
-		}
-		int country = cd.country & 0x0FFF;
-		if(deck.deckcountry == 0 && (!(country & 0x1)) && (country != 0 && (country & (country - 1)) == 0)){
-			deck.deckcountry = country;
-		}
-	}
 	for(int i = 0; i < mainc; ++i) {
 		code = dbuf[i];
 		if(!dataManager.GetData(code, &cd)) {
@@ -203,88 +192,134 @@ int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec
 }
 bool DeckManager::CheckCard(Deck& deck, CardDataC cd)
 {
-	//势力
-	if (deck.deckcountry != 0 || cd.country & 0x1)
-	{
-		if (!(cd.country & deck.deckcountry) && !(cd.country & 0x1))
-		{
-			return false;
-		}
-		if (deck.deckcountry == 0x1)
-		{
+	std::vector<code_pointer> deck_all = deck.main;
+	deck_all.insert(deck_all.begin(),deck.extra.begin(),deck.extra.end());
+	deck_all.push_back(dataManager.GetCodePointer(cd.code));
 
-		}
-	}
+	uint16 deckcountry = 0;
+	int trigger_card = 0;
+	int trigger_heal = 0;
+	int trigger_crit = 0;
+	int trigger_draw = 0;
+	int trigger_front = 0;
+	bool trigger_over = false;
+	bool regalis_piece = false;
 
-	//触发
-	if (!(cd.race & RACE_WARRIOR))
-	{
-		if (deck.trigger_card >= 16)
-		{
-			return false;
-		}
-		if(cd.race & RACE_SPELLCASTER){
-			if (deck.trigger_crit >= 8)
-			{
-				return false;
-			}
-			else{
-				deck.trigger_crit++;
-				deck.trigger_card++;
-			}
-		}
-		if(cd.race & RACE_FAIRY){
-			if (deck.trigger_draw >= 8)
-			{
-				return false;
-			}
-			else{
-				deck.trigger_draw++;
-				deck.trigger_card++;
-			}
-		}
-		if(cd.race & RACE_FIEND){
-			if (deck.trigger_heal >= 4)
-			{
-				return false;
-			}
-			else{
-				deck.trigger_heal++;
-				deck.trigger_card++;
-			}
-		}	
-		if(cd.race & RACE_ZOMBIE){
-			if (deck.trigger_front >= 8)
-			{
-				return false;
-			}
-			else{
-				deck.trigger_front++;
-				deck.trigger_card++;
-			}
-		}	
-		if(cd.race & RACE_MACHINE){
-			if (deck.trigger_over)
-			{
-				return false;
-			}
-			else{
-				deck.trigger_over = true;
-				deck.trigger_card++;
-			}
-		}			
-	}
+	for(auto& pcard : deck_all){
 
-	//结晶碎片
-	if (cd.attribute & ATTRIBUTE_DEVINE)
-	{
-		if (deck.regalis_piece)
+		CardDataC cd = pcard->second;
+
+		int country = cd.country & 0x0FFF;
+		if (deckcountry == 0 && (!(country & 0x1)) && (country != 0 && (country & (country - 1)) == 0))
 		{
-			return false;
+			deckcountry = country;
 		}
-		else
+
+		//势力
+		if (deckcountry != 0 || cd.country & 0x1)
 		{
-			deck.regalis_piece = true;
+			if (!(cd.country & deckcountry) && !(cd.country & 0x1))
+			{
+				return false;
+			}
+
+			//g卡组检测
+			if (deckcountry == 0x2 && (cd.code == 10910004 || cd.code == 10910003 || cd.code == 10910002 || cd.code == 10910001))
+			{
+				auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(),cd.code);
+					if(it == deck.Gcheck.end())
+						deck.Gcheck.push_back(cd.code);
+			}
+			else if (deckcountry == 0x4 && (cd.code == 10909004 || cd.code == 10909003 || cd.code == 10909002 || cd.code == 10909001))
+			{
+				auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(),cd.code);
+					if(it == deck.Gcheck.end())
+						deck.Gcheck.push_back(cd.code);
+			}
+			else if (deckcountry == 0x10 && (cd.code == 10904001 || cd.code == 10904002 || cd.code == 10904003 || cd.code == 10904004))
+			{
+				auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(),cd.code);
+					if(it == deck.Gcheck.end())
+						deck.Gcheck.push_back(cd.code);
+			}
+			else if (deckcountry == 0x20 && (cd.code == 10903004 || cd.code == 10903002 || cd.code == 10903003 || cd.code == 10903001))
+			{
+				auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(),cd.code);
+					if(it == deck.Gcheck.end())
+						deck.Gcheck.push_back(cd.code);
+			}
+		}
+
+		//触发
+		if (!(cd.race & RACE_WARRIOR))
+		{
+			if (trigger_card >= 16)
+			{
+				return false;
+			}
+			if(cd.race & RACE_SPELLCASTER){
+				if (trigger_crit >= 8)
+				{
+					return false;
+				}
+				else{
+					trigger_crit++;
+					trigger_card++;
+				}
+			}
+			if(cd.race & RACE_FAIRY){
+				if (trigger_draw >= 8)
+				{
+					return false;
+				}
+				else{
+					trigger_draw++;
+					trigger_card++;
+				}
+			}
+			if(cd.race & RACE_FIEND){
+				if (trigger_heal >= 4)
+				{
+					return false;
+				}
+				else{
+					trigger_heal++;
+					trigger_card++;
+				}
+			}	
+			if(cd.race & RACE_ZOMBIE){
+				if (trigger_front >= 8)
+				{
+					return false;
+				}
+				else{
+					trigger_front++;
+					trigger_card++;
+				}
+			}	
+			if(cd.race & RACE_MACHINE){
+				if (trigger_over)
+				{
+					return false;
+				}
+				else{
+					trigger_over = true;
+					trigger_card++;
+				}
+			}			
+		}
+
+		//结晶碎片
+		if (cd.attribute & ATTRIBUTE_DEVINE)
+		{
+			if (regalis_piece)
+			{
+				return false;
+			}
+			else
+			{
+				regalis_piece = true;
+			}
 		}
 	}
 
@@ -292,8 +327,47 @@ bool DeckManager::CheckCard(Deck& deck, CardDataC cd)
 }
 bool DeckManager::CheckCardEx(Deck& deck, CardDataC cd)
 {
+	int monster_marble_chk = 0;
+	int monster_marble_dragon_chk = 0;
+	int disaster_chk = 0;
+	
+	bool monster_marble = false;
+	bool monster_marble_dragon = false;
+	bool disaster = false;
+
+	for(auto& pcard : deck.extra){
+		if(pcard->second.country == 0x200){
+			if (pcard->second.code == 10602015)
+				monster_marble_dragon_chk++;
+			monster_marble_chk++;
+		}
+		else if (pcard->second.code == 10409097 || pcard->second.is_setcode(0xc042)){
+			disaster_chk++;
+		}
+	}
+	if (monster_marble_chk != 0){
+		monster_marble = true;
+		monster_marble_chk = 0;
+	}
+	else
+		monster_marble = false;
+
+	if (monster_marble_dragon_chk != 0){
+		monster_marble_dragon = true;
+		monster_marble_dragon_chk = 0;
+	}
+	else
+		monster_marble_dragon = false;
+
+	if (disaster_chk != 0){
+		disaster = true;
+		disaster_chk = 0;
+	}
+	else
+		disaster = false;
+	
 	//龙树
-	if (deck.disaster){
+	if (disaster){
 		if (cd.code == 10409097 || cd.is_setcode(0xc042))
 		{
 			return true;
@@ -302,11 +376,12 @@ bool DeckManager::CheckCardEx(Deck& deck, CardDataC cd)
 			return true;
 		return false;
 	}
+
 	//怪物弹珠
-	if (deck.monster_marble){
+	if (monster_marble){
 		if (cd.country == 0x200)
 		{
-			if (cd.code == 10602015 && deck.monster_marble_dragon)
+			if (cd.code == 10602015 && monster_marble_dragon)
 				return false;
 			return true;
 		}
