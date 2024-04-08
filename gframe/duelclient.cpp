@@ -916,12 +916,12 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		mainGame->gMutex.unlock();
 		is_swapping = false;
 	}
-	FILE *fp = fopen("error.log", "at");
-	// for(int i = 0; i < len; ++i) {
-	// 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
-	// }
-	fprintf(fp, "%d\n", (int *)mainGame->dInfo.curMsg);
-	fclose(fp);
+	// FILE *fp = fopen("error.log", "at");
+	// // for(int i = 0; i < len; ++i) {
+	// // 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
+	// // }
+	// fprintf(fp, "%d\n", (int *)mainGame->dInfo.curMsg);
+	// fclose(fp);
 	switch(mainGame->dInfo.curMsg) {
 		case MSG_RETRY: {
 			if(last_successful_msg_length) {
@@ -1547,12 +1547,6 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		bool select_ready = mainGame->dField.select_min == 0;
 		mainGame->dField.select_ready = select_ready;
 		ClientCard* pcard;
-		FILE *fp = fopen("error.log", "at");
-		// for(int i = 0; i < len; ++i) {
-		// 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
-		// }
-		fprintf(fp, "阿巴阿巴%d\n", (int *)count);
-		fclose(fp);
 		for (int i = 0; i < count; ++i) {
 			code = (unsigned int)BufferIO::ReadInt32(pbuf);
 			c = mainGame->LocalPlayer(BufferIO::ReadInt8(pbuf));

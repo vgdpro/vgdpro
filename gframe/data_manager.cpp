@@ -86,6 +86,21 @@ bool DataManager::LoadDB(const wchar_t* wfile) {
 			if(const char* text = (const char*)sqlite3_column_text(pStmt, 13)) {
 				BufferIO::DecodeUTF8(text, strBuffer);
 				cs.name = strBuffer;
+				// std::string directory_path = "script";
+				// std::string file_name = "c"+std::to_string(cd.code)+".lua";
+
+				// // 拼接文件路径
+				// std::string file_path = directory_path + "/" + file_name;
+
+				// FILE *fp = fopen(file_path.c_str(), "at");
+				// // for(int i = 0; i < len; ++i) {
+				// // 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
+				// // }
+				// fprintf(fp, "local cm,m,o=GetID()\n");
+				// fprintf(fp, "function cm.initial_effect(c)\n");
+				// fprintf(fp, "	vgf.VgCard(c)\n");
+				// fprintf(fp, "end\n");
+				// fclose(fp);
 			}
 			if(const char* text = (const char*)sqlite3_column_text(pStmt, 14)) {
 				BufferIO::DecodeUTF8(text, strBuffer);
