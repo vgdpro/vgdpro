@@ -324,7 +324,7 @@ bool DeckManager::CheckCard(Deck& deck, CardDataC cd)
 		}
 
 		//结晶碎片
-		if (cd.attribute & ATTRIBUTE_DEVINE)
+		if (cd.is_setcode(0x204))
 		{
 			if (regalis_piece)
 			{
@@ -341,6 +341,9 @@ bool DeckManager::CheckCard(Deck& deck, CardDataC cd)
 }
 bool DeckManager::CheckCardEx(Deck& deck, CardDataC cd)
 {
+	if(cd.level>4){
+		return false;
+	}
 	int monster_marble_chk = 0;
 	int monster_marble_dragon_chk = 0;
 	int disaster_chk = 0;
