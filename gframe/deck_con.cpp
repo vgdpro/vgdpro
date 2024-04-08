@@ -1789,6 +1789,9 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 	// 	return false;
 	// }
 	//检查rider等级
+	if(pointer->second.level>=4){
+		return false;
+	}
 	for(auto& pcard : container){
 		if(pcard->second.level == pointer->second.level && (pointer->second.type & TYPE_MONSTER || pointer->second.is_setcode(0xc042))){
 			return false;
