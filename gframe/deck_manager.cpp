@@ -121,20 +121,20 @@ int DeckManager::CheckDeck(Deck& deck, int lfhash, int rule) {
 		if(it != list->end() && dc > it->second)
 			return (DECKERROR_LFLIST << 28) + cit->first;
 	}
-	for(size_t i = 0; i < deck.side.size(); ++i) {
-		code_pointer cit = deck.side[i];
-		int gameruleDeckError = checkAvail(cit->second.ot, avail);
-		if(gameruleDeckError)
-			return (gameruleDeckError << 28) + cit->first;
-		int code = cit->second.alias ? cit->second.alias : cit->first;
-		ccount[code]++;
-		dc = ccount[code];
-		if(dc > 4)
-			return (DECKERROR_CARDCOUNT << 28) + cit->first;
-		auto it = list->find(code);
-		if(it != list->end() && dc > it->second)
-			return (DECKERROR_LFLIST << 28) + cit->first;
-	}
+	// for(size_t i = 0; i < deck.side.size(); ++i) {
+	// 	code_pointer cit = deck.side[i];
+	// 	int gameruleDeckError = checkAvail(cit->second.ot, avail);
+	// 	if(gameruleDeckError)
+	// 		return (gameruleDeckError << 28) + cit->first;
+	// 	int code = cit->second.alias ? cit->second.alias : cit->first;
+	// 	ccount[code]++;
+	// 	dc = ccount[code];
+	// 	if(dc > 4)
+	// 		return (DECKERROR_CARDCOUNT << 28) + cit->first;
+	// 	auto it = list->find(code);
+	// 	if(it != list->end() && dc > it->second)
+	// 		return (DECKERROR_LFLIST << 28) + cit->first;
+	// }
 	return 0;
 }
 int DeckManager::LoadDeck(Deck& deck, int* dbuf, int mainc,int extrac, int sidec, bool is_packlist, bool forduel) {
