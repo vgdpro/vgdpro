@@ -344,7 +344,7 @@ bool DeckManager::CheckCardEx(Deck& deck, CardDataC cd)
 
 	for(auto& pcard : deck.extra){
 		//检查rider等级
-		if(pcard->second.level == pointer->second.level){
+		if(pcard->second.level == cd.level){
 			return false;
 		}
 
