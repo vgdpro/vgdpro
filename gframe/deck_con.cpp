@@ -1788,12 +1788,6 @@ bool DeckBuilder::push_extra(code_pointer pointer, int seq) {
 	// {
 	// 	return false;
 	// }
-	//检查rider等级
-	for(auto& pcard : container){
-		if(pcard->second.level == pointer->second.level && (pointer->second.type & TYPE_MONSTER || pointer->second.is_setcode(0xc042))){
-			return false;
-		}
-	}
 
 	if(!deckManager.CheckCard(deckManager.current_deck,pointer->second)){
 		return false;
@@ -1836,12 +1830,6 @@ void DeckBuilder::pop_main(int seq) {
 	auto& container = deckManager.current_deck.main;
 	Deck& deck = deckManager.current_deck;
 	auto& pointer =std::next(container.begin(), seq);
-
-	CardDataC cd = (*pointer)->second;
-	auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(), cd.code);
-	if (it != deck.Gcheck.end()){
-		deck.Gcheck.erase(it);
-	}
 	
 	container.erase(container.begin() + seq);
 	is_modified = true;

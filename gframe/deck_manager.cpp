@@ -237,32 +237,6 @@ bool DeckManager::CheckCard(Deck& deck, CardDataC cd)
 			{
 				return false;
 			}
-
-			//g卡组检测
-			if (deckcountry == 0x2 && (cd.code == 10910004 || cd.code == 10910003 || cd.code == 10910002 || cd.code == 10910001))
-			{
-				auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(),cd.code);
-					if(it == deck.Gcheck.end())
-						deck.Gcheck.push_back(cd.code);
-			}
-			else if (deckcountry == 0x4 && (cd.code == 10909004 || cd.code == 10909003 || cd.code == 10909002 || cd.code == 10909001))
-			{
-				auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(),cd.code);
-					if(it == deck.Gcheck.end())
-						deck.Gcheck.push_back(cd.code);
-			}
-			else if (deckcountry == 0x10 && (cd.code == 10904001 || cd.code == 10904002 || cd.code == 10904003 || cd.code == 10904004))
-			{
-				auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(),cd.code);
-					if(it == deck.Gcheck.end())
-						deck.Gcheck.push_back(cd.code);
-			}
-			else if (deckcountry == 0x20 && (cd.code == 10903004 || cd.code == 10903002 || cd.code == 10903003 || cd.code == 10903001))
-			{
-				auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(),cd.code);
-					if(it == deck.Gcheck.end())
-						deck.Gcheck.push_back(cd.code);
-			}
 		}
 
 		//触发
@@ -357,6 +331,9 @@ bool DeckManager::CheckCardEx(Deck& deck, CardDataC cd)
 	if(cd.level>4){
 		return false;
 	}
+	if(cd.type & TYPE_SPELL && (!cd.is_setcode(0xc042) && cd.code != 10602015 && cd.code != 10707035)){
+		return false;
+	}
 	int monster_marble_chk = 0;
 	int monster_marble_dragon_chk = 0;
 	int disaster_chk = 0;
@@ -366,6 +343,11 @@ bool DeckManager::CheckCardEx(Deck& deck, CardDataC cd)
 	bool disaster = false;
 
 	for(auto& pcard : deck.extra){
+		//检查rider等级
+		if(pcard->second.level == pointer->second.level){
+			return false;
+		}
+
 		if(pcard->second.country == 0x200){
 			if (pcard->second.code == 10602015)
 				monster_marble_dragon_chk++;
@@ -373,6 +355,32 @@ bool DeckManager::CheckCardEx(Deck& deck, CardDataC cd)
 		}
 		else if (pcard->second.code == 10409097 || pcard->second.is_setcode(0xc042)){
 			disaster_chk++;
+		}
+
+		//g卡组检测
+		if ((cd.code == 10910004 || cd.code == 10910003 || cd.code == 10910002 || cd.code == 10910001))
+		{
+			auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(),cd.code);
+				if(it == deck.Gcheck.end())
+					deck.Gcheck.push_back(cd.code);
+		}
+		else if ((cd.code == 10909004 || cd.code == 10909003 || cd.code == 10909002 || cd.code == 10909001))
+		{
+			auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(),cd.code);
+				if(it == deck.Gcheck.end())
+					deck.Gcheck.push_back(cd.code);
+		}
+		else if ((cd.code == 10904001 || cd.code == 10904002 || cd.code == 10904003 || cd.code == 10904004))
+		{
+			auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(),cd.code);
+				if(it == deck.Gcheck.end())
+					deck.Gcheck.push_back(cd.code);
+		}
+		else if ((cd.code == 10903004 || cd.code == 10903002 || cd.code == 10903003 || cd.code == 10903001))
+		{
+			auto it = std::find(deck.Gcheck.begin(), deck.Gcheck.end(),cd.code);
+				if(it == deck.Gcheck.end())
+					deck.Gcheck.push_back(cd.code);
 		}
 	}
 	if (monster_marble_chk != 0){
