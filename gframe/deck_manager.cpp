@@ -216,6 +216,7 @@ bool DeckManager::CheckCard(Deck& deck, CardDataC cd)
 	int trigger_crit = 0;
 	int trigger_draw = 0;
 	int trigger_front = 0;
+	int protector =0;
 	bool trigger_over = false;
 	bool regalis_piece = false;
 
@@ -321,6 +322,18 @@ bool DeckManager::CheckCard(Deck& deck, CardDataC cd)
 					trigger_card++;
 				}
 			}			
+		}
+		
+		//守护者
+		if (cd.category & 0x1){
+			if(protector>3){
+				return false;
+			}
+			else
+			{
+				protector++;
+			}
+			
 		}
 
 		//结晶碎片
