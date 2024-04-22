@@ -847,6 +847,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					mainGame->cbCardType2->setEnabled(false);
 					mainGame->cbCardType2->setSelected(0);
 					mainGame->cbRace->setEnabled(false);
+					mainGame->cbRace->setSelected(0);
 					mainGame->cbAttribute->setEnabled(false);
 					mainGame->ebAttack->setEnabled(false);
 					mainGame->ebDefense->setEnabled(false);
@@ -859,7 +860,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					wchar_t normalpen[32];
 					wchar_t syntuner[32];
 					mainGame->cbCardType2->setEnabled(true);
-					mainGame->cbRace->setEnabled(false);
+					mainGame->cbRace->setEnabled(true);
 					mainGame->cbAttribute->setEnabled(true);
 					mainGame->ebAttack->setEnabled(true);
 					mainGame->ebDefense->setEnabled(true);
@@ -893,7 +894,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 				}
 				case 2: {
 					mainGame->cbCardType2->setEnabled(true);
-					mainGame->cbRace->setEnabled(false);
+					mainGame->cbRace->setEnabled(true);
 					mainGame->cbAttribute->setEnabled(false);
 					mainGame->ebAttack->setEnabled(false);
 					mainGame->ebDefense->setEnabled(false);
@@ -939,10 +940,11 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 				break;
 			}
 			case COMBOBOX_SECONDTYPE: {
-				if (mainGame->cbCardType2->getSelected() == 2) {
+				if (mainGame->cbCardType2->getSelected() == 2 || mainGame->cbCardType2->getSelected() == 0) {
 					mainGame->cbRace->setEnabled(true);
 				} else {
 					mainGame->cbRace->setEnabled(false);
+					mainGame->cbRace->setSelected(0);
 				}
 				mainGame->env->setFocus(0);
 				InstantSearch();
@@ -1527,6 +1529,7 @@ void DeckBuilder::InstantSearch() {
 void DeckBuilder::ClearSearch() {
 	mainGame->cbCardType->setSelected(0);
 	mainGame->cbCardType2->setSelected(0);
+	mainGame->cbRace->setSelected(0);
 	mainGame->cbCardType2->setEnabled(false);
 	mainGame->cbRace->setEnabled(false);
 	mainGame->cbAttribute->setEnabled(false);
