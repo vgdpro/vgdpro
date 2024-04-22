@@ -859,7 +859,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					wchar_t normalpen[32];
 					wchar_t syntuner[32];
 					mainGame->cbCardType2->setEnabled(true);
-					mainGame->cbRace->setEnabled(true);
+					mainGame->cbRace->setEnabled(false);
 					mainGame->cbAttribute->setEnabled(true);
 					mainGame->ebAttack->setEnabled(true);
 					mainGame->ebDefense->setEnabled(true);
@@ -888,7 +888,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1059), TYPE_MONSTER + TYPE_SPIRIT);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1071), TYPE_MONSTER + TYPE_FLIP);
 					//mainGame->cbCardType2->addItem(dataManager.GetSysString(1072), TYPE_MONSTER + TYPE_TOON);
-					mainGame->cbCardType2->addItem(dataManager.GetSysString(1064), TYPE_MONSTER + TYPE_TOKEN + TYPE_NORMAL);
+					mainGame->cbCardType2->addItem(dataManager.GetSysString(1064), TYPE_MONSTER + TYPE_TOKEN);
 					break;
 				}
 				case 2: {
@@ -902,6 +902,7 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 					mainGame->cbCardType2->clear();
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1080), 0);
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1054), TYPE_SPELL);
+					mainGame->cbCardType2->addItem(dataManager.GetSysString(1057), TYPE_SPELL + TYPE_RITUAL);
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1066), TYPE_SPELL + TYPE_QUICKPLAY);
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1067), TYPE_SPELL + TYPE_CONTINUOUS);
 					mainGame->cbCardType2->addItem(dataManager.GetSysString(1064), TYPE_SPELL + TYPE_TOKEN);
@@ -938,13 +939,10 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 				break;
 			}
 			case COMBOBOX_SECONDTYPE: {
-				if (mainGame->cbCardType->getSelected() == 1) {
-					if (mainGame->cbCardType2->getSelected() == 8) {
-						mainGame->ebDefense->setEnabled(false);
-						mainGame->ebDefense->setText(L"");
-					} else {
-						mainGame->ebDefense->setEnabled(true);
-					}
+				if (mainGame->cbCardType2->getSelected() == 2) {
+					mainGame->cbRace->setEnabled(true);
+				} else {
+					mainGame->cbRace->setEnabled(false);
 				}
 				mainGame->env->setFocus(0);
 				InstantSearch();
@@ -1413,7 +1411,7 @@ void DeckBuilder::FilterCards() {
 		}
 	}
 	for(code_pointer ptr = dataManager.datas_begin; ptr != dataManager.datas_end; ++ptr) {
-		const CardDataC& data = ptr->second;
+		const CardDataC & data = ptr->second;
 		auto strpointer = dataManager.GetStringPointer(ptr->first);
 		if (strpointer == dataManager.strings_end)
 			continue;
@@ -1458,7 +1456,7 @@ void DeckBuilder::FilterCards() {
 		case 2: {
 			if(!(data.type & TYPE_SPELL))
 				continue;
-			if(filter_type2 && data.type != filter_type2  &&(!data.type & (TYPE_TOKEN+TYPE_SPELL)))
+			if(filter_type2 && data.type != filter_type2)
 				continue;
 			break;
 		}
@@ -1534,7 +1532,6 @@ void DeckBuilder::ClearSearch() {
 	mainGame->cbAttribute->setEnabled(false);
 	mainGame->ebAttack->setEnabled(false);
 	mainGame->ebDefense->setEnabled(false);
-	mainGame->ebStar->setEnabled(false);
 	mainGame->ebScale->setEnabled(false);
 	mainGame->ebCardName->setText(L"");
 	mainGame->scrFilter->setVisible(false);
