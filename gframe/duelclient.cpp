@@ -3008,7 +3008,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		// controller 0 means ourside, 1 means opponent
 		auto controller = mainGame->dField.current_chain.controler ? dataManager.GetSysString(103) : dataManager.GetSysString(102);
 		const auto chain_number = mainGame->dField.chains.size();
-		myswprintf(textBuffer, dataManager.GetSysString(2003), chain_number, controller, event_string);
+		myswprintf(textBuffer, dataManager.GetSysString(2003), controller, event_string);
 		mainGame->AddLog(textBuffer, mainGame->dField.current_chain.code);
 		if (ct > 1)
 			mainGame->WaitFrameSignal(20);
