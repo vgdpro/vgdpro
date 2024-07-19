@@ -803,8 +803,10 @@ void Game::DrawStatus(ClientCard* pcard, int x1, int y1, int x2, int y2) {
 		w = adFont->getDimension(pcard->linkstring).Width;
 		DrawShadowText(adFont, pcard->linkstring, Resize(x1 + 5, y1 + 1, x1 + 5, y1 + 21, 0, 0, w, 0), Resize(1, 1, 1, 1), 0xff99ffff);
 	} else {
-		w = adFont->getDimension(pcard->lscstring).Width;
-		DrawShadowText(adFont, pcard->lscstring, Resize(x1 + 5, y1 + 1, x1 + 5, y1 + 21, 0, 0, w, 0), Resize(1, 1, 1, 1),
+		wchar_t textBuffer[64];
+		myswprintf(textBuffer, L"☆%d", pcard->lscale);
+		w = adFont->getDimension(textBuffer).Width;
+		DrawShadowText(textFont, textBuffer, Resize(x1 + 5, y1 + 1, x1 + 5, y1 + 21, 0, 0, w, 0), Resize(1, 1, 1, 1),
 			pcard->defense > pcard->base_defense ? 0xffffff00 : pcard->defense < pcard->base_defense ? 0xffff2090 : 0xffffffff);
 		DrawShadowText(adFont, pcard->lvstring, Resize(x2 + 1, y2, x2 + 3, y2 + 21), Resize(1, 1, 1, 1),
 			(pcard->type & TYPE_XYZ) ? 0xffff80ff : (pcard->type & TYPE_TUNER) ? 0xffffff00 : 0xffffffff);
