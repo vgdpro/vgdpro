@@ -45,3 +45,4 @@ luasocket.exp
 luasocket.lib
 luasocket.pdb
 premake5.pdb
+ikpFlac.dll
