@@ -36,3 +36,12 @@
 /gframe/ygopro.aps
 /premake5
 /premake5.exe
+example.dll
+example.exp
+example.lib
+example.pdb
+luasocket.dll
+luasocket.exp
+luasocket.lib
+luasocket.pdb
+premake5.pdb
