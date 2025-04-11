@@ -88,6 +88,7 @@ public:
 	bool gzone_act{ false };	
 	bool remove_act{ false };
 	bool deck_act{ false };
+	bool mzone_act{ false };
 	bool extra_act{ false };
 	bool pzone_act[2]{};
 	bool conti_act{ false };

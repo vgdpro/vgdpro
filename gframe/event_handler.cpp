@@ -421,6 +421,14 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 								selectable_cards.push_back(exile[command_controler][i]);
 						break;
 					}
+					case LOCATION_MZONE: {
+						if(mzone[command_controler][command_sequence]->cmdFlag & COMMAND_ACTIVATE)
+							selectable_cards.push_back(mzone[command_controler][command_sequence]);
+						for(size_t i = 0; i < mzone[command_controler][command_sequence]->overlayed.size(); ++i)
+							if(mzone[command_controler][command_sequence]->overlayed[i]->cmdFlag & COMMAND_ACTIVATE)
+								selectable_cards.push_back(mzone[command_controler][command_sequence]->overlayed[i]);
+						break;
+					}
 					case LOCATION_SZONE: {
 						if (command_sequence == 2)
 						{
@@ -1546,7 +1554,14 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 					int command_flag = clicked_card->cmdFlag;
 					if(clicked_card->overlayed.size() || (order[hovered_controler].size() != 0 && hovered_location == LOCATION_SZONE && hovered_sequence ==2))
 						command_flag |= COMMAND_LIST;
-					list_command = 0;
+					if(clicked_card->overlayed.size()>0){
+						command_flag |= mzone[hovered_controler][hovered_sequence]->cmdFlag;
+						for(size_t i = 0; i < mzone[hovered_controler][hovered_sequence]->overlayed.size(); ++i)
+							command_flag |= mzone[hovered_controler][hovered_sequence]->overlayed[i]->cmdFlag;
+						list_command = 1;
+					}else{
+						list_command = 0;
+					}
 					ShowMenu(command_flag, x, y);
 					break;
 				}

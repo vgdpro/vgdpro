@@ -1331,7 +1331,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 	}
 	case MSG_SELECT_IDLECMD: {
 		/*int selecting_player = */BufferIO::ReadInt8(pbuf);
-		int code, desc, count, con, loc, seq;
+		int code, desc, count, con, loc, seq, ss;
 		ClientCard* pcard;
 		mainGame->dField.summonable_cards.clear();
 		count = BufferIO::ReadInt8(pbuf);
@@ -1423,8 +1423,14 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			con = mainGame->LocalPlayer(BufferIO::ReadInt8(pbuf));
 			loc = BufferIO::ReadInt16(pbuf);
 			seq = BufferIO::ReadInt8(pbuf);
+			ss = BufferIO::ReadInt8(pbuf);
 			desc = BufferIO::ReadInt32(pbuf);
-			pcard = mainGame->dField.GetCard(con, loc, seq);
+			if(!(loc & LOCATION_OVERLAY)){
+				pcard = mainGame->dField.GetCard(con, loc, seq);
+			}
+			else{
+				pcard = mainGame->dField.GetCard(con, loc & 0xff7f, seq)->overlayed[ss];
+			}
 			int flag = 0;
 			if(code & 0x80000000) {
 				flag = EDESC_OPERATION;
@@ -1438,6 +1444,9 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 				mainGame->dField.conti_act = true;
 			} else {
 				pcard->cmdFlag |= COMMAND_ACTIVATE;
+				if(pcard->location == LOCATION_OVERLAY) {
+					mainGame->dField.mzone_act = true;
+				} 
 				if(pcard->controler == 0) {
 					if(pcard->location == LOCATION_GRAVE)
 						mainGame->dField.grave_act = true;
@@ -1712,7 +1721,19 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			s = BufferIO::ReadInt8(pbuf);
 			ss = BufferIO::ReadInt8(pbuf);
 			desc = BufferIO::ReadInt32(pbuf);
-			pcard = mainGame->dField.GetCard(c, l, s, ss);
+			if(!(l & LOCATION_OVERLAY)){
+				pcard = mainGame->dField.GetCard(c, l, s, ss);
+			}
+			else{
+				pcard = mainGame->dField.GetCard(c, l & 0xff7f, s)->overlayed[ss];
+			}
+			FILE* fp = fopen("error.log", "at");
+			// for(int i = 0; i < len; ++i) {
+			// 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
+			// }
+			fprintf(fp, "%d\n",(int*)pcard->code);
+			fprintf(fp, "%d\n",(int*)pcard->location);
+			fclose(fp);
 			mainGame->dField.activatable_cards.push_back(pcard);
 			mainGame->dField.activatable_descs.push_back(std::make_pair(desc, flag));
 			pcard->is_selected = false;
@@ -1748,8 +1769,10 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 					mainGame->dField.remove_act = true;
 				else if(l == LOCATION_EXTRA)
 					mainGame->dField.extra_act = true;
-				else if(l == LOCATION_OVERLAY)
+				else if(pcard->location == LOCATION_OVERLAY){
 					panelmode = true;
+					mainGame->dField.mzone_act = true;
+				}
 			}
 		}
 		if(!select_trigger && !forced && (mainGame->ignore_chain || ((count == 0 || specount == 0) && !mainGame->always_chain)) && (count == 0 || !mainGame->chain_when_avail)) {
