@@ -683,7 +683,7 @@ int SingleDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			count = BufferIO::ReadInt8(pbuf);
 			pbuf += count * 8;
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 12 + 3;
+			pbuf += count * 13 + 3;
 			RefreshMzone(0);
 			RefreshMzone(1);
 			RefreshSzone(0);

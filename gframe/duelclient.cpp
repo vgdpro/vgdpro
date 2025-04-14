@@ -1727,13 +1727,6 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 			else{
 				pcard = mainGame->dField.GetCard(c, l & 0xff7f, s)->overlayed[ss];
 			}
-			FILE* fp = fopen("error.log", "at");
-			// for(int i = 0; i < len; ++i) {
-			// 	fprintf(fp, "%d\n", BufferIO::ReadInt32(deckbuf)); // 将每个字节的十六进制表示写入文件
-			// }
-			fprintf(fp, "%d\n",(int*)pcard->code);
-			fprintf(fp, "%d\n",(int*)pcard->location);
-			fclose(fp);
 			mainGame->dField.activatable_cards.push_back(pcard);
 			mainGame->dField.activatable_descs.push_back(std::make_pair(desc, flag));
 			pcard->is_selected = false;
