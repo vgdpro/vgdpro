@@ -2577,6 +2577,14 @@ void ClientField::GetHoverField(int x, int y) {
 				else if (sequence == 1) {
 					hovered_sequence = 5;
 				}
+				if((szone[0][0] || mainGame->dInfo.curMsg == MSG_SELECT_DISFIELD || MSG_SELECT_PLACE) && boardx >= matManager.vFieldSzone[0][0][rule][0].Pos.X && boardx <= matManager.vFieldSzone[0][0][rule][1].Pos.X){
+					hovered_location = LOCATION_SZONE;
+					hovered_sequence = 0;
+				}
+				if((szone[0][1] || mainGame->dInfo.curMsg == MSG_SELECT_DISFIELD|| MSG_SELECT_PLACE) && boardx >= matManager.vFieldSzone[0][1][rule][0].Pos.X && boardx <= matManager.vFieldSzone[0][1][rule][1].Pos.X){
+					hovered_location = LOCATION_SZONE;
+					hovered_sequence = 1;
+				}
 			}
 			else if (boardy >= matManager.vFieldMzone[0][1][0].Pos.Y && boardy <= matManager.vFieldMzone[0][1][2].Pos.Y) {
 				hovered_controler = 0;
