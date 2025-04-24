@@ -428,7 +428,7 @@ ClientCard* ClientField::RemoveCard(int controler, int location, int sequence) {
 		for (size_t i = sequence; i < damage[controler].size() - 1; ++i) {
 			damage[controler][i] = damage[controler][i + 1];
 			damage[controler][i]->sequence--;
-			damage[controler][i]->curPos -= irr::core::vector3df(0, 0, 0.01f);
+			damage[controler][i]->curPos -= irr::core::vector3df(controler == 0?0.18f * sequence : -0.18f * sequence, 0, -0.01f);
 			damage[controler][i]->mTransform.setTranslation(damage[controler][i]->curPos);
 		}
 		damage[controler].erase(damage[controler].end() - 1);
