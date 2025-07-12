@@ -1897,6 +1897,34 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		}
 		return false;
 	}
+	case MSG_SELECT_FIELD_COUNTER:{
+		/*int selecting_player = */BufferIO::ReadInt8(pbuf);
+		mainGame->dField.select_counter_type = BufferIO::ReadInt16(pbuf);
+		mainGame->dField.select_counter_count = BufferIO::ReadInt16(pbuf);
+		int count = BufferIO::ReadInt8(pbuf);
+		// mainGame->dField.selected_field = 0;
+		// mainGame->dField.selectable_field = 0;
+		int index,c;
+		for (int i = 0; i < count; ++i) {
+			index = BufferIO::ReadUInt8(pbuf);
+			int counterCount = BufferIO::ReadUInt16(pbuf);
+			if(index > 7){
+				index -= 7;
+				mainGame->dField.selectable_field |=(0x1 << (index+16));
+				mainGame->dField.field_opParam[1][index] = counterCount<<16 | counterCount & 0xffff;
+			}
+			else{
+				mainGame->dField.selectable_field |=(0x1 << index);
+				mainGame->dField.field_opParam[0][index] = counterCount<<16 | counterCount & 0xffff;
+			}
+		}
+		myswprintf(textBuffer, dataManager.GetSysString(204), mainGame->dField.select_counter_count, dataManager.GetCounterName(mainGame->dField.select_counter_type));
+		mainGame->gMutex.lock();
+		mainGame->stHintMsg->setText(textBuffer);
+		mainGame->stHintMsg->setVisible(true);
+		mainGame->gMutex.unlock();
+		return false;
+	}
 	case MSG_SELECT_POSITION: {
 		/*int selecting_player = */BufferIO::ReadInt8(pbuf);
 		unsigned int code = (unsigned int)BufferIO::ReadInt32(pbuf);
@@ -3389,6 +3417,34 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		mainGame->gMutex.unlock();
 		return true;
 	}
+	case MSG_ADD_FIELD_COUNTER:{
+		int type = BufferIO::ReadInt16(pbuf);
+		int tc = BufferIO::ReadInt8(pbuf);
+		int c = BufferIO::ReadInt8(pbuf);
+		int seq = BufferIO::ReadInt8(pbuf);
+		int count = BufferIO::ReadInt16(pbuf);
+		int cttype = (cttype & 0x7FFF) | (tc << 15);
+		if (mainGame->dField.field_counters[tc][seq][cttype])
+			mainGame->dField.field_counters[tc][seq][cttype] += count;
+		else mainGame->dField.field_counters[tc][seq][cttype] = count;
+		if(mainGame->dInfo.isReplay && mainGame->dInfo.isReplaySkiping)
+			return true;
+		soundManager.PlaySoundEffect(SOUND_COUNTER_ADD);
+		myswprintf(textBuffer, dataManager.GetSysString(1625), seq, count, dataManager.GetCounterName(type));
+		if (tc == 0) {
+			mainGame->dField.selectable_field = 1 << seq;
+		} else {
+			mainGame->dField.selectable_field = 1 << (seq+16); 
+		}
+		mainGame->dField.selected_field = 0; 
+		mainGame->gMutex.lock();
+		mainGame->stACMessage->setText(textBuffer);
+		mainGame->PopupElement(mainGame->wACMessage, 20);
+		mainGame->gMutex.unlock();
+		mainGame->WaitFrameSignal(40);
+		mainGame->dField.selectable_field = 0;
+		return true;
+	}
 	case MSG_ADD_COUNTER: {
 		int type = BufferIO::ReadInt16(pbuf);
 		int c = mainGame->LocalPlayer(BufferIO::ReadInt8(pbuf));
@@ -3402,7 +3458,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		if(mainGame->dInfo.isReplay && mainGame->dInfo.isReplaySkiping)
 			return true;
 		soundManager.PlaySoundEffect(SOUND_COUNTER_ADD);
-		myswprintf(textBuffer, dataManager.GetSysString(1617), dataManager.GetName(pc->code), count, dataManager.GetCounterName(type));
+		myswprintf(textBuffer, dataManager.GetSysString(1626), s, count, dataManager.GetCounterName(type));
 		pc->is_highlighting = true;
 		mainGame->gMutex.lock();
 		mainGame->stACMessage->setText(textBuffer);
@@ -3410,6 +3466,36 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		mainGame->gMutex.unlock();
 		mainGame->WaitFrameSignal(40);
 		pc->is_highlighting = false;
+		return true;
+	}
+	case MSG_REMOVE_FIELD_COUNTER:{
+		int type = BufferIO::ReadInt16(pbuf);
+		int c = BufferIO::ReadInt8(pbuf);
+		int p = BufferIO::ReadInt8(pbuf);
+		int s = BufferIO::ReadInt8(pbuf);
+		int count = BufferIO::ReadInt16(pbuf);
+		int cttype = (type & 0x7FFF) | (p << 15);
+
+		mainGame->dField.field_counters[c][s][cttype] -= count;
+
+		if (mainGame->dField.field_counters[c][s][cttype] <= 0)
+			mainGame->dField.field_counters[c][s].erase(cttype);
+		if(mainGame->dInfo.isReplay && mainGame->dInfo.isReplaySkiping)
+			return true;
+		soundManager.PlaySoundEffect(SOUND_COUNTER_REMOVE);
+		myswprintf(textBuffer, dataManager.GetSysString(1618), dataManager.GetCounterName(type), count);
+		if (c == 0) {
+			mainGame->dField.selectable_field = 1 << s;
+		} else {
+			mainGame->dField.selectable_field = 1 << (s+16); 
+		}
+		mainGame->dField.selected_field = 0; 
+		mainGame->gMutex.lock();
+		mainGame->stACMessage->setText(textBuffer);
+		mainGame->PopupElement(mainGame->wACMessage, 20);
+		mainGame->gMutex.unlock();
+		mainGame->WaitFrameSignal(40);
+		mainGame->dField.selectable_field = 0;
 		return true;
 	}
 	case MSG_REMOVE_COUNTER: {

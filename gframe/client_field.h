@@ -38,6 +38,8 @@ public:
 	std::vector<ClientCard*> gzone[2];
 	std::vector<ClientCard*> remove[2];
 	std::vector<ClientCard*> extra[2];
+	std::vector<std::map<int, int>> field_counters[2];
+	std::vector<unsigned int> field_opParam[2];
 	std::set<ClientCard*> overlay_cards;
 
 	std::vector<ClientCard*> summonable_cards;

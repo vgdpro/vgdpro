@@ -1838,6 +1838,52 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 				}
 				break;
 			}
+			case MSG_SELECT_FIELD_COUNTER: {
+				if (!(hovered_location & LOCATION_ONFIELD))
+					break;
+				if(hovered_location == LOCATION_MZONE){
+					int count = mainGame->dField.field_opParam[hovered_controler][hovered_sequence] & 0xffff;
+					if(count>0){
+
+						mainGame->dField.field_opParam[hovered_controler][hovered_sequence]--;
+						select_counter_count--;
+
+
+						if(mainGame->dField.field_opParam[hovered_controler][hovered_sequence]& 0xffff == 0){
+							if(hovered_controler == 1){
+								mainGame->dField.selected_field |=(0x1 << (hovered_sequence+16));
+							}
+							else{
+								mainGame->dField.selected_field |=(0x1 << hovered_sequence);
+							}
+						}
+					}
+				}
+				if((select_counter_count==0)){
+					unsigned short int respbuf[32];  // 每个格子用 1 字节存储 controler(4bit) + sequence(4bit) + opParam(1字节)
+					int respbuf_pos = 0;
+
+					// 遍历所有格子，记录 opParam > 0 的格子
+					for (int controler = 0; controler < 2; ++controler) {
+						for (int sequence = 0; sequence < 7; ++sequence) {
+							if ((mainGame->dField.field_opParam[controler][sequence] >> 16) - (mainGame->dField.field_opParam[controler][sequence] & 0xffff) > 0) {
+								respbuf[respbuf_pos] = (mainGame->dField.field_opParam[controler][sequence] >> 16) - (mainGame->dField.field_opParam[controler][sequence] & 0xffff); // 低16位: opParam
+								respbuf_pos++; // 高4位: controler, 低4位: sequence
+								respbuf[respbuf_pos] = (controler << 8) | sequence & 0xff; // 低16位: opParam
+								respbuf_pos++;
+							}
+						}
+					}
+					DuelClient::SetResponseB(respbuf, respbuf_pos * 2);
+					mainGame->stHintMsg->setVisible(false);
+					DuelClient::SendResponse();
+				}else {
+					wchar_t formatBuffer[2048];
+					myswprintf(formatBuffer, dataManager.GetSysString(204), select_counter_count, dataManager.GetCounterName(select_counter_type));
+					mainGame->stHintMsg->setText(formatBuffer);
+				}
+				break;
+			}
 			case MSG_SELECT_SUM: {
 				if (!clicked_card || !clicked_card->is_selectable)
 					break;
@@ -1897,8 +1943,35 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 			int mplayer = -1;
 			if(!panel || !panel->isVisible() || !panel->getRelativePosition().isPointInside(mousepos)) {
 				GetHoverField(x, y);
-				if(hovered_location & 0xe)
+				if(hovered_location & 0xe){
 					mcard = GetCard(hovered_controler, hovered_location, hovered_sequence);
+					if(!mcard && hovered_location == LOCATION_MZONE) {
+						if(!field_counters[hovered_controler][hovered_sequence].empty()) {
+							std::wstring str;
+							for(auto& counter : field_counters[hovered_controler][hovered_sequence]) {
+								int counterId = counter.first & 0x7FFF;
+								bool WhoSet = (counter.first & 0x8000) != 0;
+								if(WhoSet) {
+									myswprintf(formatBuffer, L"[%ls]: %d%ls%ls\n", dataManager.GetCounterName(counterId), counter.second,dataManager.GetSysString(104), dataManager.GetSysString(103));
+								} else {
+									myswprintf(formatBuffer, L"[%ls]: %d%ls%ls\n", dataManager.GetCounterName(counterId), counter.second,dataManager.GetSysString(104), dataManager.GetSysString(102));
+								}
+								str.append(formatBuffer);
+							}
+							if(!str.empty()) {
+								str.pop_back(); // 移除最后一个换行
+							}
+							if(!str.empty()) {
+								should_show_tip = true;
+								irr::core::dimension2d<unsigned int> dtip = mainGame->guiFont->getDimension(str.c_str()) + irr::core::dimension2d<unsigned int>(10, 10);
+								mainGame->stTip->setRelativePosition(recti(mousepos.X - 10 - dtip.Width, mousepos.Y - 10 - dtip.Height, mousepos.X - 10, mousepos.Y - 10));
+								mainGame->stTip->setText(str.c_str());
+								mainGame->stTip->setVisible(should_show_tip);
+								break;
+							}
+						}
+					}
+				}
 				else if(hovered_location == LOCATION_GRAVE) {
 					if(grave[hovered_controler].size())
 						mcard = grave[hovered_controler].back();
@@ -1977,6 +2050,20 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 						mainGame->ShowCardInfo(mcard->code);
 						if(mcard->location & 0xf00e) {
 							std::wstring str;
+							if(mcard->location & LOCATION_MZONE) {
+								if(!field_counters[mcard->controler][mcard->sequence].empty()) {
+									for(auto& counter : field_counters[mcard->controler][mcard->sequence]) {
+										int counterId = counter.first & 0x7FFF;
+										bool WhoSet = (counter.first & 0x8000) != 0;
+										if(WhoSet) {
+											myswprintf(formatBuffer, L"[%ls]: %d%ls%ls\n", dataManager.GetCounterName(counterId), counter.second,dataManager.GetSysString(104), dataManager.GetSysString(103));
+										} else {
+											myswprintf(formatBuffer, L"[%ls]: %d%ls%ls\n", dataManager.GetCounterName(counterId), counter.second,dataManager.GetSysString(104), dataManager.GetSysString(102));
+										}
+										str.append(formatBuffer);
+									}
+								}
+							}
 							myswprintf(formatBuffer, L"%ls", dataManager.GetName(mcard->code));
 							str.append(formatBuffer);
 							if(mcard->type & TYPE_MONSTER) {

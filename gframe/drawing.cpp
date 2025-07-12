@@ -126,36 +126,38 @@ void Game::DrawBackGround() {
 	driver->drawVertexPrimitiveList(matManager.vField, 4, matManager.iRectangle, 2);
 	driver->setMaterial(matManager.mBackLine);
 	//select field
-	if(dInfo.curMsg == MSG_SELECT_PLACE || dInfo.curMsg == MSG_SELECT_DISFIELD || dInfo.curMsg == MSG_HINT) {
+	if(dInfo.curMsg == MSG_SELECT_PLACE || dInfo.curMsg == MSG_SELECT_DISFIELD || dInfo.curMsg == MSG_HINT || dInfo.curMsg == MSG_ADD_FIELD_COUNTER || dInfo.curMsg == MSG_SELECT_FIELD_COUNTER || dInfo.curMsg == MSG_REMOVE_FIELD_COUNTER) {
+
 		float cv[4] = {0.0f, 0.0f, 1.0f, 1.0f};
 		float cv2[4] = {1.0f, 1.0f, 0.0f, 1.0f};
+		int bold = dInfo.curMsg == MSG_ADD_FIELD_COUNTER?8:2;
 		unsigned int filter = 0x1;
 		for (int i = 0; i < 7; ++i, filter <<= 1) {
 			if (dField.selectable_field & filter)
-				DrawSelectionLine(matManager.vFieldMzone[0][i], !(dField.selected_field & filter), 2, cv);
+				DrawSelectionLine(matManager.vFieldMzone[0][i], !(dField.selected_field & filter), bold, cv);
 		}
 		filter = 0x100;
 		for (int i = 0; i < 8; ++i, filter <<= 1) {
 			if (dField.selectable_field & filter){
 				if(i == 0 || i == 1){
-					DrawSelectionLine(matManager.vFieldSzone[0][i][rule], !(dField.selected_field & filter), 2, cv2);
+					DrawSelectionLine(matManager.vFieldSzone[0][i][rule], !(dField.selected_field & filter), bold, cv2);
 				}else{
-					DrawSelectionLine(matManager.vFieldSzone[0][i][rule], !(dField.selected_field & filter), 2, cv);
+					DrawSelectionLine(matManager.vFieldSzone[0][i][rule], !(dField.selected_field & filter), bold, cv);
 				}
 			}
 		}
 		filter = 0x10000;
 		for (int i = 0; i < 7; ++i, filter <<= 1) {
 			if (dField.selectable_field & filter)
-				DrawSelectionLine(matManager.vFieldMzone[1][i], !(dField.selected_field & filter), 2, cv);
+				DrawSelectionLine(matManager.vFieldMzone[1][i], !(dField.selected_field & filter), bold, cv);
 		}
 		filter = 0x1000000;
 		for (int i = 0; i < 8; ++i, filter <<= 1) {
 			if (dField.selectable_field & filter){
 				if(i == 0 || i == 1){
-					DrawSelectionLine(matManager.vFieldSzone[1][i][rule], !(dField.selected_field & filter), 2, cv2);
+					DrawSelectionLine(matManager.vFieldSzone[1][i][rule], !(dField.selected_field & filter), bold, cv2);
 				}else{
-					DrawSelectionLine(matManager.vFieldSzone[1][i][rule], !(dField.selected_field & filter), 2, cv);
+					DrawSelectionLine(matManager.vFieldSzone[1][i][rule], !(dField.selected_field & filter), bold, cv);
 				}
 			}
 		}
@@ -238,6 +240,51 @@ void Game::DrawBackGround() {
 		matManager.mSelField.DiffuseColor = selFieldAlpha << 24;
 		driver->setMaterial(matManager.mSelField);
 		driver->drawVertexPrimitiveList(vertex, 4, matManager.iRectangle, 2);
+	}
+	//field counter
+	{
+		for (int i = 0; i < 6; ++i) {
+			if(!mainGame->dField.field_counters[0][i].empty()) {
+				// cm.setTranslation(vector3df(
+				// 	(matManager.vFieldMzone[0][i][0].Pos.X + matManager.vFieldMzone[0][i][1].Pos.X) / 2,
+				// 	(matManager.vFieldMzone[0][i][0].Pos.Y + matManager.vFieldMzone[0][i][2].Pos.Y) / 2,
+				// 	0.2f
+				// ));
+				// driver->setTransform(irr::video::ETS_WORLD, cm);
+				irr::core::matrix4 im;
+				im.setScale(0.3f);
+				im.setTranslation(vector3df(
+					matManager.vFieldMzone[0][i][1].Pos.X - (matManager.vFieldMzone[0][i][1].Pos.X - matManager.vFieldMzone[0][i][0].Pos.X) / 8,
+					matManager.vFieldMzone[0][i][0].Pos.Y - (matManager.vFieldMzone[0][i][0].Pos.Y - matManager.vFieldMzone[0][i][2].Pos.Y) / 8,
+					0.03f
+				));
+				driver->setTransform(irr::video::ETS_WORLD, im);
+				matManager.mTexture.setTexture(0, imageManager.tToken);
+				driver->setMaterial(matManager.mTexture);
+				driver->drawVertexPrimitiveList(matManager.vSymbol, 4, matManager.iRectangle, 2);
+			}
+		}
+		for (int i = 0; i < 6; ++i) {
+			if(!mainGame->dField.field_counters[1][i].empty()) {
+				// cm.setTranslation(vector3df(
+				// 	(matManager.vFieldMzone[0][i][0].Pos.X + matManager.vFieldMzone[0][i][1].Pos.X) / 2,
+				// 	(matManager.vFieldMzone[0][i][0].Pos.Y + matManager.vFieldMzone[0][i][2].Pos.Y) / 2,
+				// 	0.2f
+				// ));
+				// driver->setTransform(irr::video::ETS_WORLD, cm);
+				irr::core::matrix4 im;
+				im.setScale(0.3f);
+				im.setTranslation(vector3df(
+					matManager.vFieldMzone[1][i][1].Pos.X - (matManager.vFieldMzone[1][i][1].Pos.X - matManager.vFieldMzone[1][i][0].Pos.X) / 8,
+					matManager.vFieldMzone[1][i][0].Pos.Y - (matManager.vFieldMzone[1][i][0].Pos.Y - matManager.vFieldMzone[1][i][2].Pos.Y) / 8,
+					0.03f
+				));
+				driver->setTransform(irr::video::ETS_WORLD, im);
+				matManager.mTexture.setTexture(0, imageManager.tToken);
+				driver->setMaterial(matManager.mTexture);
+				driver->drawVertexPrimitiveList(matManager.vSymbol, 4, matManager.iRectangle, 2);
+			}
+		}
 	}
 }
 void Game::DrawLinkedZones(ClientCard* pcard) {

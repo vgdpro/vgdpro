@@ -746,6 +746,15 @@ int TagDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 			NetServer::SendBufferToPlayer(cur_player[player], STOC_GAME_MSG, offset, pbuf - offset);
 			return 1;
 		}
+		case MSG_SELECT_FIELD_COUNTER: {
+			player = BufferIO::ReadInt8(pbuf);
+			pbuf += 4;
+			count = BufferIO::ReadInt8(pbuf);
+			pbuf += count * 3;
+			WaitforResponse(player);
+			NetServer::SendBufferToPlayer(players[player], STOC_GAME_MSG, offset, pbuf - offset);
+			return 1;
+		}
 		case MSG_SELECT_SUM: {
 			pbuf++;
 			player = BufferIO::ReadInt8(pbuf);
@@ -1326,8 +1335,28 @@ int TagDuel::Analyze(unsigned char* msgbuffer, unsigned int len) {
 				NetServer::ReSendToPlayer(*oit);
 			break;
 		}
+		case MSG_ADD_FIELD_COUNTER: {
+			pbuf += 7;
+			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
+			NetServer::ReSendToPlayer(players[1]);
+			NetServer::ReSendToPlayer(players[2]);
+			NetServer::ReSendToPlayer(players[3]);
+			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
+				NetServer::ReSendToPlayer(*oit);
+			break;
+		}
 		case MSG_REMOVE_COUNTER: {
 			pbuf += 8;
+			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
+			NetServer::ReSendToPlayer(players[1]);
+			NetServer::ReSendToPlayer(players[2]);
+			NetServer::ReSendToPlayer(players[3]);
+			for(auto oit = observers.begin(); oit != observers.end(); ++oit)
+				NetServer::ReSendToPlayer(*oit);
+			break;
+		}
+		case MSG_REMOVE_FIELD_COUNTER: {
+			pbuf += 7;
 			NetServer::SendBufferToPlayer(players[0], STOC_GAME_MSG, offset, pbuf - offset);
 			NetServer::ReSendToPlayer(players[1]);
 			NetServer::ReSendToPlayer(players[2]);

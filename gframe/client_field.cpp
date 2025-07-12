@@ -14,6 +14,8 @@ ClientField::ClientField() {
 	for(int p = 0; p < 2; ++p) {
 		mzone[p].resize(6, 0);
 		szone[p].resize(8, 0);
+		field_counters[p].resize(6, std::map<int, int>());
+		field_opParam[p].resize(7, 0);
 	}
 	rnd.reset((uint_fast32_t)std::random_device()());
 }
@@ -95,6 +97,12 @@ void ClientField::Clear() {
 		for(auto cit = szone[i].begin(); cit != szone[i].end(); ++cit) {
 			if(*cit)
 				delete *cit;
+			*cit = 0;
+		}
+		for(auto cit = field_counters[i].begin(); cit != field_counters[i].end(); ++cit) {
+			*cit=std::map<int, int>();
+		}
+		for(auto cit = field_opParam[i].begin(); cit != field_opParam[i].end(); ++cit) {
 			*cit = 0;
 		}
 		for(auto cit = grave[i].begin(); cit != grave[i].end(); ++cit)

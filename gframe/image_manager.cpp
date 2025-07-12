@@ -28,6 +28,7 @@ bool ImageManager::Initial() {
 	tMask = driver->getTexture("textures/mask.png");
 	tEquip = driver->getTexture("textures/equip.png");
 	tTarget = driver->getTexture("textures/target.png");
+	tToken = driver->getTexture("textures/token.png");
 	tChainTarget = driver->getTexture("textures/chaintarget.png");
 	tLim = driver->getTexture("textures/lim.png");
 	tOT = driver->getTexture("textures/ot.png");
