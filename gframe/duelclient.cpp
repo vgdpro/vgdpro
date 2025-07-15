@@ -3423,7 +3423,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		int c = BufferIO::ReadInt8(pbuf);
 		int seq = BufferIO::ReadInt8(pbuf);
 		int count = BufferIO::ReadInt16(pbuf);
-		int cttype = (cttype & 0x7FFF) | (tc << 15);
+		int cttype = (type & 0x7FFF) | (tc << 15);
 		if (mainGame->dField.field_counters[tc][seq][cttype])
 			mainGame->dField.field_counters[tc][seq][cttype] += count;
 		else mainGame->dField.field_counters[tc][seq][cttype] = count;
@@ -3483,7 +3483,7 @@ int DuelClient::ClientAnalyze(unsigned char* msg, unsigned int len) {
 		if(mainGame->dInfo.isReplay && mainGame->dInfo.isReplaySkiping)
 			return true;
 		soundManager.PlaySoundEffect(SOUND_COUNTER_REMOVE);
-		myswprintf(textBuffer, dataManager.GetSysString(1618), dataManager.GetCounterName(type), count);
+		myswprintf(textBuffer, dataManager.GetSysString(1626), s, count, dataManager.GetCounterName(type));
 		if (c == 0) {
 			mainGame->dField.selectable_field = 1 << s;
 		} else {

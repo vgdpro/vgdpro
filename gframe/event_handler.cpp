@@ -1867,9 +1867,9 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 					for (int controler = 0; controler < 2; ++controler) {
 						for (int sequence = 0; sequence < 7; ++sequence) {
 							if ((mainGame->dField.field_opParam[controler][sequence] >> 16) - (mainGame->dField.field_opParam[controler][sequence] & 0xffff) > 0) {
-								respbuf[respbuf_pos] = (mainGame->dField.field_opParam[controler][sequence] >> 16) - (mainGame->dField.field_opParam[controler][sequence] & 0xffff); // 低16位: opParam
+								respbuf[respbuf_pos] = (mainGame->dField.field_opParam[controler][sequence] >> 16) - (mainGame->dField.field_opParam[controler][sequence] & 0xff); // 低16位: opParam
 								respbuf_pos++; // 高4位: controler, 低4位: sequence
-								respbuf[respbuf_pos] = (controler << 8) | sequence & 0xff; // 低16位: opParam
+								respbuf[respbuf_pos] = (controler << 8) | sequence & 0xf; // 低16位: opParam
 								respbuf_pos++;
 							}
 						}
