@@ -70,8 +70,7 @@ jobs:
     # Generate solution
     - name: Generate Visual Studio solution
       run: |
-        dir
-        \premake5.exe vs2019
+        D:\a\vgdpro\vgdpro\premake5.exe vs2019
 
     # Build solution
     - name: Setup MSBuild
