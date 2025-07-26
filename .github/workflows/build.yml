@@ -1,0 +1,97 @@
+name: Build YGOPro (Win32 Release)
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code with submodules
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: recursive
+
+    - name: Initialize submodules
+      run: git submodule update --init --recursive
+
+    # Install system dependencies
+    - name: Install 7-Zip
+      run: choco install 7zip -y
+
+    # Download and extract dependencies
+    - name: Download premake5
+      run: |
+        curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name https://github.com/premake/premake-core/releases/download/v5.0.0-alpha14/premake-5.0.0-alpha14-windows.zip
+        7z x -y premake-5.0.0-alpha14-windows.zip
+
+    - name: Download libevent
+      run: |
+        curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz
+        tar xf libevent-2.0.22-stable.tar.gz
+        move libevent-2.0.22-stable event
+        xcopy /E event\WIN32-Code event\include
+
+    - name: Download freetype
+      run: |
+        curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name http://downloads.sourceforge.net/freetype/freetype-2.10.1.tar.gz
+        tar xf freetype-2.10.1.tar.gz
+        move freetype-2.10.1 freetype
+
+    - name: Download irrlicht
+      run: |
+        curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name http://downloads.sourceforge.net/irrlicht/irrlicht-1.8.4.zip
+        7z x -y irrlicht-1.8.4.zip
+        md irrlicht
+        move irrlicht-1.8.4\source\Irrlicht irrlicht\src
+        move irrlicht-1.8.4\include irrlicht\include
+
+    - name: Download lua
+      run: |
+        curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name https://www.lua.org/ftp/lua-5.3.5.tar.gz
+        tar xf lua-5.3.5.tar.gz
+        move lua-5.3.5\src lua
+
+    - name: Download sqlite
+      run: |
+        curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name https://www.sqlite.org/2020/sqlite-amalgamation-3310100.zip
+        7z x -y sqlite-amalgamation-3310100.zip
+        move sqlite-amalgamation-3310100 sqlite3
+
+    - name: Clone irrklang
+      run: git clone --depth=1 https://${{ secrets.GITHUB_TOKEN }}@github.com/purerosefallen/irrklang
+
+    # Prepare build environment
+    - name: Copy premake files
+      run: cp -rf premake/* .
+
+    - name: Apply irrlicht patch
+      run: patch -p0 < irrlicht\irrlicht.patch
+
+    # Generate solution
+    - name: Generate Visual Studio solution
+      run: premake5 vs2019
+
+    # Build solution
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build Solution (Win32 Release)
+      run: |
+        MSBuild.exe build/YGOPro.sln /m /p:Configuration=Release /p:Platform=Win32
+        
+    # Upload artifacts
+    - name: Verify build output
+      run: dir bin/Release /s
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: YGOPro-Win32-Release
+        path: bin/Release/YGOPro.exe
+        if-no-files-found: error
