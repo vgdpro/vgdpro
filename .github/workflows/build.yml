@@ -18,50 +18,15 @@ jobs:
         submodules: recursive
 
     - name: Initialize submodules
-      run: git submodule update --init --recursive
-
-    # Install system dependencies
-    - name: Install 7-Zip
-      run: choco install 7zip -y
+      run: |
+        git submodule update --init --recursive
+        git submodule update --remote
 
     # Download and extract dependencies
-    - name: Download premake5
+    - name: clone dependency
       run: |
-        curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name https://github.com/premake/premake-core/releases/download/v5.0.0-alpha14/premake-5.0.0-alpha14-windows.zip
-        7z x -y premake-5.0.0-alpha14-windows.zip
-        
-    - name: Download libevent
-      run: |
-        curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz
-        tar xf libevent-2.0.22-stable.tar.gz
-        move libevent-2.0.22-stable event
-        xcopy /E event\WIN32-Code event\include
-
-    - name: Download freetype
-      run: |
-        curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name http://downloads.sourceforge.net/freetype/freetype-2.10.1.tar.gz
-        tar xf freetype-2.10.1.tar.gz
-        move freetype-2.10.1 freetype
-
-    - name: Download irrlicht
-      run: |
-        curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name http://downloads.sourceforge.net/irrlicht/irrlicht-1.8.4.zip
-        7z x -y irrlicht-1.8.4.zip
-        md irrlicht
-        move irrlicht-1.8.4\source\Irrlicht irrlicht\src
-        move irrlicht-1.8.4\include irrlicht\include
-
-    - name: Download lua
-      run: |
-        curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name https://www.lua.org/ftp/lua-5.3.5.tar.gz
-        tar xf lua-5.3.5.tar.gz
-        move lua-5.3.5\src lua
-
-    - name: Download sqlite
-      run: |
-        curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name https://www.sqlite.org/2020/sqlite-amalgamation-3310100.zip
-        7z x -y sqlite-amalgamation-3310100.zip
-        move sqlite-amalgamation-3310100 sqlite3
+        git clone --depth 1 https://github.com/vgdpro/vgdpro-dependency.git dependency
+        xcopy /E /Y /Q dependency\* .
 
     # Prepare build environment
     - name: Copy premake files
@@ -70,7 +35,7 @@ jobs:
     # Generate solution
     - name: Generate Visual Studio solution
       run: |
-        D:\a\vgdpro\vgdpro\premake5.exe vs2019
+        .\premake5.exe vs2022
 
     # Build solution
     - name: Setup MSBuild
