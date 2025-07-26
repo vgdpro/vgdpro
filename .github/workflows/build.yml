@@ -36,6 +36,7 @@ jobs:
     - name: Generate Visual Studio solution
       run: |
         .\premake5.exe vs2022
+        dir .\build
 
     # Build solution
     - name: Setup MSBuild
