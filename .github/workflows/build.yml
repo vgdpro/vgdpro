@@ -29,8 +29,8 @@ jobs:
       run: |
         curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name https://github.com/premake/premake-core/releases/download/v5.0.0-alpha14/premake-5.0.0-alpha14-windows.zip
         7z x -y premake-5.0.0-alpha14-windows.zip
-        move premake-5.0.0-alpha14-windows\premake5.exe .
-
+        dir
+        
     - name: Download libevent
       run: |
         curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz
