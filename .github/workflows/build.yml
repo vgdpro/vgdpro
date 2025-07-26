@@ -68,7 +68,7 @@ jobs:
       run: xcopy /E /Y /Q premake\* .
 
     - name: Apply irrlicht patch
-      run: patch -p0 < irrlicht\irrlicht.patch
+      run: git apply --whitespace=nowarn --verbose irrlicht/irrlicht.patch
 
     # Generate solution
     - name: Generate Visual Studio solution
