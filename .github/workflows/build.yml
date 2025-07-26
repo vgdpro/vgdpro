@@ -63,9 +63,6 @@ jobs:
         7z x -y sqlite-amalgamation-3310100.zip
         move sqlite-amalgamation-3310100 sqlite3
 
-    - name: Clone irrklang
-      run: git clone --depth=1 https://${{ secrets.GITHUB_TOKEN }}@github.com/purerosefallen/irrklang
-
     # Prepare build environment
     - name: Copy premake files
       run: cp -rf premake/* .
