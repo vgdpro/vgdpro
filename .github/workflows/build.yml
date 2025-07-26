@@ -12,7 +12,7 @@ jobs:
     steps:
     - name: Install DirectX SDK (June 2010)
       run: |
-        choco install directx-sdk -y --version=9.29.1962
+        choco install directx-sdk -y --version=9.29.1962 --ignore-checksums
         refreshenv
 
     - name: Checkout code with submodules
