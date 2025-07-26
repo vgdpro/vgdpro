@@ -10,12 +10,11 @@ jobs:
   build:
     runs-on: windows-2022
     steps:
-      - name: Install DirectX SDK (June 2010)
-        run: |
-          choco install directx-sdk -y --version=9.29.1962
-          refreshenv
+    - name: Install DirectX SDK (June 2010)
+      run: |
+        choco install directx-sdk -y --version=9.29.1962
+        refreshenv
 
-    steps:
     - name: Checkout code with submodules
       uses: actions/checkout@v4
       with:
