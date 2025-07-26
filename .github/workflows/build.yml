@@ -65,7 +65,7 @@ jobs:
 
     # Prepare build environment
     - name: Copy premake files
-      run: cp -rf premake/* .
+      run: xcopy /E /Y /Q premake\* .
 
     - name: Apply irrlicht patch
       run: patch -p0 < irrlicht\irrlicht.patch
