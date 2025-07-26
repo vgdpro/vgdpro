@@ -10,10 +10,8 @@ jobs:
   build-windows:
     strategy:
       fail-fast: false
-      matrix:
-        os: [windows-2019, windows-2022]
 
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-2022
 
     steps:
     - name: Checkout repository with submodules
@@ -61,12 +59,12 @@ jobs:
       id: freetype
       uses: mercury233/action-cache-download-file@v1.0.0
       with:
-        url: http://downloads.sourceforge.net/freetype/freetype-2.13.3.tar.gz
+        url: http://downloads.sourceforge.net/freetype/freetype-2.11.1.tar.gz
 
     - name: Extract freetype
       run: |
         tar xf ${{ steps.freetype.outputs.filepath }}
-        move freetype-2.13.3 freetype
+        move freetype-2.11.1 freetype
 
     - name: Download lua
       id: lua
@@ -136,13 +134,11 @@ jobs:
       run: |
         xcopy /E premake\* .
 
-    - name: Use premake to generate Visual Studio solution (2019)
-      if: matrix.os == 'windows-2019'
+    - name: premake winxp
       run: |
-        .\premake5.exe vs2019 --winxp-support
+        .\premake5.exe vs2022 --winxp-support
 
-    - name: Use premake to generate Visual Studio solution (2022)
-      if: matrix.os == 'windows-2022'
+    - name: premake
       run: |
         .\premake5.exe vs2022
 
@@ -226,7 +222,10 @@ jobs:
 
     - name: Download irrlicht
       run: |
-        git clone --depth=1 https://github.com/mercury233/irrlicht
+        git clone https://github.com/mercury233/irrlicht
+        cd irrlicht
+        git checkout 8886cee
+        cd ..
 
     - name: Copy premake files
       run: |
@@ -313,7 +312,10 @@ jobs:
 
     - name: Download irrlicht
       run: |
-        git clone --depth=1 https://github.com/mercury233/irrlicht
+        git clone https://github.com/mercury233/irrlicht
+        cd irrlicht
+        git checkout 8886cee
+        cd ..
 
     - name: Build irrlicht
       run: |
