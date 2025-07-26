@@ -29,7 +29,6 @@ jobs:
       run: |
         curl --retry 5 --connect-timeout 30 --location --remote-header-name --remote-name https://github.com/premake/premake-core/releases/download/v5.0.0-alpha14/premake-5.0.0-alpha14-windows.zip
         7z x -y premake-5.0.0-alpha14-windows.zip
-        dir
         
     - name: Download libevent
       run: |
@@ -70,7 +69,9 @@ jobs:
 
     # Generate solution
     - name: Generate Visual Studio solution
-      run: premake5 vs2019
+      run: |
+        dir
+        premake5.exe vs2019
 
     # Build solution
     - name: Setup MSBuild
