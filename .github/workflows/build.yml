@@ -69,7 +69,7 @@ jobs:
 
     # Generate solution
     - name: Generate Visual Studio solution
-      run: premake5 vs2019
+      run: .\premake-5.0.0-alpha14-windows\premake5.exe vs2019
 
     # Build solution
     - name: Setup MSBuild
