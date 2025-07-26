@@ -2,9 +2,9 @@ name: Automated Test Build
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "yml" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "yml" ]
 
 jobs:
   build-windows:
