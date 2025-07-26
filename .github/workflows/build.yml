@@ -13,9 +13,13 @@ jobs:
     - name: Install DirectX SDK (June 2010)
       run: |
         choco install directx-sdk -y --version=9.29.1962 --ignore-checksums
-        Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-        refreshenv
-
+        echo "DXSDK_DIR=C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)" >> $env:GITHUB_ENV
+    - name: Verify Installation
+      run: |
+        if (-not (Test-Path "$env:DXSDK_DIR\Include\d3dx9shader.h")) {
+            echo "::error::DirectX SDK not properly installed!"
+            exit 1
+        }
     - name: Checkout code with submodules
       uses: actions/checkout@v4
       with:
@@ -41,7 +45,6 @@ jobs:
     - name: Generate Visual Studio solution
       run: |
         .\premake5.exe vs2022
-        dir .\build
 
     # Build solution
     - name: Setup MSBuild
