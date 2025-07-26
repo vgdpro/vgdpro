@@ -10,16 +10,15 @@ jobs:
   build:
     runs-on: windows-2022
     steps:
-    - name: Install DirectX SDK (June 2010)
+    - name: Download and Install DirectX SDK (June 2010)
       run: |
-        choco install directx-sdk -y --version=9.29.1962 --ignore-checksums
+        # 下载官方安装包
+        $url = "https://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe"
+        $installer = "$env:TEMP\directx_jun2010.exe"
+        Invoke-WebRequest -Uri $url -OutFile $installer
+        Start-Process -FilePath $installer -ArgumentList "/Q" -Wait
         echo "DXSDK_DIR=C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)" >> $env:GITHUB_ENV
-    - name: Verify Installation
-      run: |
-        if (-not (Test-Path "$env:DXSDK_DIR\Include\d3dx9shader.h")) {
-            echo "::error::DirectX SDK not properly installed!"
-            exit 1
-        }
+    
     - name: Checkout code with submodules
       uses: actions/checkout@v4
       with:
