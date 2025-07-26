@@ -47,3 +47,6 @@ luasocket.pdb
 premake5.pdb
 ikpFlac.dll
 WindBot.exe
+
+/.vs
+/.vscode
